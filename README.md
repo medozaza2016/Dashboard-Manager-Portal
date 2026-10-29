@@ -12,7 +12,7 @@ The approved interface uses a near-black navy canvas, subtle blue-gray borders, 
 
 The D1 database has been created and seeded with 12 existing services, 5 categories, 21 tags, 24 service-tag associations, and 3 portal setting records. The SQL migration is checked into `migrations/0001_initial.sql`.
 
-**Not yet fully live:** the latest frontend/API release is still being deployed, and Cloudflare Access variables and the Pages hostname's Access policy must be configured before the browser can use the protected API. Until that authentication configuration is complete, changes may remain local to the browser. Do not treat the portal as production-ready for managing infrastructure until the Access gate has been tested.
+**Activation in progress:** a Cloudflare Access application has been created for `dashboard-manager-portal.pages.dev`, with an allow policy for the `ahmedmohamed.org` email domain. The Pages environment and Wrangler configuration contain the Access team domain and application audience. The most recent commits are still moving through Pages deployment, and the protected API has not yet been smoke-tested from an authenticated browser session. Until that test succeeds, changes may remain local to the browser. Do not treat the portal as production-ready for managing infrastructure until the Access gate and CRUD flows have been verified.
 
 Some service URLs are intentionally placeholders ending in `.example`. Replace them with real addresses only after the portal is protected and access policies are verified.
 
