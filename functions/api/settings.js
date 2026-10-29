@@ -1,7 +1,8 @@
 import { requireCloudflareAccess, jsonResponse } from "../lib/access.js";
+import { deleteAssetIfUnreferenced, isAllowedAssetKey } from "../lib/assets.js";
 
 const DEFAULTS = {
-  branding: { name: "Luxorit", subtitle: "Pro", logo: "" },
+  branding: { name: "Luxorit", subtitle: "Pro", logo: "", logoKey: null },
   preferences: { theme: "dark", landingPage: "home", defaultView: "list", sidebarCollapsed: false },
 };
 
@@ -21,7 +22,7 @@ export async function onRequest({ request, env }) {
       readSetting(env.DB, "branding", DEFAULTS.branding),
       readSetting(env.DB, "preferences", DEFAULTS.preferences),
     ]);
-    return jsonResponse({ branding, preferences });
+    return jsonResponse({ branding: { ...DEFAULTS.branding, ...branding }, preferences });
   }
 
   if (request.method === "PUT") {
@@ -30,10 +31,12 @@ export async function onRequest({ request, env }) {
 
     const branding = payload.branding || {};
     const preferences = payload.preferences || {};
+    if (branding.logoKey != null && branding.logoKey !== "" && !isAllowedAssetKey(branding.logoKey, "branding")) return jsonResponse({ error: "Invalid portal logo reference." }, 400);
     const cleanBranding = {
       name: typeof branding.name === "string" ? branding.name.trim().slice(0, 42) || "Luxorit" : "Luxorit",
       subtitle: typeof branding.subtitle === "string" ? branding.subtitle.trim().slice(0, 32) : "",
       logo: typeof branding.logo === "string" ? branding.logo.trim().slice(0, 4) : "",
+      logoKey: isAllowedAssetKey(branding.logoKey, "branding") ? branding.logoKey : null,
     };
     const cleanPreferences = {
       theme: preferences.theme === "light" ? "light" : "dark",
@@ -42,11 +45,13 @@ export async function onRequest({ request, env }) {
       sidebarCollapsed: Boolean(preferences.sidebarCollapsed),
     };
 
+    const previousBranding = await readSetting(env.DB, "branding", DEFAULTS.branding);
     for (const [key, value] of [["branding", cleanBranding], ["preferences", cleanPreferences]]) {
       await env.DB.prepare(
         "INSERT INTO portal_settings (setting_key, setting_value, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP) ON CONFLICT(setting_key) DO UPDATE SET setting_value = excluded.setting_value, updated_at = CURRENT_TIMESTAMP"
       ).bind(key, JSON.stringify(value)).run();
     }
+    if (previousBranding?.logoKey && previousBranding.logoKey !== cleanBranding.logoKey) await deleteAssetIfUnreferenced(env, previousBranding.logoKey);
     return jsonResponse({ branding: cleanBranding, preferences: cleanPreferences });
   }
 
