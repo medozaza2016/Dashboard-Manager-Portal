@@ -44,6 +44,19 @@
 .integration-name{font-size:12px;font-weight:750;margin:0 0 5px}
 .integration-desc{font-size:11px;line-height:1.5;color:var(--muted);min-height:33px}
 .integration-status{display:inline-flex;margin-top:10px;border:1px solid var(--line);border-radius:6px;padding:3px 7px;font-size:10px;color:var(--muted);background:var(--panel)}
+.integration-status.status-connected{color:var(--green);border-color:var(--green);background:var(--green2)}
+.integration-status.status-offline{color:#F87171;border-color:#B91C1C;background:color-mix(in srgb,#B91C1C 12%,var(--panel))}
+.integration-status.status-checking{color:var(--muted)}
+.d1-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:12px}
+.d1-metric{padding:9px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel);min-width:0}
+.d1-metric span{display:block;font-size:10px;color:var(--muted)}
+.d1-metric strong{display:block;font-size:17px;margin-top:4px}
+.d1-status-message{font-size:11px;line-height:1.5;color:var(--muted);margin:8px 0 0}
+.d1-check-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:12px}
+.d1-check-row .secondary{padding:7px 9px;font-size:11px}
+.d1-check-row a{font-size:11px;color:var(--green)}
+.d1-last-checked{font-size:10px;color:var(--muted)}
+.d1-check-row button:disabled{opacity:.6;cursor:wait}
 .settings-version{font-size:12px;font-weight:700;color:var(--text)}
 .settings-note{color:var(--muted);font-size:11px;margin-top:6px}
 .brand .brand-copy{display:flex;flex-direction:column;gap:0;min-width:0;line-height:1.2}
@@ -57,7 +70,7 @@
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
 <div class="group-label">Workspace</div>
 <button class="nav active" data-page="home" title="Home"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/></svg></span><span>Home</span></button><button class="nav" data-page="all" title="All services"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span>All Services</span></button>
-<div class="group-label">Categories</div><div id="categoryNav"></div><div class="bottom"><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.4</div></div></aside>
+<div class="group-label">Categories</div><div id="categoryNav"></div><div class="bottom"><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.6</div></div></aside>
 <main class="main"><header class="topbar"><button class="iconbtn" id="collapse" title="Collapse sidebar" aria-label="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="m14 7-5 5 5 5"/></svg></button><div class="search"><span class="search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="search" placeholder="Search applications, tools, or tags..." aria-label="Search applications"></div><div class="top-actions"><button class="iconbtn" id="theme" title="Toggle theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg></button><button class="iconbtn help" id="help" title="About" aria-label="About"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button><div class="avatar">JD</div></div></header>
 <div class="content">
 <section id="homePage">
@@ -95,18 +108,29 @@
         <div class="settings-divider"></div><p class="settings-help" style="margin-bottom:0">When connected, export downloads the current shared D1 catalog. Import validates the backup and restores services, categories, tags, and portal settings to D1. If the database is unavailable, the portal clearly identifies browser-only backups.</p>
       </article>
       <article class="settings-card wide">
-        <h2>Future integrations</h2><p class="settings-help">Planned connection points. These are placeholders only and do not connect to your accounts yet.</p>
+        <h2>Integrations & connections</h2><p class="settings-help">Connection status for the services this portal actually uses. Cloudflare D1 is accessed through authenticated Pages Functions. Its database binding is managed in Cloudflare, not by exposing connection credentials in this page.</p>
         <div class="integration-grid">
-          <div class="integration-card"><div class="integration-name">Cloudflare Pages</div><div class="integration-desc">Deployment status and automatic release details.</div><span class="integration-status">Planned</span></div>
-          <div class="integration-card"><div class="integration-name">Cloudflare Workers</div><div class="integration-desc">Backend API for shared settings and service data.</div><span class="integration-status">Planned</span></div>
-          <div class="integration-card"><div class="integration-name">Cloudflare D1</div><div class="integration-desc">Persistent catalog, categories, and tags.</div><span class="integration-status">Planned</span></div>
-          <div class="integration-card"><div class="integration-name">Cloudflare R2</div><div class="integration-desc">Logo assets and portable backup storage.</div><span class="integration-status">Planned</span></div>
+          <div class="integration-card"><div class="integration-name">Cloudflare Pages</div><div class="integration-desc">Hosts this portal and deploys changes from GitHub.</div><span class="integration-status status-connected">Live</span></div>
+          <div class="integration-card"><div class="integration-name">Pages Functions API</div><div class="integration-desc">Authenticated API routes for services, settings, and backups.</div><span class="integration-status status-connected">Live</span></div>
+          <div class="integration-card">
+            <div class="integration-name">Cloudflare D1</div>
+            <div class="integration-desc">Production database: <strong>luxorit-portal-db</strong>. Shared services, categories, tags, favorites, branding, and preferences.</div>
+            <span id="d1StatusBadge" class="integration-status status-checking" role="status">Checking…</span>
+            <p id="d1StatusMessage" class="d1-status-message" aria-live="polite">Checking the authenticated database connection.</p>
+            <div class="d1-metrics">
+              <div class="d1-metric"><span>Services</span><strong id="d1ServiceCount">—</strong></div>
+              <div class="d1-metric"><span>Categories</span><strong id="d1CategoryCount">—</strong></div>
+              <div class="d1-metric"><span>Tags in use</span><strong id="d1TagCount">—</strong></div>
+            </div>
+            <div class="d1-check-row"><span class="d1-last-checked" id="d1LastChecked">Not checked yet</span><div class="settings-actions"><button class="secondary" type="button" id="testD1Connection">Test connection</button><a href="https://dash.cloudflare.com/4ed0b7cda99d43ce679d2aace4d3f525/workers/d1" target="_blank" rel="noopener">Open D1 dashboard ↗</a></div></div>
+          </div>
+          <div class="integration-card"><div class="integration-name">Cloudflare R2</div><div class="integration-desc">Potential storage for logo assets and portable backups.</div><span class="integration-status">Planned</span></div>
           <div class="integration-card"><div class="integration-name">GitHub</div><div class="integration-desc">Repository, commit, and deployment workflow details.</div><span class="integration-status">Planned</span></div>
-          <div class="integration-card"><div class="integration-name">Supabase</div><div class="integration-desc">Optional authentication and a shared database.</div><span class="integration-status">Optional</span></div>
+          <div class="integration-card"><div class="integration-name">Supabase</div><div class="integration-desc">Optional authentication or data source; not used by this portal currently.</div><span class="integration-status">Optional</span></div>
         </div>
       </article>
       <article class="settings-card wide">
-        <h2>About this portal</h2><div class="settings-version">Version <span id="settingsVersion">0.1.4</span></div><div class="settings-note">Frontend prototype · Local browser storage · Integration connections not enabled</div>
+        <h2>About this portal</h2><div class="settings-version">Version <span id="settingsVersion">0.1.4</span></div><div class="settings-note">Cloudflare Pages · Authenticated Pages Functions · Shared Cloudflare D1 storage · Cloudflare Access</div>
       </article>
     </div>
     <div class="settings-actions" style="justify-content:flex-end;margin-top:16px"><button class="secondary" type="button" id="resetBranding">Reset branding</button><button class="primary" type="submit">Save settings</button></div>
@@ -116,7 +140,7 @@
 <div class="modal-backdrop" id="serviceModal"><form class="modal" id="serviceForm"><h2 id="modalTitle">Add service</h2><input type="hidden" id="serviceId"><label for="name">Name</label><input id="name" required><label for="url">URL</label><input id="url" type="url" placeholder="https://service.example" required><label for="category">Category</label><select id="category"></select><label for="description">Description</label><input id="description"><label for="icon">Fallback icon for custom services</label><input id="icon" value="🔧"><label for="tags">Tags (comma-separated)</label><input id="tags" placeholder="Admin, Cloud"><div class="modal-actions"><button class="secondary" type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save service</button></div></form></div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.5";
+const APP_VERSION="0.1.6";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -173,10 +197,41 @@ let services=structuredClone(seed),current="All",view="list",density="regular",p
 let branding={name:"Luxorit",subtitle:"Pro",logo:""};
 let preferences={theme:"dark",landingPage:"home",defaultView:"list",sidebarCollapsed:false};
 let apiConnected=false,apiError="";
+let d1Status={state:"checking",message:"Checking the authenticated database connection.",serviceCount:null,categoryCount:null,tagCount:null,lastChecked:null};
+function renderD1Status(){
+const badge=$("d1StatusBadge");if(!badge)return;
+badge.className="integration-status "+(d1Status.state==="connected"?"status-connected":d1Status.state==="offline"?"status-offline":"status-checking");
+badge.textContent=d1Status.state==="connected"?"Connected":d1Status.state==="offline"?"Unavailable":"Checking…";
+$("d1StatusMessage").textContent=d1Status.message;
+$("d1ServiceCount").textContent=d1Status.serviceCount==null?"—":String(d1Status.serviceCount);
+$("d1CategoryCount").textContent=d1Status.categoryCount==null?"—":String(d1Status.categoryCount);
+$("d1TagCount").textContent=d1Status.tagCount==null?"—":String(d1Status.tagCount);
+$("d1LastChecked").textContent=d1Status.lastChecked?"Last checked "+d1Status.lastChecked.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}):"Not checked yet";
+}
+function setD1Status(state,message,counts={}){
+d1Status={...d1Status,...counts,state,message,lastChecked:new Date()};
+renderD1Status();
+}
+function countTagsInUse(items){return new Set(items.flatMap(s=>Array.isArray(s.tags)?s.tags:[]).map(tag=>String(tag).trim()).filter(Boolean)).size}
+async function checkD1Connection(showToast=true){
+const button=$("testD1Connection");if(button){button.disabled=true;button.textContent="Testing…"}
+setD1Status("checking","Checking the authenticated API and shared D1 database.",{serviceCount:null,categoryCount:null,tagCount:null});
+try{
+const [remoteServices,remoteCategories,remoteSettings]=await Promise.all([apiRequest("services"),apiRequest("categories"),apiRequest("settings")]);
+if(!Array.isArray(remoteServices)||!Array.isArray(remoteCategories)||!remoteSettings||typeof remoteSettings!=="object")throw new Error("Unexpected response from the database API");
+apiConnected=true;apiError="";
+setD1Status("connected","Connection verified. Catalog and portal settings are reachable in shared D1.",{serviceCount:remoteServices.length,categoryCount:remoteCategories.length,tagCount:countTagsInUse(remoteServices)});
+if(showToast)toast("D1 connection successful");
+}catch(error){
+apiConnected=false;apiError=error.message||"Database API unavailable";
+setD1Status("offline","Connection failed: "+apiError,{serviceCount:null,categoryCount:null,tagCount:null});
+if(showToast)toast("D1 connection failed: "+apiError);
+}finally{if(button){button.disabled=false;button.textContent="Test connection"}}
+}
 async function apiRequest(path,options={}){const response=await fetch("/api/"+path,{credentials:"same-origin",...options,headers:{"content-type":"application/json",...(options.headers||{})}});const body=await response.json().catch(()=>({}));if(!response.ok)throw new Error(body.error||("API request failed ("+response.status+")"));return body}
 function apiPayload(s){return {name:s.name,url:s.url,description:s.description||"",icon:s.icon||"🔧",category:s.category,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}}
 async function remoteSaveService(s,isNew=false){return apiRequest("services"+(!isNew&&s.id!=null?"?id="+encodeURIComponent(s.id):""),{method:isNew?"POST":"PUT",body:JSON.stringify(apiPayload(s))})}
-async function loadRemoteData(){try{const [remoteServices,remoteSettings]=await Promise.all([apiRequest("services"),apiRequest("settings")]);if(!Array.isArray(remoteServices))throw new Error("Unexpected service response");services=remoteServices.map(s=>({...s,id:Number(s.id),favorite:!!s.favorite,tags:Array.isArray(s.tags)?s.tags:[]}));nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;branding={...branding,...(remoteSettings.branding||{})};preferences={...preferences,...(remoteSettings.preferences||{})};document.documentElement.dataset.theme=preferences.theme||"dark";apiConnected=true;apiError="";render();toast("Connected to shared D1 database")}catch(error){apiConnected=false;apiError=error.message||"Database API unavailable";render();toast("Database unavailable, using browser-local data")}}
+async function loadRemoteData(){try{const [remoteServices,remoteSettings,remoteCategories]=await Promise.all([apiRequest("services"),apiRequest("settings"),apiRequest("categories")]);if(!Array.isArray(remoteServices)||!Array.isArray(remoteCategories))throw new Error("Unexpected response from the database API");services=remoteServices.map(s=>({...s,id:Number(s.id),favorite:!!s.favorite,tags:Array.isArray(s.tags)?s.tags:[]}));nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;branding={...branding,...(remoteSettings.branding||{})};preferences={...preferences,...(remoteSettings.preferences||{})};document.documentElement.dataset.theme=preferences.theme||"dark";apiConnected=true;apiError="";setD1Status("connected","Connection verified. Catalog and portal settings are reachable in shared D1.",{serviceCount:services.length,categoryCount:remoteCategories.length,tagCount:countTagsInUse(services)});render();toast("Connected to shared D1 database")}catch(error){apiConnected=false;apiError=error.message||"Database API unavailable";setD1Status("offline","Connection failed: "+apiError,{serviceCount:null,categoryCount:null,tagCount:null});render();toast("Database unavailable, using browser-local data")}}
 const categories=()=>["All",...new Set(services.map(s=>s.category))];
 function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2200)}
 function persist(){try{localStorage.setItem("luxorit-portal-v1",JSON.stringify({services,view,density,theme:document.documentElement.dataset.theme,appVersion:APP_VERSION,branding,preferences}))}catch{}}
@@ -204,7 +259,7 @@ document.querySelectorAll("[data-open]").forEach(el=>el.onclick=e=>{if(e.target.
 document.querySelectorAll("[data-category-open]").forEach(b=>b.onclick=()=>navigateCategory(b.dataset.categoryOpen))
 }
 function applyBranding(){const name=branding.name||"Luxorit";const subtitle=branding.subtitle||"";const mark=branding.logo||"";$("brandName").textContent=name;$("brandSubtitle").textContent=subtitle;$("brandSubtitle").hidden=!subtitle;$("brandLogoText").textContent=mark;$("brandLogoText").hidden=!mark;$("brandLogoGraphic").hidden=!!mark;document.title=name+(subtitle?" "+subtitle:"")+" Portal";const preview=$("settingsBrandPreview");if(preview)preview.textContent=name+(subtitle?" "+subtitle:"");const pText=$("settingsLogoText");const pGraphic=$("settingsLogoGraphic");if(pText&&pGraphic){pText.textContent=mark;pText.hidden=!mark;pGraphic.hidden=!!mark}}
-function renderSettings(){$("brandingName").value=branding.name||"Luxorit";$("brandingSubtitle").value=branding.subtitle||"";$("brandingLogo").value=branding.logo||"";$("themeSetting").value=document.documentElement.dataset.theme||"dark";$("landingSetting").value=preferences.landingPage||"home";$("defaultViewSetting").value=preferences.defaultView||"list";$("sidebarCollapsedSetting").checked=!!preferences.sidebarCollapsed;$("settingsVersion").textContent=APP_VERSION;applyBranding()}
+function renderSettings(){$("brandingName").value=branding.name||"Luxorit";$("brandingSubtitle").value=branding.subtitle||"";$("brandingLogo").value=branding.logo||"";$("themeSetting").value=document.documentElement.dataset.theme||"dark";$("landingSetting").value=preferences.landingPage||"home";$("defaultViewSetting").value=preferences.defaultView||"list";$("sidebarCollapsedSetting").checked=!!preferences.sidebarCollapsed;$("settingsVersion").textContent=APP_VERSION;applyBranding();renderD1Status()}
 function render(){nav();showPage();if(page==="home")renderHome();else if(page==="settings")renderSettings();else renderCatalog();$("versionLabel").textContent="v"+APP_VERSION;applyBranding();bindRenderedActions();persist()}
 function openModal(id){const s=services.find(s=>s.id==id);$("serviceForm").reset();$("serviceId").value=s?s.id:"";$("modalTitle").textContent=s?"Edit service":"Add service";$("name").value=s?.name||"";$("url").value=s?.url||"";$("description").value=s?.description||"";$("icon").value=s?.icon||"🔧";$("tags").value=s?.tags.join(", ")||"";$("category").innerHTML=[...new Set([...categories().filter(c=>c!=="All"),"Cloudflare","Infrastructure","Networking","Storage","Development","Monitoring","Productivity","Other"])].map(c=>'<option>'+safe(c)+'</option>').join("");$("category").value=s?.category||"Infrastructure";$("serviceModal").classList.add("open")}
 $("serviceForm").onsubmit=async e=>{e.preventDefault();const id=$("serviceId").value;let item={id:id?Number(id):nextId++,name:$("name").value.trim(),url:$("url").value.trim(),category:$("category").value,description:$("description").value.trim(),icon:$("icon").value.trim()||"🔧",tags:$("tags").value.split(",").map(t=>t.trim()).filter(Boolean),favorite:services.find(s=>s.id==id)?.favorite||false};try{if(apiConnected)item=await remoteSaveService(item,!id);if(id)services=services.map(s=>s.id==id?item:s);else{if(!apiConnected)nextId=Math.max(nextId,Number(item.id)+1);services.unshift(item)}$("serviceModal").classList.remove("open");page="all";current="All";view="list";render();toast(apiConnected?(id?"Service saved to database":"Service added to database"):(id?"Service saved locally only":"Service added locally only"))}catch(error){toast("Could not save service: "+(error.message||"database error"))}};
@@ -221,6 +276,7 @@ $("help").onclick=()=>toast("Dashboard Manager Portal. Version "+APP_VERSION+". 
 $("brandingName").addEventListener("input",()=>{$("settingsBrandPreview").textContent=($("brandingName").value||"Luxorit")+(($("brandingSubtitle").value)?" "+$("brandingSubtitle").value:"")});
 $("brandingSubtitle").addEventListener("input",()=>{$("settingsBrandPreview").textContent=($("brandingName").value||"Luxorit")+(($("brandingSubtitle").value)?" "+$("brandingSubtitle").value:"")});
 $("brandingLogo").addEventListener("input",()=>{const mark=$("brandingLogo").value.trim();$("settingsLogoText").textContent=mark;$("settingsLogoText").hidden=!mark;$("settingsLogoGraphic").hidden=!!mark});
+$("testD1Connection").onclick=()=>checkD1Connection(true);
 $("settingsForm").onsubmit=async e=>{e.preventDefault();const nextBranding={name:$("brandingName").value.trim()||"Luxorit",subtitle:$("brandingSubtitle").value.trim(),logo:$("brandingLogo").value.trim()};const nextPreferences={theme:$("themeSetting").value,landingPage:$("landingSetting").value,defaultView:$("defaultViewSetting").value,sidebarCollapsed:$("sidebarCollapsedSetting").checked};try{if(apiConnected)await apiRequest("settings",{method:"PUT",body:JSON.stringify({branding:nextBranding,preferences:nextPreferences})});branding=nextBranding;preferences=nextPreferences;document.documentElement.dataset.theme=preferences.theme;view=preferences.defaultView==="list"?"list":"cards";density=preferences.defaultView==="slim"?"slim":"regular";$("sidebar").classList.toggle("collapsed",preferences.sidebarCollapsed);updateCollapseButton();render();toast(apiConnected?"Settings saved to database":"Settings saved locally only")}catch(error){toast("Could not save settings: "+(error.message||"database error"))}};
 $("resetBranding").onclick=()=>{branding={name:"Luxorit",subtitle:"Pro",logo:""};renderSettings();toast("Branding reset. Save settings to keep it.")};
 $("themeSetting").onchange=()=>{document.documentElement.dataset.theme=$("themeSetting").value};
