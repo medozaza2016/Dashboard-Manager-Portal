@@ -638,7 +638,7 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.39";
+const APP_VERSION="0.1.40";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -1430,7 +1430,14 @@ if(item.logoKey)pendingServiceLogoKeys.delete(item.logoKey);
 closeServiceModal();if(wasOnCategoryPage){page="category";current=originalCategory;reorderEnabled=wasEditMode}else{page="home";current="All"}render();toast(apiConnected?(id?"Service saved to database":"Service added to database"):(id?"Service saved locally only":"Service added locally only"))
 }catch(error){toast("Could not save service: "+(error.message||"database error"))}
 };
-$("cancel").onclick=()=>closeServiceModal();$("add").onclick=()=>{if(page==="category"&&reorderEnabled)openModal(null,current)};$("search").oninput=()=>{if(reorderEnabled&&$("search").value.trim())reorderEnabled=false;render()};
+$("cancel").onclick=()=>closeServiceModal();$("add").onclick=()=>{if(page==="category"&&reorderEnabled)openModal(null,current)};$("search").oninput=()=>{
+ const query=$("search").value.trim();
+ if(query&&page==="home"){
+  page="all";current="All";activeTag=null;reorderEnabled=false;catalogControlsExpanded=false;
+ }
+ if(reorderEnabled&&query)reorderEnabled=false;
+ render();
+};
 $("reorderToggle").onclick=()=>{if(page!=="category")return;if(!reorderEnabled&&$("search").value.trim()){toast("Clear the global search before entering Edit mode.");return}reorderEnabled=!reorderEnabled;render();toast(reorderEnabled?"Edit mode enabled for "+current:"Edit mode finished")};
 $("catalogControlsToggle").onclick=()=>{
  catalogControlsExpanded=!catalogControlsExpanded;
