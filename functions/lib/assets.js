@@ -28,7 +28,7 @@ export async function deleteAssetIfUnreferenced(env, key) {
   if (!env?.ASSETS || !isAllowedAssetKey(key)) return false;
   try {
     if (await isAssetReferenced(env, key)) return false;
-    await env.ASSETS.delete(key);
+    await env.R2_LOGOS.delete(key);
     return true;
   } catch {
     // Cleanup must never turn a successful D1 save into a failed request.
