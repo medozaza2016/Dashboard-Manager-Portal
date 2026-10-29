@@ -380,7 +380,7 @@
 <div class="modal-backdrop" id="serviceModal"><form class="modal" id="serviceForm"><h2 id="modalTitle">Add service</h2><input type="hidden" id="serviceId"><label for="name">Name</label><input id="name" required><label for="url">URL</label><input id="url" type="url" placeholder="https://service.example" required><label for="category">Category</label><select id="category"></select><label for="description">Description</label><input id="description"><label for="icon">Fallback icon for custom services</label><input id="icon" value="🔧"><label>Tags</label><div class="service-tag-picker"><div id="serviceSelectedTags" class="service-selected-tags" aria-live="polite"></div><input id="serviceTagSearch" class="service-tag-search" type="search" placeholder="Search available tags…" aria-label="Search tags"><div id="serviceTagOptions" class="service-tag-options"></div><div class="settings-note">Choose one or more tags. Manage the tag list in Admin → Tags.</div></div><div class="settings-field full"><label for="serviceLogoFile">Service logo</label><div class="logo-upload-row"><div class="service-logo-preview" id="serviceLogoPreview"><span id="serviceLogoFallback">🔧</span><img id="serviceLogoImage" alt="" hidden></div><div class="settings-actions"><button class="secondary" type="button" id="chooseServiceLogo">Browse image</button><button class="secondary" type="button" id="removeServiceLogo" hidden>Remove image</button><input type="file" id="serviceLogoFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden><input type="hidden" id="serviceLogoKey"><span id="serviceLogoUploadStatus" class="settings-note">Optional · PNG, JPEG, WebP or GIF · up to 5 MB</span></div></div></div><div class="modal-actions"><button class="secondary" type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save service</button></div></form></div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.26";
+const APP_VERSION="0.1.27";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -795,77 +795,65 @@ document.querySelectorAll("[data-category-open]").forEach(b=>b.onclick=()=>navig
 bindServiceOrdering();
 }
 function bindServiceOrdering(){
-const canUseCards=page==="all"||page==="category";
-const hosts=[];
-if(page==="all"&&view==="list"&&$("listArea").classList.contains("service-order-host"))hosts.push($("listArea"));
-if(canUseCards&&view==="cards")hosts.push($("cardArea"));
-if(!hosts.length||!reorderEnabled)return;
-const query=$("search").value.trim();
-if(query)return;
-for(const host of hosts){
+if(page!=="category"||!reorderEnabled||$("search").value.trim())return;
+const host=view==="cards"?$("cardArea"):$("listArea");
+if(!host)return;
 let draggedId=null;
 const cards=[...host.querySelectorAll("[data-order-id]")];
 const handles=host.querySelectorAll("[data-order-drag]");
 handles.forEach(handle=>{
-handle.addEventListener("click",event=>event.stopPropagation());
-handle.addEventListener("dragstart",event=>{
-if(handle.disabled||!reorderEnabled||$("search").value.trim()){event.preventDefault();return}
-draggedId=Number(handle.dataset.orderDrag);
-const card=handle.closest("[data-order-id]");
-card?.classList.add("dragging");
-if(event.dataTransfer){event.dataTransfer.effectAllowed="move";event.dataTransfer.setData("text/plain",String(draggedId))}
-});
-handle.addEventListener("dragend",()=>{
-draggedId=null;host.querySelectorAll("[data-order-id]").forEach(card=>card.classList.remove("dragging","drag-over"));
-});
+ handle.addEventListener("click",event=>event.stopPropagation());
+ handle.addEventListener("dragstart",event=>{
+  if(!reorderEnabled||$("search").value.trim()){event.preventDefault();return}
+  draggedId=Number(handle.dataset.orderDrag);
+  const row=handle.closest("[data-order-id]");
+  row?.classList.add("dragging");
+  if(event.dataTransfer){event.dataTransfer.effectAllowed="move";event.dataTransfer.setData("text/plain",String(draggedId))}
+ });
+ handle.addEventListener("dragend",()=>{
+  draggedId=null;host.querySelectorAll("[data-order-id]").forEach(row=>row.classList.remove("dragging","drag-over"));
+ });
 });
 cards.forEach(card=>{
-card.addEventListener("dragover",event=>{
-if(!reorderEnabled||draggedId==null||draggedId===Number(card.dataset.orderId)||$("search").value.trim())return;
-event.preventDefault();
-if(event.dataTransfer)event.dataTransfer.dropEffect="move";
-card.classList.add("drag-over");
+ card.addEventListener("dragover",event=>{
+  if(!reorderEnabled||draggedId==null||draggedId===Number(card.dataset.orderId)||$("search").value.trim())return;
+  event.preventDefault();
+  if(event.dataTransfer)event.dataTransfer.dropEffect="move";
+  card.classList.add("drag-over");
+ });
+ card.addEventListener("dragleave",()=>card.classList.remove("drag-over"));
+ card.addEventListener("drop",async event=>{
+  event.preventDefault();card.classList.remove("drag-over");
+  const fromId=draggedId??Number(event.dataTransfer?.getData("text/plain")),toId=Number(card.dataset.orderId);
+  draggedId=null;host.querySelectorAll("[data-order-id]").forEach(row=>row.classList.remove("dragging","drag-over"));
+  if(!reorderEnabled||$("search").value.trim()||!fromId||fromId===toId)return;
+  const categoryRecord=categoryRecords.find(item=>item.name===current);
+  const categoryId=Number(categoryRecord?.id||services.find(item=>Number(item.id)===fromId)?.categoryId);
+  const fromService=services.find(item=>Number(item.id)===fromId),toService=services.find(item=>Number(item.id)===toId);
+  if(!categoryId||fromService?.category!==current||toService?.category!==current){toast("Reordering is limited to the current category.");return}
+  const scoped=services.filter(item=>item.category===current).slice().sort((a,b)=>(Number(a.categorySortOrder)||9999)-(Number(b.categorySortOrder)||9999)||Number(a.id)-Number(b.id));
+  const order=scoped.map(item=>Number(item.id)),from=order.indexOf(fromId),to=order.indexOf(toId);
+  if(from<0||to<0)return;
+  const [moved]=order.splice(from,1);order.splice(to,0,moved);
+  const previous=services.map(item=>({...item}));
+  const status=$("serviceOrderStatus");if(status)status.textContent="Saving category order…";
+  try{
+   if(apiConnected){
+    const result=await apiRequest("services",{method:"PATCH",body:JSON.stringify({scope:"category",categoryId,order})});
+    if(!Array.isArray(result))throw new Error("The server returned an invalid category order.");
+    const returned=result.map(item=>({...item,id:Number(item.id),favorite:!!item.favorite,tags:Array.isArray(item.tags)?item.tags:[]}));
+    const byId=new Map(returned.map(item=>[Number(item.id),item]));
+    services=services.map(item=>byId.get(Number(item.id))||item);
+    render();toast("Category service order saved");
+   }else{
+    const byId=new Map(order.map((id,index)=>[id,index+1]));
+    services=services.map(item=>item.category===current?({...item,categorySortOrder:byId.get(Number(item.id))??item.categorySortOrder}):item);
+    render();toast("Category order changed locally only; database is unavailable");
+   }
+  }catch(error){services=previous;render();toast("Could not save category order: "+(error.message||"database error"))}
+ });
 });
-card.addEventListener("dragleave",()=>card.classList.remove("drag-over"));
-card.addEventListener("drop",async event=>{
-event.preventDefault();card.classList.remove("drag-over");
-const fromId=draggedId??Number(event.dataTransfer?.getData("text/plain")),toId=Number(card.dataset.orderId);
-draggedId=null;host.querySelectorAll("[data-order-id]").forEach(item=>item.classList.remove("dragging","drag-over"));
-if(!reorderEnabled||$("search").value.trim()||!fromId||fromId===toId)return;
-const scope=page==="category"?"category":"global";
-const categoryRecord=scope==="category"?categoryRecords.find(c=>c.name===current):null;
-const categoryId=scope==="category"?Number(categoryRecord?.id||services.find(x=>Number(x.id)===fromId)?.categoryId):null;
-if(scope==="category"&&(!categoryId||services.find(x=>Number(x.id)===fromId)?.category!==current||services.find(x=>Number(x.id)===toId)?.category!==current)){toast("Reordering is limited to the current category.");return}
-const scopedItems=scope==="category"?filtered().filter(x=>x.category===current).slice():services.slice();
-const order=scopedItems.map(item=>Number(item.id));
-const from=order.indexOf(fromId),to=order.indexOf(toId);
-if(from<0||to<0)return;
-const [moved]=order.splice(from,1);order.splice(to,0,moved);
-const previous=services.map(x=>({...x}));
-const status=$("serviceOrderStatus");if(status)status.textContent="Saving new order…";
-try{
- if(apiConnected){
-  const payload=scope==="category"?{scope:"category",categoryId,order}:{scope:"global",order};
-  const result=await apiRequest("services",{method:"PATCH",body:JSON.stringify(payload)});
-  if(!Array.isArray(result))throw new Error("The server returned an invalid ordered service list.");
-  const returned=result.map(item=>({...item,id:Number(item.id),favorite:!!item.favorite,tags:Array.isArray(item.tags)?item.tags:[]}));
-  if(scope==="global")services=returned;
-  else{
-   const byId=new Map(returned.map(item=>[Number(item.id),item]));
-   services=services.map(item=>byId.get(Number(item.id))||item);
-  }
-  nav();render();toast(scope==="category"?"Category order saved":"Service order saved");
- }else{
-  if(scope==="global"){const byId=new Map(order.map((id,index)=>[id,index+1]));services=services.map(item=>({...item,sort_order:byId.get(Number(item.id))??item.sort_order}))}
-  else{const byId=new Map(order.map((id,index)=>[id,index+1]));services=services.map(item=>({...item,categorySortOrder:byId.get(Number(item.id))??item.categorySortOrder}))}
-  render();toast("Order changed locally only; the database is unavailable");
- }
-}catch(error){services=previous;render();toast("Could not save order: "+(error.message||"database error"))}
-});
-});
-}
-}
-function taxonomyMessageIfAvailable(_id,message){
+}function taxonomyMessageIfAvailable(_id,message){
 const target=$("serviceOrderStatus");
 if(target)target.textContent=message;
 }
