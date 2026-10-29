@@ -10,5 +10,6 @@
   },
   "devDependencies": {
     "vite": "^7.1.7"
-  }
+  },
+  "description": "Favorites-first service dashboard and portal"
 }
