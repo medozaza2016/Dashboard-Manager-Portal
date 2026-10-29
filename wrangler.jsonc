@@ -5,7 +5,7 @@
   "pages_build_output_dir": "./dist",
   "r2_buckets": [
     {
-      "binding": "ASSETS",
+      "binding": "R2_LOGOS",
       "bucket_name": "dashboard-manager-portal-assets"
     }
   ],
