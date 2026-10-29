@@ -57,3 +57,13 @@ These integrations are planned and are not represented as implemented.
 ## License
 
 See [LICENSE](LICENSE).
+
+## Cloudflare Pages
+
+The Pages project is named `dashboard-manager-portal` and tracks the `main` branch of this repository.
+
+- Build command: `npm run build`
+- Build output directory: `dist`
+- Preview URL: https://dashboard-manager-portal.pages.dev
+
+The current Pages deployment is a public frontend preview only. Cloudflare Workers, D1 persistence, and authentication still need to be implemented before this prototype is used for real administration.
