@@ -7,7 +7,7 @@ export async function onRequest({ request, env }) {
   if (!env.DB) return jsonResponse({ error: "D1 binding DB is missing." }, 503);
 
   const result = await env.DB.prepare(`
-    SELECT c.id, c.name, c.icon, c.sort_order, COUNT(s.id) AS service_count
+    SELECT c.id, c.name, c.icon, c.sort_order AS sortOrder, COUNT(s.id) AS serviceCount
     FROM categories c
     LEFT JOIN services s ON s.category_id = c.id
     GROUP BY c.id
