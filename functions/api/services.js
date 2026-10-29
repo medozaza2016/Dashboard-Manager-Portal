@@ -2,7 +2,7 @@ import { requireCloudflareAccess, jsonResponse } from "../lib/access.js";
 import { deleteAssetIfUnreferenced, isAllowedAssetKey } from "../lib/assets.js";
 
 const SERVICE_SELECT = `
-  SELECT s.id, s.name, s.url, s.description, s.icon, s.logo_key AS logoKey, s.is_favorite AS favorite,
+  SELECT s.id, s.name, s.url, s.description, s.icon, s.logo_key AS logoKey, s.source_access_id AS sourceAccessId, s.is_favorite AS favorite,
          s.sort_order, c.name AS category,
          COALESCE(GROUP_CONCAT(t.name, char(31)), '') AS tag_list
   FROM services s
