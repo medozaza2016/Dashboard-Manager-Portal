@@ -1,7 +1,8 @@
 import { requireCloudflareAccess, jsonResponse } from "../lib/access.js";
+import { deleteAssetIfUnreferenced, isAllowedAssetKey } from "../lib/assets.js";
 
 const SERVICE_SELECT = `
-  SELECT s.id, s.name, s.url, s.description, s.icon, s.is_favorite AS favorite,
+  SELECT s.id, s.name, s.url, s.description, s.icon, s.logo_key AS logoKey, s.is_favorite AS favorite,
          s.sort_order, c.name AS category,
          COALESCE(GROUP_CONCAT(t.name, char(31)), '') AS tag_list
   FROM services s
@@ -34,6 +35,7 @@ function validatePayload(payload) {
   if (typeof payload.category !== "string" || !payload.category.trim() || payload.category.trim().length > 60) return "Category is required and must be 60 characters or fewer.";
   if (payload.description != null && String(payload.description).length > 500) return "Description must be 500 characters or fewer.";
   if (payload.icon != null && String(payload.icon).length > 20) return "Icon must be 20 characters or fewer.";
+  if (payload.logoKey != null && payload.logoKey !== "" && !isAllowedAssetKey(payload.logoKey, "service")) return "Invalid service logo reference.";
   if (payload.tags != null && (!Array.isArray(payload.tags) || payload.tags.length > 20 || payload.tags.some((tag) => typeof tag !== "string" || tag.trim().length > 40))) return "Provide at most 20 tags, each 40 characters or fewer.";
   return null;
 }
@@ -84,6 +86,7 @@ export async function onRequest(context) {
       payload.url.trim(),
       String(payload.description || "").trim(),
       String(payload.icon || "🔧").trim(),
+      payload.logoKey || null,
       category.id,
       payload.favorite ? 1 : 0,
     ];
@@ -92,16 +95,17 @@ export async function onRequest(context) {
     if (request.method === "POST") {
       const sort = await env.DB.prepare("SELECT COALESCE(MAX(sort_order), 0) + 1 AS next_sort FROM services").first();
       const inserted = await env.DB.prepare(
-        "INSERT INTO services (name, url, description, icon, category_id, is_favorite, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO services (name, url, description, icon, logo_key, category_id, is_favorite, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
       ).bind(...fields, Number(sort?.next_sort || 1)).run();
       serviceId = Number(inserted.meta?.last_row_id);
     } else {
       if (serviceId == null) return jsonResponse({ error: "The id query parameter is required for updates." }, 400);
-      const existing = await env.DB.prepare("SELECT id FROM services WHERE id = ?").bind(serviceId).first();
+      const existing = await env.DB.prepare("SELECT id, logo_key FROM services WHERE id = ?").bind(serviceId).first();
       if (!existing) return jsonResponse({ error: "Service not found." }, 404);
       await env.DB.prepare(
-        "UPDATE services SET name = ?, url = ?, description = ?, icon = ?, category_id = ?, is_favorite = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+        "UPDATE services SET name = ?, url = ?, description = ?, icon = ?, logo_key = ?, category_id = ?, is_favorite = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
       ).bind(...fields, serviceId).run();
+      if (existing.logo_key && existing.logo_key !== (payload.logoKey || null)) await deleteAssetIfUnreferenced(env, existing.logo_key);
     }
 
     await saveTags(env.DB, serviceId, payload.tags);
@@ -110,10 +114,11 @@ export async function onRequest(context) {
 
   if (request.method === "DELETE") {
     if (id == null) return jsonResponse({ error: "The id query parameter is required for deletion." }, 400);
-    const existing = await env.DB.prepare("SELECT id FROM services WHERE id = ?").bind(id).first();
+    const existing = await env.DB.prepare("SELECT id, logo_key FROM services WHERE id = ?").bind(id).first();
     if (!existing) return jsonResponse({ error: "Service not found." }, 404);
     await env.DB.prepare("DELETE FROM service_tags WHERE service_id = ?").bind(id).run();
     await env.DB.prepare("DELETE FROM services WHERE id = ?").bind(id).run();
+    if (existing.logo_key) await deleteAssetIfUnreferenced(env, existing.logo_key);
     return jsonResponse({ deleted: true, id });
   }
 
