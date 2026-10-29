@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dashboard Manager Portal</title>
+<title id="pageTitle">Dashboard Manager Portal</title>
 <link id="portalFavicon" rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23101614'/%3E%3Cpath d='M32 7 53 19v26L32 57 11 45V19Z' fill='none' stroke='%233ECF8E' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M25 24 18 32l7 8m14-16 7 8-7 8M29 40l6-16' fill='none' stroke='%233ECF8E' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
 :root{color-scheme:dark;--bg:#0B0F0E;--panel:#101614;--panel2:#151C19;--elevated:#1B2420;--hover:#202B25;--text:#F8FAFC;--body:#CBD5E1;--muted:#94A3B8;--subtle:#64748B;--line:#26332C;--green:#3ECF8E;--green-hover:#5BE3A5;--deep-green:#24A875;--dark-green:#16794B;--green2:#193328;--tag:#1B2420;--pale-green:#D9FBE8;--charcoal:#1E293B;--github-filter:brightness(0) invert(1)}
@@ -12,6 +12,7 @@
 .version{font-size:10px;color:var(--subtle);padding:8px 12px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .top-actions .nav{width:auto;text-align:center;padding:5px 10px;margin:0 2px;font-size:11px;border-radius:8px;min-width:auto}
 .top-actions .nav.active{background:var(--green2);color:var(--green)}
+#profileToggle.active{background:var(--green);color:#0F172A;font-weight:700}
 .sidebar.collapsed .version{text-align:center;padding:8px 0 0;font-size:8px;letter-spacing:-.2px}
 .stats-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:0 0 23px}
 .stat-card{min-width:0;padding:16px 18px;background:var(--panel);border:1px solid var(--line);border-radius:13px}
@@ -213,7 +214,7 @@
 
 <div class="group-label">Categories</div><div id="categoryNav"></div><div class="bottom">
 <button class="nav" data-page="admin" title="Administration"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Admin</span></button><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.21</div></div></aside>
-<main class="main"><header class="topbar"><button class="iconbtn" id="collapse" title="Collapse sidebar" aria-label="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="m14 7-5 5 5 5"/></svg></button><div class="search"><span class="search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="search" placeholder="Search applications, tools, or tags..." aria-label="Search applications"></div><div class="top-actions"><button class="iconbtn" id="theme" title="Toggle theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg></button><button class="iconbtn help" id="help" title="About" aria-label="About"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button><div style="display:flex;gap:6px;align-items:center;"><button class="nav" id="profilePersonal" style="font-size:11px;padding:4px 8px;min-width:60px;" data-profile="1">Personal</button><button class="nav" id="profileWork" style="font-size:11px;padding:4px 8px;min-width:60px;" data-profile="2">Work</button></div></div></header>
+<main class="main"><header class="topbar"><button class="iconbtn" id="collapse" title="Collapse sidebar" aria-label="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="m14 7-5 5 5 5"/></svg></button><div class="search"><span class="search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="search" placeholder="Search applications, tools, or tags..." aria-label="Search applications"></div><div class="top-actions"><button class="iconbtn" id="theme" title="Toggle theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg></button><button class="iconbtn help" id="help" title="About" aria-label="About"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button><button class="nav" id="profileToggle" title="Switch profile" style="font-size:11px;padding:4px 10px;border-radius:8px;min-width:auto;">Personal</button></div></header>
 <div class="content">
 <section id="homePage">
   <div class="pagehead"><div><div class="eyebrow">WORKSPACE / OVERVIEW</div><h1>Welcome back</h1><p>Your favorite services, all in one place.</p></div><button class="primary" id="goAll">Browse All Services</button></div>
@@ -617,29 +618,23 @@ if(showToast)toast("D1 connection failed: "+apiError);
 }finally{if(button){button.disabled=false;button.textContent="Test connection"}}
 }
 function updateProfileUI(){
-  const p1 = $("profilePersonal");
-  const p2 = $("profileWork");
-  if(!p1 || !p2) return;
-  p1.classList.toggle("active", currentProfile === 1);
-  p2.classList.toggle("active", currentProfile === 2);
+  const btn = $("profileToggle");
+  if(!btn) return;
+  btn.textContent = currentProfile === 1 ? "Personal" : "Work";
+  btn.classList.toggle("active", currentProfile === 2);
 }
 
 function bindProfileSwitcher(){
-  const p1 = $("profilePersonal");
-  const p2 = $("profileWork");
-  if(!p1 || !p2) return;
+  const btn = $("profileToggle");
+  if(!btn) return;
 
-  p1.onclick = () => {
-    if(currentProfile === 1) return;
-    currentProfile = 1;
+  btn.onclick = () => {
+    currentProfile = currentProfile === 1 ? 2 : 1;
     updateProfileUI();
-    if (apiConnected) loadRemoteData();
-  };
-  p2.onclick = () => {
-    if(currentProfile === 2) return;
-    currentProfile = 2;
-    updateProfileUI();
-    if (apiConnected) loadRemoteData();
+    if (apiConnected) {
+      setD1Status("checking","Loading "+(currentProfile===1?"Personal":"Work")+" profile data…",{serviceCount:null,categoryCount:null,tagCount:null});
+      loadRemoteData();
+    }
   };
 }
 
