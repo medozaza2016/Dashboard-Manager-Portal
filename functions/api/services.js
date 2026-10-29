@@ -3,7 +3,7 @@ import { deleteAssetIfUnreferenced, isAllowedAssetKey } from "../lib/assets.js";
 
 const SERVICE_SELECT = `
   SELECT s.id, s.name, s.url, s.description, s.icon, s.logo_key AS logoKey, s.source_access_id AS sourceAccessId, s.is_favorite AS favorite,
-         s.sort_order, c.name AS category,
+         s.sort_order, s.category_sort_order AS categorySortOrder, s.category_id AS categoryId, c.name AS category,
          COALESCE(GROUP_CONCAT(t.name, char(31)), '') AS tag_list
   FROM services s
   JOIN categories c ON c.id = s.category_id
@@ -87,19 +87,39 @@ export async function onRequest(context) {
       return jsonResponse({ error: "Provide an ordered array of unique service IDs." }, 400);
     }
 
-    const current = await env.DB.prepare("SELECT id FROM services WHERE profile_id = ?").bind(profileId).all();
+    const scope = payload.scope === "category" ? "category" : "global";
+    const categoryId = scope === "category" ? Number(payload.categoryId) : null;
+    if (scope === "category" && (!Number.isSafeInteger(categoryId) || categoryId < 1)) {
+      return jsonResponse({ error: "A valid categoryId is required for category ordering." }, 400);
+    }
+    if (scope === "category") {
+      const category = await env.DB.prepare("SELECT id FROM categories WHERE id = ? AND profile_id = ?").bind(categoryId, profileId).first();
+      if (!category) return jsonResponse({ error: "Category not found in this profile." }, 404);
+    }
+
+    const current = scope === "category"
+      ? await env.DB.prepare("SELECT id FROM services WHERE profile_id = ? AND category_id = ?").bind(profileId, categoryId).all()
+      : await env.DB.prepare("SELECT id FROM services WHERE profile_id = ?").bind(profileId).all();
     const existingIds = (current.results || []).map(row => Number(row.id));
     const requestedIds = payload.order.map(Number);
     if (existingIds.length !== requestedIds.length || existingIds.some(serviceId => !requestedIds.includes(serviceId))) {
-      return jsonResponse({ error: "The service list changed. Refresh and try reordering again." }, 409);
+      return jsonResponse({
+        error: scope === "category"
+          ? "The category service list changed. Refresh and try reordering again."
+          : "The service list changed. Refresh and try reordering again."
+      }, 409);
     }
 
-    const statements = requestedIds.map((serviceId, index) =>
-      env.DB.prepare("UPDATE services SET sort_order = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND profile_id = ?")
-        .bind(index + 1, serviceId, profileId)
-    );
+    const statements = requestedIds.map((serviceId, index) => scope === "category"
+      ? env.DB.prepare("UPDATE services SET category_sort_order = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND profile_id = ? AND category_id = ?")
+          .bind(index + 1, serviceId, profileId, categoryId)
+      : env.DB.prepare("UPDATE services SET sort_order = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND profile_id = ?")
+          .bind(index + 1, serviceId, profileId));
     if (statements.length) await env.DB.batch(statements);
-    const result = await env.DB.prepare(`${SERVICE_SELECT} WHERE s.profile_id = ? GROUP BY s.id ORDER BY s.sort_order, s.id`).bind(profileId).all();
+
+    const result = scope === "category"
+      ? await env.DB.prepare(`${SERVICE_SELECT} WHERE s.profile_id = ? AND s.category_id = ? GROUP BY s.id ORDER BY s.category_sort_order, s.id`).bind(profileId, categoryId).all()
+      : await env.DB.prepare(`${SERVICE_SELECT} WHERE s.profile_id = ? GROUP BY s.id ORDER BY s.sort_order, s.id`).bind(profileId).all();
     return jsonResponse((result.results || []).map(normalize));
   }
 
@@ -127,18 +147,24 @@ export async function onRequest(context) {
 
     let serviceId = id;
     if (request.method === "POST") {
-      const sort = await env.DB.prepare("SELECT COALESCE(MAX(sort_order), 0) + 1 AS next_sort FROM services WHERE profile_id = ?").bind(profileId || 1).first();
+      const [sort, categorySort] = await Promise.all([
+        env.DB.prepare("SELECT COALESCE(MAX(sort_order), 0) + 1 AS next_sort FROM services WHERE profile_id = ?").bind(profileId).first(),
+        env.DB.prepare("SELECT COALESCE(MAX(category_sort_order), 0) + 1 AS next_sort FROM services WHERE profile_id = ? AND category_id = ?").bind(profileId, category.id).first(),
+      ]);
       const inserted = await env.DB.prepare(
-        "INSERT INTO services (name, url, description, icon, logo_key, category_id, is_favorite, sort_order, profile_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-      ).bind(...fields, Number(sort?.next_sort || 1)).run();
+        "INSERT INTO services (name, url, description, icon, logo_key, category_id, is_favorite, sort_order, profile_id, category_sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+      ).bind(...fields, Number(sort?.next_sort || 1), Number(categorySort?.next_sort || 1)).run();
       serviceId = Number(inserted.meta?.last_row_id);
     } else {
       if (serviceId == null) return jsonResponse({ error: "The id query parameter is required for updates." }, 400);
-      const existing = await env.DB.prepare("SELECT id, logo_key FROM services WHERE id = ? AND profile_id = ?").bind(serviceId, profileId || 1).first();
+      const existing = await env.DB.prepare("SELECT id, logo_key, category_id, category_sort_order FROM services WHERE id = ? AND profile_id = ?").bind(serviceId, profileId).first();
       if (!existing) return jsonResponse({ error: "Service not found." }, 404);
+      const categoryOrder = Number(existing.category_id) === Number(category.id)
+        ? Number(existing.category_sort_order || 1)
+        : Number((await env.DB.prepare("SELECT COALESCE(MAX(category_sort_order), 0) + 1 AS next_sort FROM services WHERE profile_id = ? AND category_id = ?").bind(profileId, category.id).first())?.next_sort || 1);
       await env.DB.prepare(
-        "UPDATE services SET name = ?, url = ?, description = ?, icon = ?, logo_key = ?, category_id = ?, is_favorite = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND profile_id = ?"
-      ).bind(...fields.slice(0, -1), serviceId, profileId || 1).run();
+        "UPDATE services SET name = ?, url = ?, description = ?, icon = ?, logo_key = ?, category_id = ?, is_favorite = ?, category_sort_order = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND profile_id = ?"
+      ).bind(...fields.slice(0, -1), categoryOrder, serviceId, profileId).run();
       if (existing.logo_key && existing.logo_key !== (payload.logoKey || null)) await deleteAssetIfUnreferenced(env, existing.logo_key);
     }
 
