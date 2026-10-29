@@ -242,36 +242,27 @@
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
 <div class="group-label">Workspace</div>
-<button class="nav active" data-page="home" title="Home"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/></svg></span><span>Home</span></button><button class="nav" data-page="all" title="All services"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span>All Services</span></button>
+<button class="nav active" data-page="home" title="Home"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/></svg></span><span>Home</span></button>
 
 <div class="group-label">Categories</div><div id="categoryNav"></div><div class="bottom">
 <button class="nav" data-page="admin" title="Administration"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Admin</span></button><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.21</div></div></aside>
 <main class="main"><header class="topbar"><button class="iconbtn" id="collapse" title="Collapse sidebar" aria-label="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="m14 7-5 5 5 5"/></svg></button><div class="search"><span class="search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="search" placeholder="Search applications, tools, or tags..." aria-label="Search applications"></div><div class="top-actions"><button class="iconbtn" id="theme" title="Toggle theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg></button><button class="iconbtn help" id="help" title="About" aria-label="About"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button><button class="nav" id="profileToggle" title="Switch profile" style="font-size:11px;padding:4px 10px;border-radius:8px;min-width:auto;">Personal</button></div></header>
 <div class="content">
 <section id="homePage">
-  <div class="pagehead"><div><div class="eyebrow">WORKSPACE / OVERVIEW</div><h1>Welcome back</h1><p>Your favorite services, all in one place.</p></div><button class="primary" id="goAll">Browse All Services</button></div>
+  <div class="pagehead"><div><div class="eyebrow">WORKSPACE / OVERVIEW</div><h1>Welcome back</h1><p>Your favorite services, all in one place.</p></div></div>
   <div class="section-title"><h2>Favorites</h2><button class="secondary" id="homeFavoritesMore">View all favorites</button></div>
   <div id="homeFavoriteCards"></div>
 </section>
 <section id="catalogPage" hidden><div class="pagehead"><div><div class="eyebrow" id="catalogEyebrow">SERVICE CATALOG</div><h1 id="heading">All Services</h1><p id="catalogDescription">Create, review, edit, duplicate, and delete services.</p></div><button class="primary" id="add">＋ Add Service</button></div>
-<div class="toolbar"><div class="chips" id="chips"></div><div class="views"><button id="cardsBtn" title="Cards">▦</button><button id="listBtn" class="active" title="List view">☷</button></div><div class="density"><button id="regularBtn" class="active">Regular cards</button><button id="slimBtn">Slim cards</button></div><div class="reorder-control" id="reorderControl" hidden><button type="button" id="reorderToggle" class="reorder-toggle" aria-pressed="false"><span aria-hidden="true">⠿</span> Enable reordering</button></div></div><div id="cardArea"></div><div id="listArea" class="list"></div></section>
+<div class="toolbar"><div class="chips" id="chips"></div><div class="views"><button id="cardsBtn" title="Cards">▦</button><button id="listBtn" class="active" title="List view">☷</button></div><div class="density"><button id="regularBtn" class="active">Regular cards</button><button id="slimBtn">Slim cards</button></div><div class="reorder-control" id="reorderControl" hidden><button type="button" id="reorderToggle" class="reorder-toggle" aria-pressed="false"><span aria-hidden="true">✎</span> Edit mode</button></div></div><div id="cardArea"></div><div id="listArea" class="list"></div></section>
 <section id="adminPage" hidden>
-  <div class="pagehead"><div><div class="eyebrow">WORKSPACE / ADMINISTRATION</div><h1>Administration</h1><p>Manage services, sidebar categories, and reusable tags in focused views.</p></div></div>
+  <div class="pagehead"><div><div class="eyebrow">WORKSPACE / ADMINISTRATION</div><h1>Administration</h1><p>Manage categories and reusable tags. Service editing, CRUD, and ordering are handled inside each category.</p></div></div>
   <div class="admin-tabs" role="tablist" aria-label="Administration sections">
-    <button type="button" class="admin-tab active" data-admin-tab="services" role="tab" aria-selected="true">Services</button>
-    <button type="button" class="admin-tab" data-admin-tab="categories" role="tab" aria-selected="false">Categories</button>
+    
+    <button type="button" class="admin-tab active" data-admin-tab="categories" role="tab" aria-selected="true">Categories</button>
     <button type="button" class="admin-tab" data-admin-tab="tags" role="tab" aria-selected="false">Tags</button>
   </div>
-  <section id="adminServicesPanel" class="admin-panel-view">
-    <div class="settings-card wide">
-      <div class="taxonomy-panel-head"><h3>Service administration</h3><button class="primary" type="button" id="adminAddService">＋ Add service</button></div>
-      <p class="settings-help">Search and filter the catalog, then edit, duplicate, or delete a service. The list is scrollable so it stays within the page.</p>
-      <div class="admin-service-controls"><input id="adminServiceFilter" type="search" placeholder="Search services, URLs, descriptions, or tags…" aria-label="Search services"><select id="adminCategoryFilter" aria-label="Filter services by category"><option value="">All categories</option></select><button class="secondary" type="button" id="adminClearServiceFilters">Clear filters</button></div>
-      <div id="adminServiceCount" class="settings-note">Loading service catalog…</div>
-      <div id="adminServiceList" class="admin-service-list"><div class="taxonomy-empty">Connect to the database to load services.</div></div>
-    </div>
-  </section>
-  <section id="adminCategoriesPanel" class="admin-panel-view" hidden>
+    <section id="adminCategoriesPanel" class="admin-panel-view">
     <article class="settings-card wide taxonomy-management-card">
       <h2>Sidebar categories</h2><p class="settings-help">Create placeholder categories, rename them, choose their sidebar icon, and control their order. Categories with zero services remain visible.</p>
       <div class="taxonomy-panel-head"><h3>Category list</h3><div class="settings-actions"><input id="categoryFilter" class="taxonomy-filter" type="search" placeholder="Filter categories…" aria-label="Filter categories"><button class="secondary" type="button" id="refreshTaxonomy">Refresh</button></div></div>
@@ -314,7 +305,7 @@
         <h2>Appearance & behavior</h2><p class="settings-help">Set the theme and how the portal opens on your next visit.</p>
         <div class="settings-fields">
           <div class="settings-field"><label for="themeSetting">Color theme</label><select id="themeSetting"><option value="dark">Dark · deep green</option><option value="light">Light · deep green</option></select></div>
-          <div class="settings-field"><label for="landingSetting">Default page</label><select id="landingSetting"><option value="home">Home / Favorites</option><option value="all">All Services</option></select></div>
+          <div class="settings-field"><label for="landingSetting">Default page</label><select id="landingSetting"><option value="home">Home</option><option value="favorites">Favorites</option></select></div>
           <div class="settings-field full"><label for="defaultViewSetting">Default service layout</label><select id="defaultViewSetting"><option value="list">Compact list</option><option value="cards">Regular cards</option><option value="slim">Slim cards</option></select></div>
         </div>
         <label class="settings-check"><input id="showSlimDescriptionsSetting" type="checkbox"><span>Show descriptions in Slim cards</span></label>
@@ -389,7 +380,7 @@
 <div class="modal-backdrop" id="serviceModal"><form class="modal" id="serviceForm"><h2 id="modalTitle">Add service</h2><input type="hidden" id="serviceId"><label for="name">Name</label><input id="name" required><label for="url">URL</label><input id="url" type="url" placeholder="https://service.example" required><label for="category">Category</label><select id="category"></select><label for="description">Description</label><input id="description"><label for="icon">Fallback icon for custom services</label><input id="icon" value="🔧"><label>Tags</label><div class="service-tag-picker"><div id="serviceSelectedTags" class="service-selected-tags" aria-live="polite"></div><input id="serviceTagSearch" class="service-tag-search" type="search" placeholder="Search available tags…" aria-label="Search tags"><div id="serviceTagOptions" class="service-tag-options"></div><div class="settings-note">Choose one or more tags. Manage the tag list in Admin → Tags.</div></div><div class="settings-field full"><label for="serviceLogoFile">Service logo</label><div class="logo-upload-row"><div class="service-logo-preview" id="serviceLogoPreview"><span id="serviceLogoFallback">🔧</span><img id="serviceLogoImage" alt="" hidden></div><div class="settings-actions"><button class="secondary" type="button" id="chooseServiceLogo">Browse image</button><button class="secondary" type="button" id="removeServiceLogo" hidden>Remove image</button><input type="file" id="serviceLogoFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden><input type="hidden" id="serviceLogoKey"><span id="serviceLogoUploadStatus" class="settings-note">Optional · PNG, JPEG, WebP or GIF · up to 5 MB</span></div></div></div><div class="modal-actions"><button class="secondary" type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save service</button></div></form></div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.24";
+const APP_VERSION="0.1.25";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -447,7 +438,7 @@ let currentProfile=1; // 1=Personal, 2=Work
 let branding={name:"Luxorit",subtitle:"Pro",logo:""};
 let preferences={theme:"dark",landingPage:"home",defaultView:"list",sidebarCollapsed:false,showSlimDescriptions:false};
 let apiConnected=false,apiError="";
-let adminTab="services",adminServiceQuery="";
+let adminTab="categories",adminServiceQuery="";
 let serviceSelectedTags=new Set(),serviceTagQuery="";
 let categoryRecords=[],taxonomyCategories=[],tagRecords=[],taxonomyLoaded=false,taxonomyBusy=false;
 let persistedBrandingLogoKey=null,brandingLogoPreviewUrl=null,brandingLogoUploadToken=0,brandingLogoUploadBusy=false;
@@ -721,8 +712,8 @@ function tagHtml(t){return '<span class="tag">'+safe(t)+'</span>'}
 function updateActiveNavigation(){document.querySelectorAll(".nav[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".nav[data-cat]").forEach(b=>b.classList.toggle("active",page==="category"&&b.dataset.cat===current))}
 function nav(){const host=$("categoryNav");host.innerHTML=categories().filter(c=>c!=="All").map(c=>'<button class="nav" data-cat="'+safe(c)+'" title="'+safe(c)+'"><span class="ico">'+categorySvg(c)+'</span><span>'+safe(c)+'</span><span class="count">'+services.filter(item=>item.category===c).length+'</span></button>').join("");host.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>navigateCategory(b.dataset.cat));updateActiveNavigation()}
 function showPage(){["homePage","catalogPage","adminPage","settingsPage"].forEach(id=>$(id).hidden=true);const target=page==="home"?"homePage":page==="settings"?"settingsPage":page==="admin"?"adminPage":"catalogPage";$(target).hidden=false;updateActiveNavigation()}
-function navigatePage(target){if(page==="settings"&&target!=="settings")discardUncommittedBrandingLogo();page=target;if(target==="all"){current="All";view="list"}else if(target==="favorites"){current="Favorites";view="cards"}else if(target==="home")current="All";render()}
-function navigateCategory(category){if(page==="settings")discardUncommittedBrandingLogo();page="category";current=category;view="cards";render()}
+function navigatePage(target){if(target==="all")target="home";if(page==="settings"&&target!=="settings")discardUncommittedBrandingLogo();page=target;if(target==="favorites")current="Favorites";else if(target==="home")current="All";if(target==="admin")adminTab="categories";reorderEnabled=false;render()}
+function navigateCategory(category){if(page==="settings")discardUncommittedBrandingLogo();page="category";current=category;reorderEnabled=false;render()}
 function statCard(label,value,note){return '<article class="stat-card"><div class="stat-label">'+label+'</div><div class="stat-number">'+value+'</div><div class="stat-note">'+note+'</div></article>'}
 function serviceActionIcon(action,id,name){
 const paths={
