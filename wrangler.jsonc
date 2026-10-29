@@ -10,5 +10,9 @@
       "database_id": "c6df7b2f-9d75-459c-a93a-319c95c193a5",
       "preview_database_id": "DB"
     }
-  ]
+  ],
+  "vars": {
+    "ACCESS_TEAM_DOMAIN": "luxoritpro.cloudflareaccess.com",
+    "ACCESS_AUD": "400cb43b379c14419790dc02aa2eef6a0254aafe87aa905f7161c7c89911a702"
+  }
 }
