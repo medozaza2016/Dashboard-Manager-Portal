@@ -253,6 +253,43 @@
 .home-favorites-list td{font-size:12px}
 .home-favorites-list tr:hover{background:var(--panel2)}
 .home-favorites-list a{color:var(--green)}
+
+/* Sidebar tag filter and compact category/tag overview rows. */
+.tag-nav-heading{margin-top:6px}
+.tag-filter-nav{padding:8px 10px;gap:9px;font-size:11px}
+.tag-nav-mark{display:inline-grid;place-items:center;width:18px;flex:0 0 18px;height:18px;border-radius:6px;background:var(--panel2);color:var(--green);font-weight:800}
+.tag-sidebar-name{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.tag-more-toggle{font-size:10px;padding:7px 12px;margin:0;color:var(--muted);border:1px dashed var(--line)}
+.sidebar.collapsed .tag-sidebar-name,.sidebar.collapsed .tag-nav-heading{display:none}
+.app-modal-backdrop{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.58);display:flex;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(3px)}
+.app-modal-backdrop[hidden]{display:none}
+.app-form-dialog,.app-confirm-dialog{width:min(460px,100%);max-height:min(82vh,720px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.38);padding:23px}
+.app-form-dialog h2,.app-confirm-dialog h2{margin:0 0 8px;font-size:18px}
+.app-dialog-kicker{font-size:10px;letter-spacing:1.2px;color:var(--muted);margin-bottom:9px}
+.app-form-dialog label{display:block;font-size:11px;color:var(--muted);margin:15px 0 6px}
+.app-form-dialog input,.app-form-dialog select{width:100%;min-width:0;padding:10px 11px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text);font-size:12px}
+.app-modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px}
+.app-modal-actions button{min-width:90px}
+.app-confirm-dialog p{font-size:13px;line-height:1.6;color:var(--muted);margin:10px 0 0;overflow-wrap:anywhere}
+.confirm-symbol{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);font-weight:800;color:var(--green);margin-bottom:15px}
+.danger-button{border:1px solid #B91C1C;background:#DC2626;color:white;border-radius:8px;padding:9px 13px;font-size:12px;font-weight:700}
+.danger-button:hover{background:#B91C1C}
+.taxonomy-overview-row{display:grid;grid-template-columns:24px minmax(0,1fr) auto auto;align-items:center;gap:10px;padding:9px 11px;min-height:52px;cursor:grab}
+.taxonomy-overview-main{display:flex;align-items:center;gap:9px;min-width:0}
+.taxonomy-overview-icon{width:30px;height:30px;flex:0 0 30px;display:grid;place-items:center;border-radius:8px;background:var(--green2);color:var(--green)}
+.taxonomy-overview-icon svg{width:17px;height:17px}
+.taxonomy-overview-copy{min-width:0}
+.taxonomy-overview-copy strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.taxonomy-overview-copy small{display:block;font-size:10px;color:var(--muted);margin-top:3px}
+.taxonomy-overview-actions{display:flex;align-items:center;gap:4px}
+.taxonomy-overview-actions .icon-action{width:29px;height:29px;min-width:29px;padding:6px}
+.taxonomy-overview-actions .action-icon{width:14px;height:14px}
+.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-height:62vh}
+.taxonomy-panel-head{align-items:center}
+.taxonomy-panel-head>div:first-child{min-width:0}
+.taxonomy-panel-head .settings-help{margin:4px 0 0}
+@media(max-width:850px){.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:700px){.taxonomy-overview-row{grid-template-columns:22px minmax(0,1fr) auto}.taxonomy-overview-actions{grid-column:2/4;justify-content:flex-end}}
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
@@ -722,13 +759,27 @@ function persist(){try{localStorage.setItem("luxorit-portal-v1",JSON.stringify({
 function safe(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function load(){try{const d=JSON.parse(localStorage.getItem("luxorit-portal-v1"));if(d){if(Array.isArray(d.services)){services=d.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences};if(d.theme)document.documentElement.dataset.theme=d.theme;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1}if(d.appVersion===APP_VERSION){view=d.view||view;density=d.density||density}else{view="list";density="regular"}if(d.theme)document.documentElement.dataset.theme=d.theme;if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences}}}catch{}}
 function matchesSearch(s){const q=$("search").value.trim().toLowerCase();return !q||[s.name,s.description,s.category,...(s.tags||[])].join(" ").toLowerCase().includes(q)}
-function filtered(){const items=services.filter(s=>(page==="favorites"?s.favorite:page==="category"?s.category===current:true)&&matchesSearch(s));return page==="category"?items.sort((a,b)=>(Number(a.categorySortOrder)||9999)-(Number(b.categorySortOrder)||9999)||Number(a.id)-Number(b.id)):items}
+function filtered(){const items=services.filter(s=>(page==="favorites"?s.favorite:page==="category"?s.category===current:page==="tag"?(s.tags||[]).includes(activeTag):true)&&matchesSearch(s));return page==="category"?items.sort((a,b)=>(Number(a.categorySortOrder)||9999)-(Number(b.categorySortOrder)||9999)||Number(a.id)-Number(b.id)):items}
 function tagHtml(t){return '<span class="tag">'+safe(t)+'</span>'}
-function updateActiveNavigation(){document.querySelectorAll(".nav[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".nav[data-cat]").forEach(b=>b.classList.toggle("active",page==="category"&&b.dataset.cat===current))}
-function nav(){const host=$("categoryNav");host.innerHTML=categories().filter(c=>c!=="All").map(c=>'<button class="nav" data-cat="'+safe(c)+'" title="'+safe(c)+'"><span class="ico">'+categorySvg(c)+'</span><span>'+safe(c)+'</span><span class="count">'+services.filter(item=>item.category===c).length+'</span></button>').join("");host.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>navigateCategory(b.dataset.cat));updateActiveNavigation()}
+function updateActiveNavigation(){document.querySelectorAll(".nav[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".nav[data-cat]").forEach(b=>b.classList.toggle("active",page==="category"&&b.dataset.cat===current));document.querySelectorAll(".nav[data-tag-nav]").forEach(b=>b.classList.toggle("active",page==="tag"&&b.dataset.tagNav===activeTag))}
+function nav(){
+const host=$("categoryNav");
+host.innerHTML=categories().filter(c=>c!=="All").map(c=>'<button class="nav" data-cat="'+safe(c)+'" title="'+safe(c)+'"><span class="ico">'+categorySvg(c)+'</span><span>'+safe(c)+'</span><span class="count">'+services.filter(item=>item.category===c).length+'</span></button>').join("");
+host.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>navigateCategory(b.dataset.cat));
+const tagsHost=$("tagNav"),more=$("showMoreTags");
+const sortedTags=tagRecords.slice().sort((a,b)=>(Number(b.serviceCount)||0)-(Number(a.serviceCount)||0)||a.name.localeCompare(b.name));
+const visibleTags=sidebarTagsExpanded?sortedTags:sortedTags.slice(0,5);
+tagsHost.innerHTML=visibleTags.map(tag=>'<button class="nav tag-filter-nav" data-tag-nav="'+safe(tag.name)+'" title="Filter by tag: '+safe(tag.name)+'"><span class="tag-nav-mark" aria-hidden="true">#</span><span class="tag-sidebar-name">'+safe(tag.name)+'</span><span class="count">'+Number(tag.serviceCount||0)+'</span></button>').join("");
+tagsHost.querySelectorAll("[data-tag-nav]").forEach(b=>b.onclick=()=>navigateTag(b.dataset.tagNav));
+more.hidden=sortedTags.length<=5;
+more.textContent=sidebarTagsExpanded?"Show fewer tags":"Show all tags ("+sortedTags.length+")";
+more.onclick=()=>{sidebarTagsExpanded=!sidebarTagsExpanded;nav()};
+updateActiveNavigation()
+}
 function showPage(){["homePage","catalogPage","adminPage","settingsPage"].forEach(id=>$(id).hidden=true);const target=page==="home"?"homePage":page==="settings"?"settingsPage":page==="admin"?"adminPage":"catalogPage";$(target).hidden=false;updateActiveNavigation()}
-function navigatePage(target){if(target==="all")target="home";if(page==="settings"&&target!=="settings")discardUncommittedBrandingLogo();page=target;if(target==="favorites")current="Favorites";else if(target==="home")current="All";if(target==="admin")adminTab="categories";reorderEnabled=false;render()}
-function navigateCategory(category){if(page==="settings")discardUncommittedBrandingLogo();page="category";current=category;reorderEnabled=false;render()}
+function navigatePage(target){if(page==="settings"&&target!=="settings")discardUncommittedBrandingLogo();page=target;activeTag=null;if(target==="favorites")current="Favorites";else if(target==="home"||target==="all")current="All";if(target==="admin")adminTab="categories";reorderEnabled=false;render()}
+function navigateCategory(category){if(page==="settings")discardUncommittedBrandingLogo();page="category";current=category;activeTag=null;reorderEnabled=false;render()}
+function navigateTag(tag){if(page==="settings")discardUncommittedBrandingLogo();page="tag";activeTag=tag;current="All";reorderEnabled=false;render()}
 function statCard(label,value,note){return '<article class="stat-card"><div class="stat-label">'+label+'</div><div class="stat-number">'+value+'</div><div class="stat-note">'+note+'</div></article>'}
 function serviceActionIcon(action,id,name){
 const paths={
@@ -763,19 +814,19 @@ return '<tr '+(canDrag?'data-order-id="'+safe(s.id)+'" class="orderable-card"':'
 }
 function renderHome(){const favorites=services.filter(s=>s.favorite&&matchesSearch(s)),host=$("homeFavoriteCards");host.classList.toggle("home-favorites-list",view==="list");host.innerHTML=view==="cards"?renderServiceCards(favorites,false):renderServiceTable(favorites,false)}
 function renderCatalog(){
-const items=filtered(),isCategory=page==="category",isFavorites=page==="favorites";
-$("catalogEyebrow").textContent=isFavorites?"WORKSPACE / FAVORITES":"SERVICE CATEGORY / MANAGEMENT";
-$("heading").textContent=isFavorites?"Favorites":current+" Services";
-$("catalogDescription").textContent=isFavorites?"Your favorites use the layout selected in Settings.":"Browse services in "+current+". Select Edit mode to add, edit, duplicate, delete, or reorder services in this category.";
+const items=filtered(),isCategory=page==="category",isFavorites=page==="favorites",isTag=page==="tag",isAll=page==="all";
+$("catalogEyebrow").textContent=isFavorites?"WORKSPACE / FAVORITES":isTag?"TAG FILTER / CATALOG":isAll?"SERVICE CATALOG / ALL":"SERVICE CATEGORY / MANAGEMENT";
+$("heading").textContent=isFavorites?"Favorites":isTag?"Tag: "+activeTag:isAll?"All Services":current+" Services";
+$("catalogDescription").textContent=isFavorites?"Your favorites use the layout selected in Settings.":isTag?'Services tagged "'+activeTag+'". Choose a category to manage service records.':isAll?"Showing all services in this profile. Select a category to manage its services.":"Browse services in "+current+". Select Edit mode to add, edit, duplicate, delete, or reorder services in this category.";
 $("add").hidden=!(isCategory&&reorderEnabled);
 $("add").textContent="＋ Add service";
-$("chips").innerHTML=[{label:"Favorites",value:"Favorites"},...categories().filter(c=>c!=="All").map(c=>({label:c,value:c}))].map(c=>{
-const active=(c.value==="Favorites"&&isFavorites)||(isCategory&&c.value===current);
+$("chips").innerHTML=[{label:"All",value:"All"},{label:"Favorites",value:"Favorites"},...categories().filter(c=>c!=="All").map(c=>({label:c,value:c}))].map(c=>{
+const active=(c.value==="All"&&isAll)||(c.value==="Favorites"&&isFavorites)||(isCategory&&c.value===current);
 return '<button class="chip '+(active?"active":"")+'" data-chip="'+safe(c.value)+'">'+safe(c.label)+'</button>';
 }).join("");
 $("chips").querySelectorAll("[data-chip]").forEach(b=>b.onclick=()=>{
 const value=b.dataset.chip;
-if(value==="Favorites")navigatePage("favorites");else navigateCategory(value);
+if(value==="All")navigatePage("all");else if(value==="Favorites")navigatePage("favorites");else navigateCategory(value);
 });
 $("regularBtn").classList.toggle("active",density==="regular");
 $("slimBtn").classList.toggle("active",density==="slim");
