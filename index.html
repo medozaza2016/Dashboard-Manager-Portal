@@ -238,6 +238,12 @@
 .grid.slim .card.orderable-card .card-top{gap:6px}
 .grid.slim .card.orderable-card .service-title{white-space:normal;overflow-wrap:anywhere}
 @media(max-width:700px){.reorder-control{width:100%}.reorder-toggle{width:100%}}
+
+/* Category edit-mode table sorting affordances. */
+.table-drag-handle{vertical-align:middle;margin-right:7px}
+.list tr.orderable-card{cursor:grab}
+.list tr.dragging{opacity:.4}
+.list tr.drag-over{outline:2px solid var(--green);outline-offset:-2px}
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
@@ -380,7 +386,7 @@
 <div class="modal-backdrop" id="serviceModal"><form class="modal" id="serviceForm"><h2 id="modalTitle">Add service</h2><input type="hidden" id="serviceId"><label for="name">Name</label><input id="name" required><label for="url">URL</label><input id="url" type="url" placeholder="https://service.example" required><label for="category">Category</label><select id="category"></select><label for="description">Description</label><input id="description"><label for="icon">Fallback icon for custom services</label><input id="icon" value="🔧"><label>Tags</label><div class="service-tag-picker"><div id="serviceSelectedTags" class="service-selected-tags" aria-live="polite"></div><input id="serviceTagSearch" class="service-tag-search" type="search" placeholder="Search available tags…" aria-label="Search tags"><div id="serviceTagOptions" class="service-tag-options"></div><div class="settings-note">Choose one or more tags. Manage the tag list in Admin → Tags.</div></div><div class="settings-field full"><label for="serviceLogoFile">Service logo</label><div class="logo-upload-row"><div class="service-logo-preview" id="serviceLogoPreview"><span id="serviceLogoFallback">🔧</span><img id="serviceLogoImage" alt="" hidden></div><div class="settings-actions"><button class="secondary" type="button" id="chooseServiceLogo">Browse image</button><button class="secondary" type="button" id="removeServiceLogo" hidden>Remove image</button><input type="file" id="serviceLogoFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden><input type="hidden" id="serviceLogoKey"><span id="serviceLogoUploadStatus" class="settings-note">Optional · PNG, JPEG, WebP or GIF · up to 5 MB</span></div></div></div><div class="modal-actions"><button class="secondary" type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save service</button></div></form></div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.27";
+const APP_VERSION="0.1.28";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -1028,14 +1034,14 @@ optionsHost.innerHTML=available.length?available.map(tag=>{const picked=serviceS
 selectedHost.querySelectorAll("[data-remove-service-tag]").forEach(button=>button.onclick=()=>{serviceSelectedTags.delete(button.dataset.removeServiceTag);renderServiceTagPicker()});
 optionsHost.querySelectorAll("[data-toggle-service-tag]").forEach(button=>button.onclick=()=>{const name=button.dataset.toggleServiceTag;if(serviceSelectedTags.has(name))serviceSelectedTags.delete(name);else serviceSelectedTags.add(name);renderServiceTagPicker()});
 }
-function openModal(id){
+function openModal(id,presetCategory=null){
 const s=services.find(item=>item.id==id);void cleanupPendingServiceLogos();serviceUploadToken++;serviceLogoUploadBusy=false;releaseServiceLogoPreview();
 $("serviceForm").reset();$("serviceId").value=s?s.id:"";$("serviceLogoKey").value=s?.logoKey||"";
 $("modalTitle").textContent=s?"Edit service":"Add service";$("name").value=s?.name||"";$("url").value=s?.url||"";$("description").value=s?.description||"";$("icon").value=s?.icon||"🔧";
 serviceSelectedTags=new Set(s?.tags||[]);serviceTagQuery="";$("serviceTagSearch").value="";
 const availableCategories=categories().filter(c=>c!=="All");
 $("category").innerHTML=availableCategories.map(c=>'<option value="'+safe(c)+'">'+safe(c)+'</option>').join("");
-$("category").value=s?.category||(availableCategories.includes("Infrastructure")?"Infrastructure":availableCategories[0]||"");
+$("category").value=s?.category||presetCategory||(availableCategories.includes("Infrastructure")?"Infrastructure":availableCategories[0]||"");
 renderServiceTagPicker();if(apiConnected&&!taxonomyLoaded&&!taxonomyBusy)void refreshTaxonomy(false);
 renderServiceLogoPreview(s?.logoKey&&apiConnected?assetUrl(s.logoKey):"",s?.icon||"🔧");
 $("serviceLogoUploadStatus").textContent="Optional · PNG, JPEG, WebP or GIF · up to 5 MB · saved with the service";$("serviceModal").classList.add("open");
@@ -1049,11 +1055,11 @@ try{
 if(apiConnected)item=await remoteSaveService(item,!id);
 if(id)services=services.map(s=>s.id==id?item:s);else{if(!apiConnected)nextId=Math.max(nextId,Number(item.id)+1);services.unshift(item)}
 if(item.logoKey)pendingServiceLogoKeys.delete(item.logoKey);
-closeServiceModal();page="all";current="All";view="list";render();toast(apiConnected?(id?"Service saved to database":"Service added to database"):(id?"Service saved locally only":"Service added locally only"))
+closeServiceModal();if(page==="category")current=item.category;else{page="home";current="All"}render();toast(apiConnected?(id?"Service saved to database":"Service added to database"):(id?"Service saved locally only":"Service added locally only"))
 }catch(error){toast("Could not save service: "+(error.message||"database error"))}
 };
-$("cancel").onclick=()=>closeServiceModal();$("serviceModal").onclick=e=>{if(e.target===$("serviceModal"))closeServiceModal()};$("add").onclick=()=>openModal();$("search").oninput=()=>{if(reorderEnabled&&$("search").value.trim())reorderEnabled=false;render()};
-$("reorderToggle").onclick=()=>{if(!reorderEnabled&&$("search").value.trim()){toast("Clear the global search before reordering.");return}reorderEnabled=!reorderEnabled;render();toast(reorderEnabled?(page==="category"?"Drag services to reorder within this category":"Drag services to reorder across this profile"):"Reordering disabled")};
+$("cancel").onclick=()=>closeServiceModal();$("serviceModal").onclick=e=>{if(e.target===$("serviceModal"))closeServiceModal()};$("add").onclick=()=>{if(page==="category"&&reorderEnabled)openModal(null,current)};$("search").oninput=()=>{if(reorderEnabled&&$("search").value.trim())reorderEnabled=false;render()};
+$("reorderToggle").onclick=()=>{if(page!=="category")return;if(!reorderEnabled&&$("search").value.trim()){toast("Clear the global search before entering Edit mode.");return}reorderEnabled=!reorderEnabled;render();toast(reorderEnabled?"Edit mode enabled for "+current:"Edit mode finished")};
 $("cardsBtn").onclick=()=>{view="cards";render()};$("listBtn").onclick=()=>{view="list";render()};$("regularBtn").onclick=()=>{density="regular";view="cards";render()};$("slimBtn").onclick=()=>{density="slim";view="cards";render()};
 function updateCollapseButton(){const collapsed=$("sidebar").classList.contains("collapsed");$("collapse").title=collapsed?"Expand sidebar":"Collapse sidebar";$("collapse").setAttribute("aria-label",collapsed?"Expand sidebar":"Collapse sidebar");$("collapse").innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="'+(collapsed?"m10 7 5 5-5 5":"m14 7-5 5 5 5")+'"/></svg>'}
 $("collapse").onclick=()=>{$("sidebar").classList.toggle("collapsed");updateCollapseButton()};updateCollapseButton();
@@ -1063,20 +1069,17 @@ $("refreshTaxonomy").onclick=()=>refreshTaxonomy(true);
 $("addCategoryButton").onclick=()=>addCategory();
 $("addTagButton").onclick=()=>addTag();
 document.querySelectorAll("[data-admin-tab]").forEach(button=>button.onclick=()=>setAdminTab(button.dataset.adminTab));
-$("adminAddService").onclick=()=>openModal();
-$("adminServiceFilter").oninput=()=>{renderAdminServices();bindRenderedActions()};
-$("adminCategoryFilter").onchange=()=>{renderAdminServices();bindRenderedActions()};
-$("adminClearServiceFilters").onclick=()=>{$("adminServiceFilter").value="";$("adminCategoryFilter").value="";renderAdminServices();bindRenderedActions()};
+
 $("categoryFilter").oninput=()=>renderCategoryManager();
 $("tagFilter").oninput=()=>renderTagManager();
 $("serviceTagSearch").oninput=()=>{serviceTagQuery=$("serviceTagSearch").value;renderServiceTagPicker()};
 for(const id of ["newCategoryName","newTagName"]){$(id).addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$(id==="newCategoryName"?"addCategoryButton":"addTagButton").click()}})}
-$("goAll").onclick=()=>navigatePage("all");$("homeFavoritesMore").onclick=()=>navigatePage("favorites");
+$("homeFavoritesMore").onclick=()=>navigatePage("favorites");
 updateProfileUI();
 bindProfileSwitcher();
 loadRemoteData();
 $("export").onclick=async()=>{try{let backup;if(apiConnected){backup=await apiRequest("backup")}else{backup={schemaVersion:1,exportedAt:new Date().toISOString(),source:"browser-local",version:APP_VERSION,services,categories:[...new Map(services.map(s=>[s.category,{name:s.category,icon:"grid"}])).values()],branding,preferences,theme:document.documentElement.dataset.theme}}const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:"application/json"}));a.download="dashboard-manager-portal-backup-"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast(apiConnected?"Shared D1 backup exported":"Browser-only backup exported, D1 is not connected")}catch(error){toast("Backup export failed: "+(error.message||"database error"))}};
-$("import").onclick=()=>$("importFile").click();$("importFile").onchange=async e=>{try{const file=e.target.files&&e.target.files[0];if(!file)return;const d=JSON.parse(await file.text());if(!d||!Array.isArray(d.services))throw Error("Backup must contain a services array");if(d.services.length>200)throw Error("Backups can contain at most 200 services");if(apiConnected){const proceed=confirm("Restore this backup to the shared D1 database? This will replace the current services, categories, tags, branding, and preferences. Export a backup first if you need to keep the current data.");if(!proceed)return;const result=await apiRequest("backup",{method:"POST",body:JSON.stringify(d)});await loadRemoteData();page="all";current="All";view="list";render();toast("D1 restored: "+result.serviceCount+" services, "+result.categoryCount+" categories")}else{const proceed=confirm("The shared database is not connected. Import this backup into this browser only? It will not update D1.");if(!proceed)return;services=d.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences};if(d.theme)document.documentElement.dataset.theme=d.theme;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;page="all";current="All";view="list";render();toast("Backup imported into this browser only")}}catch(error){toast("Could not restore backup: "+(error.message||"invalid JSON"))}finally{e.target.value=""}};
+$("import").onclick=()=>$("importFile").click();$("importFile").onchange=async e=>{try{const file=e.target.files&&e.target.files[0];if(!file)return;const d=JSON.parse(await file.text());if(!d||!Array.isArray(d.services))throw Error("Backup must contain a services array");if(d.services.length>200)throw Error("Backups can contain at most 200 services");if(apiConnected){const proceed=confirm("Restore this backup to the shared D1 database? This will replace the current services, categories, tags, branding, and preferences. Export a backup first if you need to keep the current data.");if(!proceed)return;const result=await apiRequest("backup",{method:"POST",body:JSON.stringify(d)});await loadRemoteData();page="home";current="All";render();toast("D1 restored: "+result.serviceCount+" services, "+result.categoryCount+" categories")}else{const proceed=confirm("The shared database is not connected. Import this backup into this browser only? It will not update D1.");if(!proceed)return;services=d.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences};if(d.theme)document.documentElement.dataset.theme=d.theme;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;page="home";current="All";render();toast("Backup imported into this browser only")}}catch(error){toast("Could not restore backup: "+(error.message||"invalid JSON"))}finally{e.target.value=""}};
 $("help").onclick=()=>toast("Dashboard Manager Portal. Version "+APP_VERSION+". Catalog changes save to shared D1 when connected.");
 $("brandingName").addEventListener("input",()=>{$("settingsBrandPreview").textContent=($("brandingName").value||"Luxorit")+(($("brandingSubtitle").value)?" "+$("brandingSubtitle").value:"")});
 $("brandingSubtitle").addEventListener("input",()=>{$("settingsBrandPreview").textContent=($("brandingName").value||"Luxorit")+(($("brandingSubtitle").value)?" "+$("brandingSubtitle").value:"")});
@@ -1154,4 +1157,4 @@ $("sidebar").classList.toggle("collapsed",preferences.sidebarCollapsed);updateCo
 };
 $("resetBranding").onclick=()=>{branding={name:"Luxorit",subtitle:"Pro",logo:"",logoKey:null};if(brandingLogoPreviewUrl){URL.revokeObjectURL(brandingLogoPreviewUrl);brandingLogoPreviewUrl=null}renderSettings();toast("Branding reset. Save settings to keep it.")};
 $("themeSetting").onchange=()=>{document.documentElement.dataset.theme=$("themeSetting").value};
-load();preferences.theme=document.documentElement.dataset.theme||preferences.theme;page=preferences.landingPage||"home";view=preferences.defaultView==="cards"||preferences.defaultView==="slim"?"cards":"list";density=preferences.defaultView==="slim"?"slim":"regular";$("sidebar").classList.toggle("collapsed",!!preferences.sidebarCollapsed);render();loadRemoteData();refreshTaxonomy(false);checkPagesDeployment(false);checkR2Connection(false);refreshAccessApps(false);</script></body></html>
+load();preferences.theme=document.documentElement.dataset.theme||preferences.theme;page=preferences.landingPage==="all"?"home":(preferences.landingPage||"home");view=preferences.defaultView==="cards"||preferences.defaultView==="slim"?"cards":"list";density=preferences.defaultView==="slim"?"slim":"regular";$("sidebar").classList.toggle("collapsed",!!preferences.sidebarCollapsed);render();loadRemoteData();refreshTaxonomy(false);checkPagesDeployment(false);checkR2Connection(false);refreshAccessApps(false);</script></body></html>
