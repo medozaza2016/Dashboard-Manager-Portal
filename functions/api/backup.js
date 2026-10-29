@@ -104,6 +104,7 @@ function validateAndNormalize(payload) {
       description: String(raw.description || "").trim(),
       icon: String(raw.icon || "🔧").trim(),
       logoKey: isAllowedAssetKey(raw.logoKey, "service") ? raw.logoKey : null,
+      sourceAccessId: typeof raw.sourceAccessId === "string" && raw.sourceAccessId.length <= 64 ? raw.sourceAccessId : null,
       category,
       favorite: Boolean(raw.favorite),
       sort_order: Number.isSafeInteger(Number(raw.sort_order)) ? Number(raw.sort_order) : services.length + 1,
@@ -130,7 +131,7 @@ function validateAndNormalize(payload) {
 async function exportBackup(db) {
   const [servicesResult, categoriesResult, branding, preferences] = await Promise.all([
     db.prepare(`
-      SELECT s.id, s.name, s.url, s.description, s.icon, s.logo_key AS logoKey, s.is_favorite AS favorite,
+      SELECT s.id, s.name, s.url, s.description, s.icon, s.logo_key AS logoKey, s.source_access_id AS sourceAccessId, s.is_favorite AS favorite,
              s.sort_order, c.name AS category,
              COALESCE(GROUP_CONCAT(t.name, char(31)), '') AS tag_list
       FROM services s
@@ -179,8 +180,8 @@ async function restoreBackup(env, backup) {
   for (const service of backup.services) {
     const category = backup.categories.find((item) => item.name === service.category);
     statements.push(db.prepare(
-      "INSERT INTO services (id, name, url, description, icon, logo_key, category_id, is_favorite, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
-    ).bind(service.id, service.name, service.url, service.description, service.icon, service.logoKey, category.id, service.favorite ? 1 : 0, service.sort_order));
+      "INSERT INTO services (id, name, url, description, icon, logo_key, category_id, is_favorite, sort_order, source_access_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    ).bind(service.id, service.name, service.url, service.description, service.icon, service.logoKey, category.id, service.favorite ? 1 : 0, service.sort_order, service.sourceAccessId));
   }
   for (const service of backup.services) {
     for (const tag of service.tags) {
