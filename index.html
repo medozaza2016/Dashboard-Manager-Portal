@@ -380,7 +380,7 @@
 <div class="modal-backdrop" id="serviceModal"><form class="modal" id="serviceForm"><h2 id="modalTitle">Add service</h2><input type="hidden" id="serviceId"><label for="name">Name</label><input id="name" required><label for="url">URL</label><input id="url" type="url" placeholder="https://service.example" required><label for="category">Category</label><select id="category"></select><label for="description">Description</label><input id="description"><label for="icon">Fallback icon for custom services</label><input id="icon" value="🔧"><label>Tags</label><div class="service-tag-picker"><div id="serviceSelectedTags" class="service-selected-tags" aria-live="polite"></div><input id="serviceTagSearch" class="service-tag-search" type="search" placeholder="Search available tags…" aria-label="Search tags"><div id="serviceTagOptions" class="service-tag-options"></div><div class="settings-note">Choose one or more tags. Manage the tag list in Admin → Tags.</div></div><div class="settings-field full"><label for="serviceLogoFile">Service logo</label><div class="logo-upload-row"><div class="service-logo-preview" id="serviceLogoPreview"><span id="serviceLogoFallback">🔧</span><img id="serviceLogoImage" alt="" hidden></div><div class="settings-actions"><button class="secondary" type="button" id="chooseServiceLogo">Browse image</button><button class="secondary" type="button" id="removeServiceLogo" hidden>Remove image</button><input type="file" id="serviceLogoFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden><input type="hidden" id="serviceLogoKey"><span id="serviceLogoUploadStatus" class="settings-note">Optional · PNG, JPEG, WebP or GIF · up to 5 MB</span></div></div></div><div class="modal-actions"><button class="secondary" type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save service</button></div></form></div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.25";
+const APP_VERSION="0.1.26";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -726,7 +726,7 @@ return '<button type="button" class="secondary icon-action" data-'+action+'="'+s
 }
 function renderServiceCards(items,manage){
 if(!items.length)return '<div class="empty">No services match this view. Try another search or category.</div>';
-const slim=density==="slim",orderable=reorderEnabled&&(page==="all"||page==="category")&&!$("search").value.trim();
+const slim=density==="slim",orderable=!!manage&&page==="category"&&!$("search").value.trim();
 return '<div class="grid '+(slim?"slim":"")+'">'+items.map(s=>{
 const category=slim?"":'<div class="service-desc" style="margin:2px 0 0;min-height:0">'+safe(s.category)+'</div>';
 const details=slim?(preferences.showSlimDescriptions?'<div class="service-desc slim-card-description">'+safe(s.description||"")+'</div>':""):'<div class="service-desc">'+safe(s.description||"")+'</div><div class="tags">'+(s.tags||[]).map(tagHtml).join("")+'</div>';
@@ -743,21 +743,30 @@ const query=$("search").value.trim(),canReorder=reorderEnabled&&!query;
 const help=!reorderEnabled?"":canReorder?'<p class="service-order-help">Drag a handle to reorder all services in this profile.</p>':'<p class="service-order-help">Clear the global search to reorder the full service list.</p>';
 return help+'<div id="serviceOrderStatus" class="service-order-help" aria-live="polite"></div><div class="service-order-grid" data-service-order-grid>'+items.map(s=>'<article class="service-order-card '+(canReorder?"orderable-card":"")+'" data-order-id="'+safe(s.id)+'" data-service-order-id="'+safe(s.id)+'"><div class="service-order-top">'+(canReorder?'<button type="button" class="service-drag-handle" data-service-drag="'+safe(s.id)+'" data-order-drag="'+safe(s.id)+'" draggable="true" title="Drag to reorder" aria-label="Drag to reorder '+safe(s.name)+'">⠿</button>':"")+'<div class="service-order-icon">'+serviceIconHtml(s)+'</div><div class="service-order-identity"><div class="service-order-name">'+safe(s.name)+'</div><div class="service-order-category">'+safe(s.category)+'</div></div><div class="service-order-actions">'+serviceActionIcon("edit",s.id,s.name)+serviceActionIcon("duplicate",s.id,s.name)+serviceActionIcon("delete",s.id,s.name)+'</div></div><div class="service-order-tags">'+((s.tags||[]).length?(s.tags||[]).map(tagHtml).join(""):'<span class="service-order-no-tags">No tags</span>')+'</div><div class="service-order-footer"><a class="service-order-open" href="'+safe(s.url)+'" target="_blank" rel="noopener">Open ↗</a><span class="service-order-url" title="'+safe(s.url)+'">'+safe(s.url)+'</span></div></article>').join("")+'</div>';
 }
-function renderServiceTable(items,manage){if(!items.length)return '<div class="empty">No services match this view. Try another search or category.</div>';return '<table><thead><tr><th>Service</th><th>Category</th><th>Tags</th><th>URL</th><th>Actions</th></tr></thead><tbody>'+items.map(s=>'<tr><td><span class="table-service-icon">'+serviceIconHtml(s)+'</span>'+safe(s.name)+'</td><td>'+safe(s.category)+'</td><td>'+(s.tags||[]).map(tagHtml).join("")+'</td><td><a href="'+safe(s.url)+'" target="_blank" rel="noopener">Open ↗</a></td><td class="action-cell"><div class="action-group">'+(manage?serviceActionIcon("edit",s.id,s.name)+serviceActionIcon("duplicate",s.id,s.name)+serviceActionIcon("delete",s.id,s.name):'<button class="secondary" data-fav="'+safe(s.id)+'" title="'+(s.favorite?"Remove from favorites":"Add to favorites")+'" aria-label="'+(s.favorite?"Remove from favorites: ":"Add to favorites: ")+safe(s.name)+'">'+(s.favorite?"★":"☆")+"</button>")+"</div></td></tr>").join("")+"</tbody></table>"}
-function renderHome(){const favorites=services.filter(s=>s.favorite&&matchesSearch(s));$("homeFavoriteCards").innerHTML=renderServiceCards(favorites,false)}
+function renderServiceTable(items,manage,orderable=false){
+if(!items.length)return '<div class="empty">No services in this view. Choose a category from the sidebar.</div>';
+const canDrag=!!orderable&&!$("search").value.trim()&&page==="category"&&!!manage;
+return '<table><thead><tr><th>Service</th><th>Category</th><th>Tags</th><th>URL</th><th>Actions</th></tr></thead><tbody>'+items.map(s=>{
+const handle=canDrag?'<button type="button" class="service-card-drag-handle table-drag-handle" data-order-drag="'+safe(s.id)+'" draggable="true" title="Drag to reorder within '+safe(current)+'" aria-label="Drag to reorder '+safe(s.name)+'">⠿</button>':"";
+const action=manage?serviceActionIcon("edit",s.id,s.name)+serviceActionIcon("duplicate",s.id,s.name)+serviceActionIcon("delete",s.id,s.name):'<button class="secondary" data-fav="'+safe(s.id)+'" title="'+(s.favorite?"Remove from favorites":"Add to favorites")+'" aria-label="'+(s.favorite?"Remove from favorites: ":"Add to favorites: ")+safe(s.name)+'">'+(s.favorite?"★":"☆")+"</button>";
+return '<tr '+(canDrag?'data-order-id="'+safe(s.id)+'" class="orderable-card"':'')+'><td><span class="table-service-icon">'+serviceIconHtml(s)+'</span>'+handle+safe(s.name)+'</td><td>'+safe(s.category)+'</td><td>'+(s.tags||[]).map(tagHtml).join("")+'</td><td><a href="'+safe(s.url)+'" target="_blank" rel="noopener">Open ↗</a></td><td class="action-cell"><div class="action-group">'+action+'</div></td></tr>';
+}).join("")+'</tbody></table>';
+}
+function renderHome(){const favorites=services.filter(s=>s.favorite&&matchesSearch(s));$("homeFavoriteCards").innerHTML=view==="cards"?renderServiceCards(favorites,false):renderServiceTable(favorites,false)}
 function renderCatalog(){
-const items=filtered(),isAll=page==="all",isCategory=page==="category";
-$("catalogEyebrow").textContent=isAll?"SERVICE CATALOG / MANAGEMENT":page==="favorites"?"WORKSPACE / FAVORITES":"SERVICE CATEGORY";
-$("heading").textContent=isAll?"All Services":page==="favorites"?"Favorites":current+" Services";
-$("catalogDescription").textContent=isAll?"Create, open, edit, duplicate, and delete services from one list. Use Reorder services to drag items into position.":page==="favorites"?"Your starred services for quick access.":"Services in "+current+". Use Reorder services to arrange them within this category.";
-$("add").hidden=!isAll;
-$("chips").innerHTML=[{label:"All Services",value:"All"},{label:"Favorites",value:"Favorites"},...categories().filter(c=>c!=="All").map(c=>({label:c,value:c}))].map(c=>{
-const active=(c.value==="All"&&page==="all")||(c.value==="Favorites"&&page==="favorites")||(isCategory&&c.value===current);
-return '<button class="chip '+(active?"active":"")+'" data-chip="'+safe(c.value)+'">'+safe(c.label)+'</button>'
+const items=filtered(),isCategory=page==="category",isFavorites=page==="favorites";
+$("catalogEyebrow").textContent=isFavorites?"WORKSPACE / FAVORITES":"SERVICE CATEGORY / MANAGEMENT";
+$("heading").textContent=isFavorites?"Favorites":current+" Services";
+$("catalogDescription").textContent=isFavorites?"Your favorites use the layout selected in Settings.":"Browse services in "+current+". Select Edit mode to add, edit, duplicate, delete, or reorder services in this category.";
+$("add").hidden=!(isCategory&&reorderEnabled);
+$("add").textContent="＋ Add service";
+$("chips").innerHTML=[{label:"Favorites",value:"Favorites"},...categories().filter(c=>c!=="All").map(c=>({label:c,value:c}))].map(c=>{
+const active=(c.value==="Favorites"&&isFavorites)||(isCategory&&c.value===current);
+return '<button class="chip '+(active?"active":"")+'" data-chip="'+safe(c.value)+'">'+safe(c.label)+'</button>';
 }).join("");
 $("chips").querySelectorAll("[data-chip]").forEach(b=>b.onclick=()=>{
 const value=b.dataset.chip;
-if(value==="All")navigatePage("all");else if(value==="Favorites")navigatePage("favorites");else navigateCategory(value)
+if(value==="Favorites")navigatePage("favorites");else navigateCategory(value);
 });
 $("regularBtn").classList.toggle("active",density==="regular");
 $("slimBtn").classList.toggle("active",density==="slim");
@@ -767,16 +776,14 @@ const densityControl=$("regularBtn").parentElement;
 densityControl.style.display=view==="cards"?"flex":"none";
 $("cardArea").style.display=view==="cards"?"block":"none";
 $("listArea").style.display=view==="list"?"block":"none";
-const reorderControl=$("reorderControl");
-const reorderAvailable=isAll||(isCategory&&view==="cards");
-reorderControl.hidden=!reorderAvailable;
+$("reorderControl").hidden=!isCategory;
 $("reorderToggle").classList.toggle("active",reorderEnabled);
 $("reorderToggle").setAttribute("aria-pressed",reorderEnabled?"true":"false");
-$("reorderToggle").innerHTML='<span aria-hidden="true">⠿</span> '+(reorderEnabled?"Reordering enabled":"Enable reordering");
-$("reorderToggle").title=isCategory?"Reorder services within "+current:"Reorder services across this profile";
-$("listArea").classList.toggle("service-order-host",isAll);
-$("cardArea").innerHTML=renderServiceCards(items,isAll);
-$("listArea").innerHTML=isAll?renderServiceOrderGrid(items):renderServiceTable(items,isAll);
+$("reorderToggle").innerHTML='<span aria-hidden="true">✎</span> '+(reorderEnabled?"Done editing":"Edit mode");
+$("reorderToggle").title="Edit services in "+current+"; add, edit, duplicate, delete, or drag to reorder";
+$("cardArea").innerHTML=view==="cards"?renderServiceCards(items,isCategory&&reorderEnabled):"";
+$("listArea").innerHTML=view==="list"?renderServiceTable(items,isCategory&&reorderEnabled,isCategory&&reorderEnabled):"";
+$("listArea").classList.toggle("service-order-host",isCategory&&reorderEnabled&&view==="list");
 }
 function bindRenderedActions(){
 document.querySelectorAll("[data-fav]").forEach(b=>b.onclick=async e=>{e.stopPropagation();const s=services.find(item=>String(item.id)===String(b.dataset.fav));if(!s)return;const changed={...s,favorite:!s.favorite};try{if(apiConnected){const saved=await remoteSaveService(changed,false);Object.assign(s,saved)}else{s.favorite=changed.favorite;toast("Favorite changed locally only")}render()}catch(error){toast("Could not save favorite: "+(error.message||"database error"))}});
@@ -1003,22 +1010,13 @@ try{await apiRequest("tags",{method:"POST",body:JSON.stringify({name})});$("newT
 catch(error){taxonomyMessage("tagManagerMessage",error.message||"Could not add tag.",true)}
 finally{button.disabled=false}
 }
-function renderAdminServices(){
-const host=$("adminServiceList");if(!host)return;
-const filter=($("adminServiceFilter")?.value||"").trim().toLowerCase(),category=$("adminCategoryFilter")?.value||"";
-const items=services.filter(item=>(!category||item.category===category)&&(!filter||[item.name,item.url,item.description,item.category,...(item.tags||[])].join(" ").toLowerCase().includes(filter)));
-const count=$("adminServiceCount");if(count)count.textContent=items.length+" of "+services.length+" services";
-const select=$("adminCategoryFilter");
-if(select){const prior=select.value,names=[...new Set(categories().filter(name=>name!=="All"))];select.replaceChildren(...[["","All categories"],...names.map(name=>[name,name])].map(([value,label])=>{const o=document.createElement("option");o.value=value;o.textContent=label;return o}));select.value=names.includes(prior)?prior:""}
-host.innerHTML=renderServiceTable(items,true);
-}
 function renderAdminPage(){
-const servicesPanel=$("adminServicesPanel"),categoriesPanel=$("adminCategoriesPanel"),tagsPanel=$("adminTagsPanel");if(!servicesPanel||!categoriesPanel||!tagsPanel)return;
-servicesPanel.hidden=adminTab!=="services";categoriesPanel.hidden=adminTab!=="categories";tagsPanel.hidden=adminTab!=="tags";
+const categoriesPanel=$("adminCategoriesPanel"),tagsPanel=$("adminTagsPanel");if(!categoriesPanel||!tagsPanel)return;
+categoriesPanel.hidden=adminTab!=="categories";tagsPanel.hidden=adminTab!=="tags";
 document.querySelectorAll("[data-admin-tab]").forEach(button=>{const active=button.dataset.adminTab===adminTab;button.classList.toggle("active",active);button.setAttribute("aria-selected",active?"true":"false")});
-if(adminTab==="services")renderAdminServices();if(adminTab==="categories")renderCategoryManager();if(adminTab==="tags")renderTagManager();
+if(adminTab==="categories")renderCategoryManager();if(adminTab==="tags")renderTagManager();
 }
-function setAdminTab(tab){if(!["services","categories","tags"].includes(tab))return;adminTab=tab;page="admin";showPage();renderAdminPage();bindRenderedActions()}
+function setAdminTab(tab){if(!["categories","tags"].includes(tab))return;adminTab=tab;page="admin";showPage();renderAdminPage();bindRenderedActions()}
 function renderSettings(){$("brandingName").value=branding.name||"Luxorit";$("brandingSubtitle").value=branding.subtitle||"";$("brandingLogo").value=branding.logo||"";$("themeSetting").value=document.documentElement.dataset.theme||"dark";$("landingSetting").value=preferences.landingPage||"home";$("defaultViewSetting").value=preferences.defaultView||"list";$("showSlimDescriptionsSetting").checked=!!preferences.showSlimDescriptions;$("sidebarCollapsedSetting").checked=!!preferences.sidebarCollapsed;$("settingsVersion").textContent=APP_VERSION;applyBranding();renderD1Status();renderR2Status()}
 function render(){nav();showPage();if(page==="home")renderHome();else if(page==="settings")renderSettings();else if(page==="admin")renderAdminPage();else renderCatalog();$("versionLabel").textContent="v"+APP_VERSION;applyBranding();bindRenderedActions();persist()}
 function renderServiceLogoPreview(source,fallback="🔧"){
