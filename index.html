@@ -656,7 +656,7 @@ host.querySelectorAll("[data-category-row]").forEach(card=>{
   event.preventDefault();card.classList.remove("drag-over");
   const fromId=draggedId??Number(event.dataTransfer?.getData("text/plain")),toId=Number(card.dataset.categoryRow);draggedId=null;
   if(query||!fromId||fromId===toId)return;
-  const order=taxonomyCategories.slice().sort((a,b)=>Number(a.sortOrder??a.sort_order||9999)-Number(b.sortOrder??b.sort_order||9999));
+  const order=taxonomyCategories.slice().sort((a,b)=>Number(a.sortOrder??a.sort_order??9999)-Number(b.sortOrder??b.sort_order??9999));
   const from=order.findIndex(item=>Number(item.id)===fromId),to=order.findIndex(item=>Number(item.id)===toId);
   if(from<0||to<0)return;
   const [moved]=order.splice(from,1);order.splice(to,0,moved);
