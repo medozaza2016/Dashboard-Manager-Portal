@@ -29,7 +29,7 @@ export async function onRequest({ request, env }) {
   const access = await requireCloudflareAccess(request, env);
   if (access.response) return access.response;
   if (!env.DB) return jsonResponse({ error: "D1 binding DB is missing." }, 503);
-  if (!env.ASSETS) return jsonResponse({ error: "R2 binding ASSETS is missing. Bind the dashboard-manager-portal-assets bucket and redeploy." }, 503);
+  if (!env.R2_LOGOS) return jsonResponse({ error: "R2 binding R2_LOGOS is missing. Bind the dashboard-manager-portal-assets bucket and redeploy." }, 503);
 
   const { searchParams } = new URL(request.url);
   if (request.method === "GET") {
@@ -40,7 +40,7 @@ export async function onRequest({ request, env }) {
     if (!isAllowedAssetKey(key)) return jsonResponse({ error: "Invalid asset key." }, 400);
     try {
       if (!(await isAssetReferenced(env, key))) return jsonResponse({ error: "Asset not found." }, 404);
-      const object = await env.ASSETS.get(key);
+      const object = await env.R2_LOGOS.get(key);
       if (!object) return jsonResponse({ error: "Asset not found." }, 404);
       return imageResponse(object);
     } catch {
@@ -66,7 +66,7 @@ export async function onRequest({ request, env }) {
       const bytes = new Uint8Array(await file.arrayBuffer());
       if (!descriptor.matches(bytes)) return jsonResponse({ error: "The uploaded file does not match its declared image format." }, 415);
       const key = (scope === "service" ? "service-logos/" : "branding/") + crypto.randomUUID() + "." + descriptor.ext;
-      await env.ASSETS.put(key, bytes, {
+      await env.R2_LOGOS.put(key, bytes, {
         httpMetadata: { contentType: type, cacheControl: "private, max-age=300, must-revalidate" },
         customMetadata: { purpose: scope, uploadedAt: new Date().toISOString() },
       });
@@ -83,7 +83,7 @@ export async function onRequest({ request, env }) {
       if (await isAssetReferenced(env, key)) {
         return jsonResponse({ error: "This image is still attached to a saved service or portal branding." }, 409);
       }
-      await env.ASSETS.delete(key);
+      await env.R2_LOGOS.delete(key);
       return jsonResponse({ deleted: true, key });
     } catch {
       return jsonResponse({ error: "Could not remove the uploaded image." }, 500);
