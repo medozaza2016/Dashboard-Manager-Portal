@@ -137,8 +137,15 @@
 @media(max-width:700px){.settings-grid{grid-template-columns:1fr}.settings-card.wide{grid-column:auto}.settings-fields{grid-template-columns:1fr}.settings-field.full{grid-column:auto}.access-sync-app-list{grid-template-columns:1fr}}
 @media(max-width:550px){.integration-grid{grid-template-columns:1fr}.integration-card.deployment-card{grid-column:auto}}
 
-/* v0.1.17 admin layout refinements */
+/* v0.1.18 admin layout refinements */
 .taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-height:62vh;overflow:auto;padding:2px 3px 2px 0;align-content:start;overscroll-behavior:contain}
+.adminCategoriesPanel .taxonomy-create-row{grid-template-columns:minmax(0,1fr) 220px auto;align-items:end}
+.category-create-name,.category-create-icon{display:block;min-width:0}.category-create-name>span,.category-create-icon>span,.category-field>span{display:block;font-size:10px;color:var(--muted);margin:0 0 5px 2px}
+.category-create-name input,.category-create-icon select,.category-field input,.category-field select{width:100%;min-width:0;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:11px}
+.category-card-fields{display:grid;grid-template-columns:minmax(0,1fr);gap:9px;min-width:0}
+.category-field{display:block;min-width:0}
+.category-card-head .taxonomy-usage{font-size:10px;color:var(--muted);white-space:nowrap}
+
 .taxonomy-list.category-manager-grid .taxonomy-row,.taxonomy-list.tag-manager-grid .taxonomy-row{min-width:0;align-content:start}
 .taxonomy-list.category-manager-grid .category-manager-item{min-height:154px;display:grid;grid-template-rows:auto 1fr auto;gap:9px;padding:10px;cursor:grab}
 .category-card-head{display:flex;align-items:center;justify-content:space-between;gap:6px;color:var(--muted);font-size:10px}
@@ -153,8 +160,8 @@
 .taxonomy-list.tag-manager-grid .taxonomy-tag-row .taxonomy-row-actions{justify-content:flex-start}
 .taxonomy-list.tag-manager-grid .taxonomy-tag-row .taxonomy-row-actions button{padding:5px 8px}
 .taxonomy-order-help{font-size:11px;color:var(--muted);margin:4px 0 10px}
-@media(max-width:1150px){.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:700px){.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:1150px){.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.adminCategoriesPanel .taxonomy-create-row{grid-template-columns:minmax(0,1fr) 200px auto}}
+@media(max-width:700px){.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{grid-template-columns:minmax(0,1fr)}.adminCategoriesPanel .taxonomy-create-row{grid-template-columns:minmax(0,1fr) 140px auto}}
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
@@ -162,7 +169,7 @@
 <button class="nav active" data-page="home" title="Home"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/></svg></span><span>Home</span></button><button class="nav" data-page="all" title="All services"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span>All Services</span></button>
 
 <div class="group-label">Categories</div><div id="categoryNav"></div><div class="bottom">
-<button class="nav" data-page="admin" title="Administration"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Admin</span></button><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.17</div></div></aside>
+<button class="nav" data-page="admin" title="Administration"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Admin</span></button><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.18</div></div></aside>
 <main class="main"><header class="topbar"><button class="iconbtn" id="collapse" title="Collapse sidebar" aria-label="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="m14 7-5 5 5 5"/></svg></button><div class="search"><span class="search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="search" placeholder="Search applications, tools, or tags..." aria-label="Search applications"></div><div class="top-actions"><button class="iconbtn" id="theme" title="Toggle theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg></button><button class="iconbtn help" id="help" title="About" aria-label="About"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button><div class="avatar">JD</div></div></header>
 <div class="content">
 <section id="homePage">
@@ -193,10 +200,10 @@
       <h2>Sidebar categories</h2><p class="settings-help">Create placeholder categories, rename them, choose their sidebar icon, and control their order. Categories with zero services remain visible.</p>
       <div class="taxonomy-panel-head"><h3>Category list</h3><div class="settings-actions"><input id="categoryFilter" class="taxonomy-filter" type="search" placeholder="Filter categories…" aria-label="Filter categories"><button class="secondary" type="button" id="refreshTaxonomy">Refresh</button></div></div>
       <div class="taxonomy-create-row">
-        <input id="newCategoryName" maxlength="60" placeholder="New category name" aria-label="New category name">
-        <select id="newCategoryIcon" aria-label="New category icon">
-          <option value="box">General</option><option value="cloudflare">Cloudflare</option><option value="cloud">Cloud</option><option value="server">Server</option><option value="infrastructure">Infrastructure</option><option value="storage">Storage</option><option value="networking">Networking</option><option value="remote-access">Remote access</option><option value="monitor">Development</option><option value="gauge">Monitoring</option><option value="briefcase">Productivity</option><option value="windows">Microsoft</option>
-        </select>
+        <label class="category-create-name"><span>Category name</span><input id="newCategoryName" maxlength="60" placeholder="New category name" aria-label="New category name"></label>
+        <label class="category-create-icon"><span>Sidebar icon</span><select id="newCategoryIcon" aria-label="Icon for new category">
+          <option value="box">General icon</option><option value="cloudflare">Cloudflare icon</option><option value="cloud">Cloud icon</option><option value="server">Server icon</option><option value="infrastructure">Infrastructure icon</option><option value="storage">Storage icon</option><option value="networking">Network icon</option><option value="remote-access">Remote access icon</option><option value="development">Development / code icon</option><option value="monitor">Monitor icon</option><option value="gauge">Monitoring icon</option><option value="briefcase">Productivity icon</option><option value="windows">Microsoft icon</option>
+        </select></label>
         <button class="primary" type="button" id="addCategoryButton">Add category</button>
       </div>
       <div id="categoryManagerMessage" class="taxonomy-message" role="status" aria-live="polite"></div>
@@ -294,7 +301,7 @@
         </div>
       </article>
       <article class="settings-card wide">
-        <h2>About this portal</h2><div class="settings-version">Version <span id="settingsVersion">0.1.17</span></div><div class="settings-note">Cloudflare Pages · Authenticated Pages Functions · Shared Cloudflare D1 storage · Cloudflare Access</div>
+        <h2>About this portal</h2><div class="settings-version">Version <span id="settingsVersion">0.1.18</span></div><div class="settings-note">Cloudflare Pages · Authenticated Pages Functions · Shared Cloudflare D1 storage · Cloudflare Access</div>
       </article>
     </div>
     <div class="settings-actions" style="justify-content:flex-end;margin-top:16px"><button class="secondary" type="button" id="resetBranding">Reset branding</button><button class="primary" type="submit">Save settings</button></div>
@@ -304,7 +311,7 @@
 <div class="modal-backdrop" id="serviceModal"><form class="modal" id="serviceForm"><h2 id="modalTitle">Add service</h2><input type="hidden" id="serviceId"><label for="name">Name</label><input id="name" required><label for="url">URL</label><input id="url" type="url" placeholder="https://service.example" required><label for="category">Category</label><select id="category"></select><label for="description">Description</label><input id="description"><label for="icon">Fallback icon for custom services</label><input id="icon" value="🔧"><label>Tags</label><div class="service-tag-picker"><div id="serviceSelectedTags" class="service-selected-tags" aria-live="polite"></div><input id="serviceTagSearch" class="service-tag-search" type="search" placeholder="Search available tags…" aria-label="Search tags"><div id="serviceTagOptions" class="service-tag-options"></div><div class="settings-note">Choose one or more tags. Manage the tag list in Admin → Tags.</div></div><div class="settings-field full"><label for="serviceLogoFile">Service logo</label><div class="logo-upload-row"><div class="service-logo-preview" id="serviceLogoPreview"><span id="serviceLogoFallback">🔧</span><img id="serviceLogoImage" alt="" hidden></div><div class="settings-actions"><button class="secondary" type="button" id="chooseServiceLogo">Browse image</button><button class="secondary" type="button" id="removeServiceLogo" hidden>Remove image</button><input type="file" id="serviceLogoFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden><input type="hidden" id="serviceLogoKey"><span id="serviceLogoUploadStatus" class="settings-note">Optional · PNG, JPEG, WebP or GIF · up to 5 MB</span></div></div></div><div class="modal-actions"><button class="secondary" type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save service</button></div></form></div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.17";
+const APP_VERSION="0.1.18";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -617,7 +624,7 @@ const pText=$("settingsLogoText"),pGraphic=$("settingsLogoGraphic");if(pText&&pG
 if($("removeBrandingLogo"))$("removeBrandingLogo").hidden=!logoKey&&!brandingLogoPreviewUrl;
 }
 const CATEGORY_ICON_OPTIONS=[
-["box","General"],["cloudflare","Cloudflare"],["cloud","Cloud"],["server","Server"],["infrastructure","Infrastructure"],["storage","Storage"],["networking","Networking"],["remote-access","Remote access"],["monitor","Development"],["gauge","Monitoring"],["briefcase","Productivity"],["windows","Microsoft"]
+["box","General icon"],["cloudflare","Cloudflare icon"],["cloud","Cloud icon"],["server","Server icon"],["infrastructure","Infrastructure icon"],["storage","Storage icon"],["networking","Network icon"],["remote-access","Remote access icon"],["development","Development / code icon"],["monitor","Monitor icon"],["gauge","Monitoring icon"],["briefcase","Productivity icon"],["windows","Microsoft icon"]
 ];
 function taxonomyMessage(id,message,isError=false){const el=$(id);if(!el)return;el.textContent=message||"";el.classList.toggle("error",!!isError)}
 function renderCategoryManager(){
@@ -628,7 +635,7 @@ const query=($("categoryFilter")?.value||"").trim().toLowerCase();
 const shown=taxonomyCategories.filter(cat=>!query||cat.name.toLowerCase().includes(query));
 if(!shown.length){host.innerHTML='<div class="taxonomy-empty">'+(query?"No categories match this filter.":"No categories yet. Add one above.")+'</div>';return}
 const options=cat=>CATEGORY_ICON_OPTIONS.map(([value,label])=>'<option value="'+value+'"'+(cat.icon===value?" selected":"")+">"+label+"</option>").join("");
-host.innerHTML=shown.map(cat=>'<div class="taxonomy-row category-manager-item" draggable="'+(!query)+'" data-category-row="'+Number(cat.id)+'"><div class="category-card-head"><span class="category-drag-handle" title="'+(query?"Clear filter to reorder":"Drag to reorder")+'" aria-label="Drag to reorder category">⠿</span><span class="taxonomy-usage">'+Number(cat.serviceCount||cat.service_count||0)+' services</span></div><div class="category-card-fields"><input data-category-name maxlength="60" value="'+safe(cat.name)+'" aria-label="Name for category '+safe(cat.name)+'"><select data-category-icon aria-label="Icon for category '+safe(cat.name)+'">'+options(cat)+'</select></div><div class="taxonomy-row-actions"><button type="button" class="secondary" data-category-save="'+Number(cat.id)+'">Save</button><button type="button" class="secondary taxonomy-danger" data-category-delete="'+Number(cat.id)+'" '+(Number(cat.serviceCount||cat.service_count||0)>0?'disabled title="Move services to another category first"':'title="Delete empty category"')+'>Delete</button></div></div>').join("");
+host.innerHTML=shown.map(cat=>'<div class="taxonomy-row category-manager-item" draggable="'+(!query)+'" data-category-row="'+Number(cat.id)+'"><div class="category-card-head"><span class="category-drag-handle" title="'+(query?"Clear filter to reorder":"Drag to reorder")+'" aria-label="Drag to reorder category">⠿</span><span class="taxonomy-usage">'+Number(cat.serviceCount||cat.service_count||0)+' services</span></div><div class="category-card-fields"><label class="category-field"><span>Category name</span><input data-category-name maxlength="60" value="'+safe(cat.name)+'" aria-label="Name for category '+safe(cat.name)+'"></label><label class="category-field"><span>Sidebar icon</span><select data-category-icon aria-label="Icon for category '+safe(cat.name)+'">'+options(cat)+'</select></label></div><div class="taxonomy-row-actions"><button type="button" class="secondary" data-category-save="'+Number(cat.id)+'">Save</button><button type="button" class="secondary taxonomy-danger" data-category-delete="'+Number(cat.id)+'" '+(Number(cat.serviceCount||cat.service_count||0)>0?'disabled title="Move services to another category first"':'title="Delete empty category"')+'>Delete</button></div></div>').join("");
 host.querySelectorAll("[data-category-save]").forEach(button=>button.onclick=async()=>{
  const id=Number(button.dataset.categorySave),row=host.querySelector('[data-category-row="'+id+'"]');if(!row)return;
  const name=row.querySelector("[data-category-name]").value.trim(),icon=row.querySelector("[data-category-icon]").value;
