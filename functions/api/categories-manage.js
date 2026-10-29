@@ -25,6 +25,12 @@ export async function onRequest({ request, env }) {
   if (!env.DB) return jsonResponse({ error: "D1 binding DB is missing." }, 503);
 
   const { searchParams } = new URL(request.url);
+  const profileParam = searchParams.get("profile");
+  const profileId = profileParam == null ? 1 : Number(profileParam);
+  if (!Number.isSafeInteger(profileId) || profileId < 1 || profileId > 2) {
+    return jsonResponse({ error: "Invalid profile. Use profile=1 (Personal) or profile=2 (Work)." }, 400);
+  }
+
   const idParam = searchParams.get("id");
   const id = idParam == null ? null : validId(idParam);
   if (idParam != null && id == null) return jsonResponse({ error: "Invalid category id." }, 400);
@@ -32,9 +38,12 @@ export async function onRequest({ request, env }) {
   if (request.method === "GET") {
     const result = await env.DB.prepare(`
       SELECT c.id, c.name, c.icon, c.sort_order AS sortOrder, COUNT(s.id) AS serviceCount
-      FROM categories c LEFT JOIN services s ON s.category_id = c.id
-      GROUP BY c.id ORDER BY c.sort_order, c.name
-    `).all();
+      FROM categories c
+      LEFT JOIN services s ON s.category_id = c.id AND s.profile_id = c.profile_id
+      WHERE c.profile_id = ?
+      GROUP BY c.id
+      ORDER BY c.sort_order, c.name
+    `).bind(profileId).all();
     return jsonResponse(result.results || []);
   }
 
@@ -46,21 +55,24 @@ export async function onRequest({ request, env }) {
         new Set(payload.order.map(Number)).size !== payload.order.length) {
       return jsonResponse({ error: "Provide an ordered array of unique category IDs." }, 400);
     }
-    const current = await env.DB.prepare("SELECT id FROM categories ORDER BY sort_order, name").all();
+    const current = await env.DB.prepare("SELECT id FROM categories WHERE profile_id = ? ORDER BY sort_order, name").bind(profileId).all();
     const existingIds = (current.results || []).map(row => Number(row.id));
     const requestedIds = payload.order.map(Number);
     if (existingIds.length !== requestedIds.length || existingIds.some(id => !requestedIds.includes(id))) {
       return jsonResponse({ error: "The category list changed. Refresh and try reordering again." }, 409);
     }
     const statements = requestedIds.map((categoryId, index) =>
-      env.DB.prepare("UPDATE categories SET sort_order = ? WHERE id = ?").bind(index + 1, categoryId)
+      env.DB.prepare("UPDATE categories SET sort_order = ? WHERE id = ? AND profile_id = ?").bind(index + 1, categoryId, profileId)
     );
     if (statements.length) await env.DB.batch(statements);
     const result = await env.DB.prepare(`
       SELECT c.id, c.name, c.icon, c.sort_order AS sortOrder, COUNT(s.id) AS serviceCount
-      FROM categories c LEFT JOIN services s ON s.category_id = c.id
-      GROUP BY c.id ORDER BY c.sort_order, c.name
-    `).all();
+      FROM categories c
+      LEFT JOIN services s ON s.category_id = c.id AND s.profile_id = c.profile_id
+      WHERE c.profile_id = ?
+      GROUP BY c.id
+      ORDER BY c.sort_order, c.name
+    `).bind(profileId).all();
     return jsonResponse(result.results || []);
   }
 
@@ -78,47 +90,52 @@ export async function onRequest({ request, env }) {
     }
 
     if (request.method === "POST") {
+      // Category names are currently globally unique in the schema, so duplicateName checks both profiles.
       if (await duplicateName(env.DB, name)) return jsonResponse({ error: "A category with this name already exists." }, 409);
-      const next = await env.DB.prepare("SELECT COALESCE(MAX(sort_order), 0) + 1 AS nextOrder FROM categories").first();
+      const next = await env.DB.prepare("SELECT COALESCE(MAX(sort_order), 0) + 1 AS nextOrder FROM categories WHERE profile_id = ?").bind(profileId).first();
       const sortOrder = Number(payload.sortOrder || next?.nextOrder || 1);
-      await env.DB.prepare("INSERT INTO categories (name, sort_order, icon) VALUES (?, ?, ?)")
-        .bind(name, sortOrder, payload.icon || "box").run();
+      await env.DB.prepare("INSERT INTO categories (name, sort_order, icon, profile_id) VALUES (?, ?, ?, ?)")
+        .bind(name, sortOrder, payload.icon || "box", profileId).run();
       const row = await env.DB.prepare(`
         SELECT c.id, c.name, c.icon, c.sort_order AS sortOrder, COUNT(s.id) AS serviceCount
-        FROM categories c LEFT JOIN services s ON s.category_id = c.id
-        WHERE c.name = ? GROUP BY c.id
-      `).bind(name).first();
+        FROM categories c
+        LEFT JOIN services s ON s.category_id = c.id AND s.profile_id = c.profile_id
+        WHERE c.name = ? AND c.profile_id = ?
+        GROUP BY c.id
+      `).bind(name, profileId).first();
       return jsonResponse(row, 201);
     }
 
     if (id == null) return jsonResponse({ error: "The id query parameter is required for updates." }, 400);
-    const existing = await env.DB.prepare("SELECT id FROM categories WHERE id = ?").bind(id).first();
-    if (!existing) return jsonResponse({ error: "Category not found." }, 404);
+    const existing = await env.DB.prepare("SELECT id FROM categories WHERE id = ? AND profile_id = ?").bind(id, profileId).first();
+    if (!existing) return jsonResponse({ error: "Category not found in this profile." }, 404);
     if (await duplicateName(env.DB, name, id)) return jsonResponse({ error: "A category with this name already exists." }, 409);
     const changes = [];
     const values = [];
     changes.push("name = ?"); values.push(name);
     if (payload.icon != null) { changes.push("icon = ?"); values.push(payload.icon); }
     if (payload.sortOrder != null) { changes.push("sort_order = ?"); values.push(Number(payload.sortOrder)); }
-    values.push(id);
-    await env.DB.prepare("UPDATE categories SET " + changes.join(", ") + " WHERE id = ?").bind(...values).run();
+    values.push(id, profileId);
+    await env.DB.prepare("UPDATE categories SET " + changes.join(", ") + " WHERE id = ? AND profile_id = ?").bind(...values).run();
     const row = await env.DB.prepare(`
       SELECT c.id, c.name, c.icon, c.sort_order AS sortOrder, COUNT(s.id) AS serviceCount
-      FROM categories c LEFT JOIN services s ON s.category_id = c.id
-      WHERE c.id = ? GROUP BY c.id
-    `).bind(id).first();
+      FROM categories c
+      LEFT JOIN services s ON s.category_id = c.id AND s.profile_id = c.profile_id
+      WHERE c.id = ? AND c.profile_id = ?
+      GROUP BY c.id
+    `).bind(id, profileId).first();
     return jsonResponse(row);
   }
 
   if (request.method === "DELETE") {
     if (id == null) return jsonResponse({ error: "The id query parameter is required for deletion." }, 400);
-    const existing = await env.DB.prepare("SELECT id, name FROM categories WHERE id = ?").bind(id).first();
-    if (!existing) return jsonResponse({ error: "Category not found." }, 404);
-    const count = await env.DB.prepare("SELECT COUNT(*) AS count FROM services WHERE category_id = ?").bind(id).first();
+    const existing = await env.DB.prepare("SELECT id, name FROM categories WHERE id = ? AND profile_id = ?").bind(id, profileId).first();
+    if (!existing) return jsonResponse({ error: "Category not found in this profile." }, 404);
+    const count = await env.DB.prepare("SELECT COUNT(*) AS count FROM services WHERE category_id = ? AND profile_id = ?").bind(id, profileId).first();
     if (Number(count?.count || 0) > 0) {
       return jsonResponse({ error: "This category still contains services. Move its services to another category before deleting it." }, 409);
     }
-    await env.DB.prepare("DELETE FROM categories WHERE id = ?").bind(id).run();
+    await env.DB.prepare("DELETE FROM categories WHERE id = ? AND profile_id = ?").bind(id, profileId).run();
     return jsonResponse({ deleted: true, id });
   }
 
