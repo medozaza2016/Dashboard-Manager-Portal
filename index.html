@@ -20,6 +20,9 @@
 .action-cell{white-space:nowrap}.action-group{display:flex;align-items:center;gap:5px;flex-wrap:wrap}.action-group .secondary{padding:6px 9px;font-size:11px}
 .card-actions .manage-actions{margin-left:auto;display:flex;align-items:center;gap:5px}.card-actions .manage-actions button{margin-left:0;padding:5px 7px;font-size:11px}.card-actions .manage-actions button.icon-action{padding:0}.icon-action{display:inline-grid;place-items:center;width:30px;height:30px;min-width:30px;padding:0!important}.icon-action .action-icon{width:15px;height:15px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.icon-action[data-delete]{color:#F87171}
 .category-cloudflare{width:21px;height:21px}
+.taxonomy-management-card{grid-column:1/-1}.taxonomy-manager-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px}.taxonomy-panel{min-width:0}.taxonomy-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px}.taxonomy-panel-head h3{font-size:13px;margin:0}.taxonomy-panel-head .secondary{padding:6px 9px;font-size:11px}.taxonomy-create-row{display:grid;grid-template-columns:minmax(110px,1fr) 112px 75px auto;gap:6px;align-items:center;margin:10px 0}.taxonomy-create-row input,.taxonomy-create-row select,.taxonomy-row input,.taxonomy-row select{min-width:0;width:100%;padding:8px 9px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:11px}.taxonomy-create-row .primary{padding:8px 10px;font-size:11px;white-space:nowrap}.taxonomy-list{display:grid;gap:7px;margin-top:10px}.taxonomy-row{display:grid;gap:7px;border:1px solid var(--line);background:var(--panel2);border-radius:9px;padding:9px;min-width:0}.taxonomy-row-fields{display:grid;grid-template-columns:minmax(100px,1fr) 108px 64px auto;gap:6px;align-items:center}.taxonomy-row-actions{display:flex;justify-content:flex-end;gap:6px}.taxonomy-row-actions .secondary{padding:5px 9px;font-size:10px}.taxonomy-tag-row .taxonomy-row-fields{grid-template-columns:minmax(100px,1fr) auto}.taxonomy-usage{font-size:10px;color:var(--muted);white-space:nowrap}.taxonomy-message{font-size:11px;color:var(--muted);margin-top:8px;min-height:16px}.taxonomy-message.error{color:#F87171}.taxonomy-empty{font-size:11px;color:var(--muted);padding:13px;border:1px dashed var(--line);border-radius:8px}.taxonomy-danger{color:#F87171!important}.taxonomy-row button:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:1000px){.taxonomy-manager-grid{grid-template-columns:1fr}.taxonomy-row-fields{grid-template-columns:minmax(100px,1fr) 108px 64px auto}}
+@media(max-width:600px){.taxonomy-create-row{grid-template-columns:minmax(0,1fr) 100px}.taxonomy-create-row input[type=number]{width:100%}.taxonomy-row-fields{grid-template-columns:minmax(0,1fr) 100px}.taxonomy-row-fields .taxonomy-usage{grid-column:1/-1}.taxonomy-manager-grid{gap:18px}}
 @media(max-width:850px){.stats-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-panels{grid-template-columns:1fr}.stat-card{padding:13px}.stat-number{font-size:23px}}
 @media(max-width:550px){.stats-grid{grid-template-columns:1fr}.category-grid{grid-template-columns:1fr}.stat-number{font-size:25px}}
 
@@ -107,7 +110,7 @@
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
 <div class="group-label">Workspace</div>
 <button class="nav active" data-page="home" title="Home"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/></svg></span><span>Home</span></button><button class="nav" data-page="all" title="All services"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span>All Services</span></button>
-<div class="group-label">Categories</div><div id="categoryNav"></div><div class="bottom"><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.13</div></div></aside>
+<div class="group-label">Categories</div><div id="categoryNav"></div><div class="bottom"><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.14</div></div></aside>
 <main class="main"><header class="topbar"><button class="iconbtn" id="collapse" title="Collapse sidebar" aria-label="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="m14 7-5 5 5 5"/></svg></button><div class="search"><span class="search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="search" placeholder="Search applications, tools, or tags..." aria-label="Search applications"></div><div class="top-actions"><button class="iconbtn" id="theme" title="Toggle theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg></button><button class="iconbtn help" id="help" title="About" aria-label="About"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button><div class="avatar">JD</div></div></header>
 <div class="content">
 <section id="homePage">
@@ -197,8 +200,38 @@
           
         </div>
       </article>
+      <article class="settings-card wide taxonomy-management-card">
+        <h2>Categories & tags</h2>
+        <p class="settings-help">Manage the categories shown in the sidebar, including empty categories reserved for later use. Rename or reorder categories here; services stay linked to their category when renamed. Tags can be renamed or removed across the catalog.</p>
+        <div class="taxonomy-manager-grid">
+          <section class="taxonomy-panel">
+            <div class="taxonomy-panel-head"><h3>Sidebar categories</h3><button class="secondary" type="button" id="refreshTaxonomy">Refresh</button></div>
+            <div class="taxonomy-create-row">
+              <input id="newCategoryName" maxlength="60" placeholder="New category name" aria-label="New category name">
+              <select id="newCategoryIcon" aria-label="New category icon">
+                <option value="box">General</option><option value="cloudflare">Cloudflare</option><option value="cloud">Cloud</option><option value="server">Server</option><option value="infrastructure">Infrastructure</option><option value="storage">Storage</option><option value="networking">Networking</option><option value="remote-access">Remote access</option><option value="monitor">Development</option><option value="gauge">Monitoring</option><option value="briefcase">Productivity</option><option value="windows">Microsoft</option>
+              </select>
+              <input id="newCategoryOrder" type="number" min="1" max="9999" placeholder="Auto" aria-label="Category sort order">
+              <button class="primary" type="button" id="addCategoryButton">Add</button>
+            </div>
+            <p class="settings-note">Categories with zero services remain visible in the sidebar as placeholders.</p>
+            <div id="categoryManagerMessage" class="taxonomy-message" role="status" aria-live="polite"></div>
+            <div id="categoryManagerList" class="taxonomy-list"><div class="taxonomy-empty">Connect to the database to load categories.</div></div>
+          </section>
+          <section class="taxonomy-panel">
+            <div class="taxonomy-panel-head"><h3>Tags</h3></div>
+            <div class="taxonomy-create-row" style="grid-template-columns:minmax(0,1fr) auto">
+              <input id="newTagName" maxlength="40" placeholder="New tag name" aria-label="New tag name">
+              <button class="primary" type="button" id="addTagButton">Add tag</button>
+            </div>
+            <p class="settings-note">Rename tags to update their labels across every service. Removing a tag also removes that tag assignment from services.</p>
+            <div id="tagManagerMessage" class="taxonomy-message" role="status" aria-live="polite"></div>
+            <div id="tagManagerList" class="taxonomy-list"><div class="taxonomy-empty">Connect to the database to load tags.</div></div>
+          </section>
+        </div>
+      </article>
       <article class="settings-card wide">
-        <h2>About this portal</h2><div class="settings-version">Version <span id="settingsVersion">0.1.13</span></div><div class="settings-note">Cloudflare Pages · Authenticated Pages Functions · Shared Cloudflare D1 storage · Cloudflare Access</div>
+        <h2>About this portal</h2><div class="settings-version">Version <span id="settingsVersion">0.1.14</span></div><div class="settings-note">Cloudflare Pages · Authenticated Pages Functions · Shared Cloudflare D1 storage · Cloudflare Access</div>
       </article>
     </div>
     <div class="settings-actions" style="justify-content:flex-end;margin-top:16px"><button class="secondary" type="button" id="resetBranding">Reset branding</button><button class="primary" type="submit">Save settings</button></div>
@@ -208,7 +241,7 @@
 <div class="modal-backdrop" id="serviceModal"><form class="modal" id="serviceForm"><h2 id="modalTitle">Add service</h2><input type="hidden" id="serviceId"><label for="name">Name</label><input id="name" required><label for="url">URL</label><input id="url" type="url" placeholder="https://service.example" required><label for="category">Category</label><select id="category"></select><label for="description">Description</label><input id="description"><label for="icon">Fallback icon for custom services</label><input id="icon" value="🔧"><label for="tags">Tags (comma-separated)</label><input id="tags" placeholder="Admin, Cloud"><div class="settings-field full"><label for="serviceLogoFile">Service logo</label><div class="logo-upload-row"><div class="service-logo-preview" id="serviceLogoPreview"><span id="serviceLogoFallback">🔧</span><img id="serviceLogoImage" alt="" hidden></div><div class="settings-actions"><button class="secondary" type="button" id="chooseServiceLogo">Browse image</button><button class="secondary" type="button" id="removeServiceLogo" hidden>Remove image</button><input type="file" id="serviceLogoFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden><input type="hidden" id="serviceLogoKey"><span id="serviceLogoUploadStatus" class="settings-note">Optional · PNG, JPEG, WebP or GIF · up to 5 MB</span></div></div></div><div class="modal-actions"><button class="secondary" type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save service</button></div></form></div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.13";
+const APP_VERSION="0.1.14";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -228,7 +261,7 @@ box:'<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="M3 8v8l9 5 9-5V8M12 13v8"/>',
 briefcase:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V4h8v3M3 12h18M10 12v2h4v-2"/>',
 plus:'<path d="M12 5v14M5 12h14"/>'
 };return '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">'+(p[name]||p.box)+'</svg>'}
-function categorySvg(category){if(category==="Cloudflare")return '<svg class="category-cloudflare" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 9.1a4.9 4.9 0 0 0-9.7-.9 3.8 3.8 0 0 0 .2 7.6h11a3.5 3.5 0 0 0 .1-7c-.5 0-1 .1-1.6.3Z" fill="#F38020" stroke="none"/><path d="M6.8 16.1h12.3a3.6 3.6 0 0 1-3.3 2.2H8.1a1.5 1.5 0 0 1-1.3-2.2Z" fill="#F38020" stroke="none"/></svg>';const k=({Cloudflare:"cloud",Microsoft:"windows",Monitoring:"gauge",Development:"monitor",Infrastructure:"server",Productivity:"briefcase",Other:"box"})[category]||"box";if(k==="windows")return '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" fill="#F35325" stroke="none"/><rect x="13" y="3" width="8" height="8" fill="#81BC06" stroke="none"/><rect x="3" y="13" width="8" height="8" fill="#05A6F0" stroke="none"/><rect x="13" y="13" width="8" height="8" fill="#FFBA08" stroke="none"/></svg>';return svg(k)}
+function categorySvg(category){if(category==="Cloudflare")return '<svg class="category-cloudflare" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 9.1a4.9 4.9 0 0 0-9.7-.9 3.8 3.8 0 0 0 .2 7.6h11a3.5 3.5 0 0 0 .1-7c-.5 0-1 .1-1.6.3Z" fill="#F38020" stroke="none"/><path d="M6.8 16.1h12.3a3.6 3.6 0 0 1-3.3 2.2H8.1a1.5 1.5 0 0 1-1.3-2.2Z" fill="#F38020" stroke="none"/></svg>';const k=({Cloudflare:"cloud",Microsoft:"windows",Monitoring:"gauge",Development:"monitor",Infrastructure:"server",Productivity:"briefcase",Storage:"box",Networking:"cloud","Remote Access":"server",Other:"box"})[category]||"box";if(k==="windows")return '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" fill="#F35325" stroke="none"/><rect x="13" y="3" width="8" height="8" fill="#81BC06" stroke="none"/><rect x="3" y="13" width="8" height="8" fill="#05A6F0" stroke="none"/><rect x="13" y="13" width="8" height="8" fill="#FFBA08" stroke="none"/></svg>';return svg(k)}
 function serviceIconHtml(s){if(s.logoKey)return '<span class="icon-fallback" style="display:none">'+safe(s.icon||"◆")+'</span><img class="uploaded-logo" src="'+safe(assetUrl(s.logoKey))+'" alt="" loading="lazy" onerror="this.style.display=\'none\';this.previousElementSibling.style.display=\'grid\'">';const key=String(s.name||"").toLowerCase();const meta=[
 [/cloudflare/,{url:"https://cdn.simpleicons.org/cloudflare/F38020",fallback:"☁"}],
 [/^pages$/, {svg:'<path d="M13 2 5 13h5l-1 9 10-13h-6l2-7Z" fill="#FFB21A" stroke="#FFB21A" stroke-linejoin="round"/>'}],
@@ -265,6 +298,7 @@ let services=structuredClone(seed),current="All",view="list",density="regular",p
 let branding={name:"Luxorit",subtitle:"Pro",logo:""};
 let preferences={theme:"dark",landingPage:"home",defaultView:"list",sidebarCollapsed:false};
 let apiConnected=false,apiError="";
+let categoryRecords=[],taxonomyCategories=[],tagRecords=[],taxonomyLoaded=false,taxonomyBusy=false;
 let persistedBrandingLogoKey=null,brandingLogoPreviewUrl=null,brandingLogoUploadToken=0,brandingLogoUploadBusy=false;
 let pendingBrandingLogoKeys=new Set();
 let serviceLogoPreviewUrl=null,serviceUploadToken=0,serviceLogoUploadBusy=false;
@@ -469,8 +503,8 @@ if(showToast)toast("D1 connection failed: "+apiError);
 async function apiRequest(path,options={}){const response=await fetch("/api/"+path,{credentials:"same-origin",...options,headers:{"content-type":"application/json",...(options.headers||{})}});const body=await response.json().catch(()=>({}));if(!response.ok)throw new Error(body.error||("API request failed ("+response.status+")"));return body}
 function apiPayload(s){return {name:s.name,url:s.url,description:s.description||"",icon:s.icon||"🔧",logoKey:s.logoKey||null,category:s.category,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}}
 async function remoteSaveService(s,isNew=false){return apiRequest("services"+(!isNew&&s.id!=null?"?id="+encodeURIComponent(s.id):""),{method:isNew?"POST":"PUT",body:JSON.stringify(apiPayload(s))})}
-async function loadRemoteData(){try{const [remoteServices,remoteSettings,remoteCategories]=await Promise.all([apiRequest("services"),apiRequest("settings"),apiRequest("categories")]);if(!Array.isArray(remoteServices)||!Array.isArray(remoteCategories))throw new Error("Unexpected response from the database API");services=remoteServices.map(s=>({...s,id:Number(s.id),favorite:!!s.favorite,tags:Array.isArray(s.tags)?s.tags:[]}));nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;branding={...branding,...(remoteSettings.branding||{})};persistedBrandingLogoKey=branding.logoKey||null;preferences={...preferences,...(remoteSettings.preferences||{})};document.documentElement.dataset.theme=preferences.theme||"dark";apiConnected=true;apiError="";setD1Status("connected","Connection verified. Catalog and portal settings are reachable in shared D1.",{serviceCount:services.length,categoryCount:remoteCategories.length,tagCount:countTagsInUse(services)});render();toast("Connected to shared D1 database")}catch(error){apiConnected=false;apiError=error.message||"Database API unavailable";setD1Status("offline","Connection failed: "+apiError,{serviceCount:null,categoryCount:null,tagCount:null});render();toast("Database unavailable, using browser-local data")}}
-const categories=()=>["All",...new Set(services.map(s=>s.category))];
+async function loadRemoteData(){try{const [remoteServices,remoteSettings,remoteCategories]=await Promise.all([apiRequest("services"),apiRequest("settings"),apiRequest("categories")]);if(!Array.isArray(remoteServices)||!Array.isArray(remoteCategories))throw new Error("Unexpected response from the database API");categoryRecords=remoteCategories;services=remoteServices.map(s=>({...s,id:Number(s.id),favorite:!!s.favorite,tags:Array.isArray(s.tags)?s.tags:[]}));nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;branding={...branding,...(remoteSettings.branding||{})};persistedBrandingLogoKey=branding.logoKey||null;preferences={...preferences,...(remoteSettings.preferences||{})};document.documentElement.dataset.theme=preferences.theme||"dark";apiConnected=true;apiError="";setD1Status("connected","Connection verified. Catalog and portal settings are reachable in shared D1.",{serviceCount:services.length,categoryCount:remoteCategories.length,tagCount:countTagsInUse(services)});render();toast("Connected to shared D1 database")}catch(error){apiConnected=false;apiError=error.message||"Database API unavailable";setD1Status("offline","Connection failed: "+apiError,{serviceCount:null,categoryCount:null,tagCount:null});render();toast("Database unavailable, using browser-local data")}}
+const categories=()=>["All",...new Set([...(categoryRecords||[]).slice().sort((a,b)=>(Number(a.sortOrder??a.sort_order)||9999)-(Number(b.sortOrder??b.sort_order)||9999)).map(c=>c.name),...services.map(s=>s.category)])];
 function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2200)}
 function persist(){try{localStorage.setItem("luxorit-portal-v1",JSON.stringify({services,view,density,theme:document.documentElement.dataset.theme,appVersion:APP_VERSION,branding,preferences}))}catch{}}
 function safe(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -517,7 +551,86 @@ const pImage=$("settingsLogoImage");if(pImage){pImage.hidden=!source;if(source)p
 const pText=$("settingsLogoText"),pGraphic=$("settingsLogoGraphic");if(pText&&pGraphic){pText.textContent=mark;pText.hidden=!!source||!mark;pGraphic.hidden=!!source||!!mark}
 if($("removeBrandingLogo"))$("removeBrandingLogo").hidden=!logoKey&&!brandingLogoPreviewUrl;
 }
-function renderSettings(){$("brandingName").value=branding.name||"Luxorit";$("brandingSubtitle").value=branding.subtitle||"";$("brandingLogo").value=branding.logo||"";$("themeSetting").value=document.documentElement.dataset.theme||"dark";$("landingSetting").value=preferences.landingPage||"home";$("defaultViewSetting").value=preferences.defaultView||"list";$("sidebarCollapsedSetting").checked=!!preferences.sidebarCollapsed;$("settingsVersion").textContent=APP_VERSION;applyBranding();renderD1Status();renderR2Status()}
+const CATEGORY_ICON_OPTIONS=[
+["box","General"],["cloudflare","Cloudflare"],["cloud","Cloud"],["server","Server"],["infrastructure","Infrastructure"],["storage","Storage"],["networking","Networking"],["remote-access","Remote access"],["monitor","Development"],["gauge","Monitoring"],["briefcase","Productivity"],["windows","Microsoft"]
+];
+function taxonomyMessage(id,message,isError=false){const el=$(id);if(!el)return;el.textContent=message||"";el.classList.toggle("error",!!isError)}
+function renderCategoryManager(){
+const host=$("categoryManagerList");if(!host)return;
+if(!apiConnected){host.innerHTML='<div class="taxonomy-empty">The shared database is not connected. Category changes cannot be saved.</div>';return}
+if(!taxonomyLoaded){host.innerHTML='<div class="taxonomy-empty">Loading categories…</div>';return}
+if(!taxonomyCategories.length){host.innerHTML='<div class="taxonomy-empty">No categories yet. Add one above.</div>';return}
+const options=cat=>CATEGORY_ICON_OPTIONS.map(([value,label])=>'<option value="'+value+'"'+(cat.icon===value?" selected":"")+">"+label+"</option>").join("");
+host.innerHTML=taxonomyCategories.map(cat=>'<div class="taxonomy-row" data-category-row="'+Number(cat.id)+'"><div class="taxonomy-row-fields"><input data-category-name maxlength="60" value="'+safe(cat.name)+'" aria-label="Name for category '+safe(cat.name)+'"><select data-category-icon aria-label="Icon for category '+safe(cat.name)+'">'+options(cat)+'</select><input data-category-order type="number" min="1" max="9999" value="'+Number(cat.sortOrder||1)+'" aria-label="Sort order for category '+safe(cat.name)+'"><span class="taxonomy-usage">'+Number(cat.serviceCount||0)+' services</span></div><div class="taxonomy-row-actions"><button type="button" class="secondary" data-category-save="'+Number(cat.id)+'">Save</button><button type="button" class="secondary taxonomy-danger" data-category-delete="'+Number(cat.id)+'" '+(Number(cat.serviceCount)>0?'disabled title="Move services to another category first"':'title="Delete empty category"')+'>Delete</button></div></div>').join("");
+host.querySelectorAll("[data-category-save]").forEach(button=>button.onclick=async()=>{
+ const id=Number(button.dataset.categorySave),row=host.querySelector('[data-category-row="'+id+'"]');if(!row)return;
+ const name=row.querySelector("[data-category-name]").value.trim(),icon=row.querySelector("[data-category-icon]").value,sortOrder=Number(row.querySelector("[data-category-order]").value);
+ button.disabled=true;taxonomyMessage("categoryManagerMessage","Saving category…");
+ try{await apiRequest("categories-manage?id="+id,{method:"PUT",body:JSON.stringify({name,icon,sortOrder})});await loadRemoteData();await refreshTaxonomy(false);taxonomyMessage("categoryManagerMessage","Category saved. Services remain assigned to it.");toast("Category saved")}
+ catch(error){taxonomyMessage("categoryManagerMessage",error.message||"Could not save category.",true);button.disabled=false}
+});
+host.querySelectorAll("[data-category-delete]").forEach(button=>button.onclick=async()=>{
+ const id=Number(button.dataset.categoryDelete),cat=taxonomyCategories.find(c=>Number(c.id)===id);if(!cat||Number(cat.serviceCount)>0)return;
+ if(!confirm('Delete the empty category "'+cat.name+'"?'))return;
+ button.disabled=true;taxonomyMessage("categoryManagerMessage","Deleting category…");
+ try{await apiRequest("categories-manage?id="+id,{method:"DELETE"});await loadRemoteData();await refreshTaxonomy(false);taxonomyMessage("categoryManagerMessage","Empty category deleted.");toast("Category deleted")}
+ catch(error){taxonomyMessage("categoryManagerMessage",error.message||"Could not delete category.",true);button.disabled=false}
+});
+}
+function renderTagManager(){
+const host=$("tagManagerList");if(!host)return;
+if(!apiConnected){host.innerHTML='<div class="taxonomy-empty">The shared database is not connected. Tag changes cannot be saved.</div>';return}
+if(!taxonomyLoaded){host.innerHTML='<div class="taxonomy-empty">Loading tags…</div>';return}
+if(!tagRecords.length){host.innerHTML='<div class="taxonomy-empty">No tags yet. Add one above.</div>';return}
+host.innerHTML=tagRecords.map(tag=>'<div class="taxonomy-row taxonomy-tag-row" data-tag-row="'+Number(tag.id)+'"><div class="taxonomy-row-fields"><input data-tag-name maxlength="40" value="'+safe(tag.name)+'" aria-label="Name for tag '+safe(tag.name)+'"><span class="taxonomy-usage">'+Number(tag.serviceCount||0)+' services</span></div><div class="taxonomy-row-actions"><button type="button" class="secondary" data-tag-save="'+Number(tag.id)+'">Save</button><button type="button" class="secondary taxonomy-danger" data-tag-delete="'+Number(tag.id)+'" title="Delete tag and remove its assignments">Delete</button></div></div>').join("");
+host.querySelectorAll("[data-tag-save]").forEach(button=>button.onclick=async()=>{
+ const id=Number(button.dataset.tagSave),row=host.querySelector('[data-tag-row="'+id+'"]');if(!row)return;
+ const name=row.querySelector("[data-tag-name]").value.trim();button.disabled=true;taxonomyMessage("tagManagerMessage","Saving tag…");
+ try{await apiRequest("tags?id="+id,{method:"PUT",body:JSON.stringify({name})});await loadRemoteData();await refreshTaxonomy(false);taxonomyMessage("tagManagerMessage","Tag renamed across the catalog.");toast("Tag saved")}
+ catch(error){taxonomyMessage("tagManagerMessage",error.message||"Could not save tag.",true);button.disabled=false}
+});
+host.querySelectorAll("[data-tag-delete]").forEach(button=>button.onclick=async()=>{
+ const id=Number(button.dataset.tagDelete),tag=tagRecords.find(t=>Number(t.id)===id);if(!tag)return;
+ const count=Number(tag.serviceCount||0);if(!confirm('Delete tag "'+tag.name+'"'+(count?' and remove it from '+count+' service(s)':'')+'?'))return;
+ button.disabled=true;taxonomyMessage("tagManagerMessage","Deleting tag…");
+ try{await apiRequest("tags?id="+id,{method:"DELETE"});await loadRemoteData();await refreshTaxonomy(false);taxonomyMessage("tagManagerMessage","Tag deleted.");toast("Tag deleted")}
+ catch(error){taxonomyMessage("tagManagerMessage",error.message||"Could not delete tag.",true);button.disabled=false}
+});
+}
+async function refreshTaxonomy(showToast=true){
+if(taxonomyBusy)return;taxonomyBusy=true;
+taxonomyMessage("categoryManagerMessage","Loading categories…");taxonomyMessage("tagManagerMessage","Loading tags…");
+try{
+const [categoriesResult,tagsResult]=await Promise.all([apiRequest("categories-manage"),apiRequest("tags")]);
+if(!Array.isArray(categoriesResult)||!Array.isArray(tagsResult))throw new Error("Unexpected category or tag response.");
+taxonomyCategories=categoriesResult;categoryRecords=categoriesResult;tagRecords=tagsResult;taxonomyLoaded=true;
+taxonomyMessage("categoryManagerMessage",taxonomyCategories.length+" categories, including empty sidebar placeholders.");taxonomyMessage("tagManagerMessage",tagRecords.length+" tags available across the catalog.");
+}catch(error){taxonomyMessage("categoryManagerMessage",error.message||"Could not load categories.",true);taxonomyMessage("tagManagerMessage",error.message||"Could not load tags.",true);taxonomyLoaded=false}
+finally{taxonomyBusy=false}
+nav();renderCategoryManager();renderTagManager();
+const accessCategory=$("accessSyncCategory");
+if(accessCategory){const current=accessCategory.value;const names=[...new Set([...taxonomyCategories.map(c=>c.name),"Access Launcher"])].sort((a,b)=>a.localeCompare(b));accessCategory.replaceChildren(...names.map(name=>{const option=document.createElement("option");option.value=name;option.textContent=name;return option}));accessCategory.value=names.includes(current)?current:"Access Launcher"}
+if(showToast)toast(taxonomyLoaded?"Categories and tags refreshed":"Could not load categories and tags");
+}
+async function addCategory(){
+if(!apiConnected){taxonomyMessage("categoryManagerMessage","Connect to the shared database first.",true);return}
+const name=$("newCategoryName").value.trim(),icon=$("newCategoryIcon").value,orderValue=$("newCategoryOrder").value;
+if(!name){taxonomyMessage("categoryManagerMessage","Enter a category name.",true);$("newCategoryName").focus();return}
+const payload={name,icon};if(orderValue)payload.sortOrder=Number(orderValue);
+const button=$("addCategoryButton");button.disabled=true;taxonomyMessage("categoryManagerMessage","Creating category…");
+try{await apiRequest("categories-manage",{method:"POST",body:JSON.stringify(payload)});$("newCategoryName").value="";$("newCategoryOrder").value="";await loadRemoteData();await refreshTaxonomy(false);taxonomyMessage("categoryManagerMessage","Category added to the sidebar.");toast("Category added")}
+catch(error){taxonomyMessage("categoryManagerMessage",error.message||"Could not add category.",true)}
+finally{button.disabled=false}
+}
+async function addTag(){
+if(!apiConnected){taxonomyMessage("tagManagerMessage","Connect to the shared database first.",true);return}
+const name=$("newTagName").value.trim();if(!name){taxonomyMessage("tagManagerMessage","Enter a tag name.",true);$("newTagName").focus();return}
+const button=$("addTagButton");button.disabled=true;taxonomyMessage("tagManagerMessage","Creating tag…");
+try{await apiRequest("tags",{method:"POST",body:JSON.stringify({name})});$("newTagName").value="";await loadRemoteData();await refreshTaxonomy(false);taxonomyMessage("tagManagerMessage","Tag added. Assign it to services in each service's Edit dialog.");toast("Tag added")}
+catch(error){taxonomyMessage("tagManagerMessage",error.message||"Could not add tag.",true)}
+finally{button.disabled=false}
+}
+function renderSettings(){$("brandingName").value=branding.name||"Luxorit";$("brandingSubtitle").value=branding.subtitle||"";$("brandingLogo").value=branding.logo||"";$("themeSetting").value=document.documentElement.dataset.theme||"dark";$("landingSetting").value=preferences.landingPage||"home";$("defaultViewSetting").value=preferences.defaultView||"list";$("sidebarCollapsedSetting").checked=!!preferences.sidebarCollapsed;$("settingsVersion").textContent=APP_VERSION;applyBranding();renderD1Status();renderR2Status();renderCategoryManager();renderTagManager();if(apiConnected&&!taxonomyLoaded&&!taxonomyBusy)void refreshTaxonomy(false)}
 function render(){nav();showPage();if(page==="home")renderHome();else if(page==="settings")renderSettings();else renderCatalog();$("versionLabel").textContent="v"+APP_VERSION;applyBranding();bindRenderedActions();persist()}
 function renderServiceLogoPreview(source,fallback="🔧"){
 const image=$("serviceLogoImage"),text=$("serviceLogoFallback");
@@ -556,6 +669,10 @@ function updateCollapseButton(){const collapsed=$("sidebar").classList.contains(
 $("collapse").onclick=()=>{$("sidebar").classList.toggle("collapsed");updateCollapseButton()};updateCollapseButton();
 $("theme").onclick=()=>{document.documentElement.dataset.theme=document.documentElement.dataset.theme==="dark"?"light":"dark";preferences.theme=document.documentElement.dataset.theme;render()};
 document.querySelectorAll(".nav[data-page]").forEach(b=>b.onclick=()=>navigatePage(b.dataset.page));
+$("refreshTaxonomy").onclick=()=>refreshTaxonomy(true);
+$("addCategoryButton").onclick=()=>addCategory();
+$("addTagButton").onclick=()=>addTag();
+for(const id of ["newCategoryName","newTagName"]){$(id).addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$(id==="newCategoryName"?"addCategoryButton":"addTagButton").click()}})}
 $("goAll").onclick=()=>navigatePage("all");$("homeFavoritesMore").onclick=()=>navigatePage("favorites");
 $("export").onclick=async()=>{try{let backup;if(apiConnected){backup=await apiRequest("backup")}else{backup={schemaVersion:1,exportedAt:new Date().toISOString(),source:"browser-local",version:APP_VERSION,services,categories:[...new Map(services.map(s=>[s.category,{name:s.category,icon:"grid"}])).values()],branding,preferences,theme:document.documentElement.dataset.theme}}const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:"application/json"}));a.download="dashboard-manager-portal-backup-"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast(apiConnected?"Shared D1 backup exported":"Browser-only backup exported, D1 is not connected")}catch(error){toast("Backup export failed: "+(error.message||"database error"))}};
 $("import").onclick=()=>$("importFile").click();$("importFile").onchange=async e=>{try{const file=e.target.files&&e.target.files[0];if(!file)return;const d=JSON.parse(await file.text());if(!d||!Array.isArray(d.services))throw Error("Backup must contain a services array");if(d.services.length>200)throw Error("Backups can contain at most 200 services");if(apiConnected){const proceed=confirm("Restore this backup to the shared D1 database? This will replace the current services, categories, tags, branding, and preferences. Export a backup first if you need to keep the current data.");if(!proceed)return;const result=await apiRequest("backup",{method:"POST",body:JSON.stringify(d)});await loadRemoteData();page="all";current="All";view="list";render();toast("D1 restored: "+result.serviceCount+" services, "+result.categoryCount+" categories")}else{const proceed=confirm("The shared database is not connected. Import this backup into this browser only? It will not update D1.");if(!proceed)return;services=d.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences};if(d.theme)document.documentElement.dataset.theme=d.theme;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;page="all";current="All";view="list";render();toast("Backup imported into this browser only")}}catch(error){toast("Could not restore backup: "+(error.message||"invalid JSON"))}finally{e.target.value=""}};
