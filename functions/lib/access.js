@@ -14,6 +14,11 @@ function jsonResponse(body, status = 200) {
 }
 
 export async function requireCloudflareAccess(request, env) {
+  // Bypass Cloudflare Access in local development
+  if (env.BYPASS_ACCESS === "1" || !env.CF_PAGES_URL || String(env.CF_PAGES_URL || "").includes("localhost")) {
+    return { claims: { sub: "local-dev", email: "local@dev" } };
+  }
+
   const teamDomain = String(env.ACCESS_TEAM_DOMAIN || "").replace(/^https?:\/\//, "").replace(/\/+$/, "");
   const audience = String(env.ACCESS_AUD || "").trim();
 
