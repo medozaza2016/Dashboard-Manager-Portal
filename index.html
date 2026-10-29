@@ -665,7 +665,7 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.45";
+const APP_VERSION="0.1.46";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -1029,7 +1029,7 @@ function persist(){try{localStorage.setItem("luxorit-portal-v1",JSON.stringify({
 function safe(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function load(){try{const d=JSON.parse(localStorage.getItem("luxorit-portal-v1"));if(d){if(Array.isArray(d.services)){services=d.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences};if(d.theme)document.documentElement.dataset.theme=d.theme;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1}if(d.view)view=d.view;if(d.density)density=d.density;if(d.theme)document.documentElement.dataset.theme=d.theme;if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences}}}catch{}}
 function matchesSearch(s){const q=$("search").value.trim().toLowerCase();return !q||[s.name,s.description,s.category,...(s.tags||[])].join(" ").toLowerCase().includes(q)}
-function filtered(){const globalSearch=!!$("search").value.trim();const items=services.filter(s=>(globalSearch?true:page==="favorites"?s.favorite:page==="category"?s.category===current:page==="tag"?(s.tags||[]).includes(activeTag):true)&&matchesSearch(s));return !globalSearch&&page==="category"?items.sort((a,b)=>(Number(a.categorySortOrder)||9999)-(Number(b.categorySortOrder)||9999)||Number(a.id)-Number(b.id)):items}
+function filtered(){const globalSearch=!!$("search").value.trim();const items=services.filter(s=>(globalSearch?true:page==="favorites"?s.favorite:page==="category"?s.category===current:page==="tag"?(s.tags||[]).includes(activeTag):true)&&matchesSearch(s));if(page==="all")return items.sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""),undefined,{sensitivity:"base",numeric:true}));return !globalSearch&&page==="category"?items.sort((a,b)=>(Number(a.categorySortOrder)||9999)-(Number(b.categorySortOrder)||9999)||Number(a.id)-Number(b.id)):items}
 function tagHtml(t){return '<span class="tag">'+safe(t)+'</span>'}
 function updateActiveNavigation(){document.querySelectorAll(".nav[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".nav[data-cat]").forEach(b=>b.classList.toggle("active",page==="category"&&b.dataset.cat===current));document.querySelectorAll(".nav[data-tag-nav]").forEach(b=>b.classList.toggle("active",page==="tag"&&b.dataset.tagNav===activeTag))}
 function nav(){
