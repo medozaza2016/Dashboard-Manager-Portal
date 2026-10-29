@@ -136,13 +136,33 @@
 @media(max-width:950px){.integration-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.settings-grid{grid-template-columns:1fr}.settings-card.wide{grid-column:auto}.settings-fields{grid-template-columns:1fr}.settings-field.full{grid-column:auto}.access-sync-app-list{grid-template-columns:1fr}}
 @media(max-width:550px){.integration-grid{grid-template-columns:1fr}.integration-card.deployment-card{grid-column:auto}}
+
+/* v0.1.16 admin layout refinements */
+.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-height:62vh;overflow:auto;padding:2px 3px 2px 0;align-content:start;overscroll-behavior:contain}
+.taxonomy-list.category-manager-grid .taxonomy-row,.taxonomy-list.tag-manager-grid .taxonomy-row{min-width:0;align-content:start}
+.taxonomy-list.category-manager-grid .category-manager-item{min-height:154px;display:grid;grid-template-rows:auto 1fr auto;gap:9px;padding:10px;cursor:grab}
+.category-card-head{display:flex;align-items:center;justify-content:space-between;gap:6px;color:var(--muted);font-size:10px}
+.category-card-fields{display:grid;align-content:start;gap:7px;min-width:0}
+.category-card-fields input,.category-card-fields select{min-width:0;width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:11px}
+.category-drag-handle{display:inline-grid;place-items:center;width:26px;height:26px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--muted);cursor:grab;font-size:17px;line-height:1;user-select:none}
+.category-drag-handle:active{cursor:grabbing}
+.category-manager-item.dragging{opacity:.4}.category-manager-item.drag-over{border-color:var(--green);box-shadow:0 0 0 1px var(--green) inset}
+.taxonomy-list.tag-manager-grid .taxonomy-row{min-height:100px;grid-template-rows:1fr auto;gap:8px;padding:10px}
+.taxonomy-list.tag-manager-grid .taxonomy-tag-row .taxonomy-row-fields{display:flex;flex-wrap:wrap;align-items:center;gap:7px}
+.taxonomy-list.tag-manager-grid .taxonomy-tag-row [data-tag-name]{min-width:0;flex:1}
+.taxonomy-list.tag-manager-grid .taxonomy-tag-row .taxonomy-row-actions{justify-content:flex-start}
+.taxonomy-list.tag-manager-grid .taxonomy-tag-row .taxonomy-row-actions button{padding:5px 8px}
+.taxonomy-order-help{font-size:11px;color:var(--muted);margin:4px 0 10px}
+@media(max-width:1150px){.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{grid-template-columns:minmax(0,1fr)}}
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
 <div class="group-label">Workspace</div>
 <button class="nav active" data-page="home" title="Home"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/></svg></span><span>Home</span></button><button class="nav" data-page="all" title="All services"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span>All Services</span></button>
-<button class="nav" data-page="admin" title="Administration"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Admin</span></button>
-<div class="group-label">Categories</div><div id="categoryNav"></div><div class="bottom"><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.15</div></div></aside>
+
+<div class="group-label">Categories</div><div id="categoryNav"></div><div class="bottom">
+<button class="nav" data-page="admin" title="Administration"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Admin</span></button><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.16</div></div></aside>
 <main class="main"><header class="topbar"><button class="iconbtn" id="collapse" title="Collapse sidebar" aria-label="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="m14 7-5 5 5 5"/></svg></button><div class="search"><span class="search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="search" placeholder="Search applications, tools, or tags..." aria-label="Search applications"></div><div class="top-actions"><button class="iconbtn" id="theme" title="Toggle theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg></button><button class="iconbtn help" id="help" title="About" aria-label="About"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button><div class="avatar">JD</div></div></header>
 <div class="content">
 <section id="homePage">
@@ -177,11 +197,10 @@
         <select id="newCategoryIcon" aria-label="New category icon">
           <option value="box">General</option><option value="cloudflare">Cloudflare</option><option value="cloud">Cloud</option><option value="server">Server</option><option value="infrastructure">Infrastructure</option><option value="storage">Storage</option><option value="networking">Networking</option><option value="remote-access">Remote access</option><option value="monitor">Development</option><option value="gauge">Monitoring</option><option value="briefcase">Productivity</option><option value="windows">Microsoft</option>
         </select>
-        <input id="newCategoryOrder" type="number" min="1" max="9999" placeholder="Auto" aria-label="Category sort order">
         <button class="primary" type="button" id="addCategoryButton">Add category</button>
       </div>
       <div id="categoryManagerMessage" class="taxonomy-message" role="status" aria-live="polite"></div>
-      <div id="categoryManagerList" class="taxonomy-list"><div class="taxonomy-empty">Connect to the database to load categories.</div></div>
+      <div id="categoryManagerList" class="taxonomy-list category-manager-grid"><div class="taxonomy-empty">Connect to the database to load categories.</div></div>
     </article>
   </section>
   <section id="adminTagsPanel" class="admin-panel-view" hidden>
@@ -190,7 +209,7 @@
       <div class="taxonomy-panel-head"><h3>Tag library</h3><div class="settings-actions"><input id="tagFilter" class="taxonomy-filter" type="search" placeholder="Filter tags…" aria-label="Filter tags"><span id="tagManagerCount" class="taxonomy-usage"></span></div></div>
       <div class="taxonomy-create-row" style="grid-template-columns:minmax(0,1fr) auto"><input id="newTagName" maxlength="40" placeholder="New tag name" aria-label="New tag name"><button class="primary" type="button" id="addTagButton">Add tag</button></div>
       <div id="tagManagerMessage" class="taxonomy-message" role="status" aria-live="polite"></div>
-      <div id="tagManagerList" class="taxonomy-list"><div class="taxonomy-empty">Connect to the database to load tags.</div></div>
+      <div id="tagManagerList" class="taxonomy-list tag-manager-grid"><div class="taxonomy-empty">Connect to the database to load tags.</div></div>
     </article>
   </section>
 </section>
@@ -275,7 +294,7 @@
         </div>
       </article>
       <article class="settings-card wide">
-        <h2>About this portal</h2><div class="settings-version">Version <span id="settingsVersion">0.1.15</span></div><div class="settings-note">Cloudflare Pages · Authenticated Pages Functions · Shared Cloudflare D1 storage · Cloudflare Access</div>
+        <h2>About this portal</h2><div class="settings-version">Version <span id="settingsVersion">0.1.16</span></div><div class="settings-note">Cloudflare Pages · Authenticated Pages Functions · Shared Cloudflare D1 storage · Cloudflare Access</div>
       </article>
     </div>
     <div class="settings-actions" style="justify-content:flex-end;margin-top:16px"><button class="secondary" type="button" id="resetBranding">Reset branding</button><button class="primary" type="submit">Save settings</button></div>
@@ -285,7 +304,7 @@
 <div class="modal-backdrop" id="serviceModal"><form class="modal" id="serviceForm"><h2 id="modalTitle">Add service</h2><input type="hidden" id="serviceId"><label for="name">Name</label><input id="name" required><label for="url">URL</label><input id="url" type="url" placeholder="https://service.example" required><label for="category">Category</label><select id="category"></select><label for="description">Description</label><input id="description"><label for="icon">Fallback icon for custom services</label><input id="icon" value="🔧"><label>Tags</label><div class="service-tag-picker"><div id="serviceSelectedTags" class="service-selected-tags" aria-live="polite"></div><input id="serviceTagSearch" class="service-tag-search" type="search" placeholder="Search available tags…" aria-label="Search tags"><div id="serviceTagOptions" class="service-tag-options"></div><div class="settings-note">Choose one or more tags. Manage the tag list in Admin → Tags.</div></div><div class="settings-field full"><label for="serviceLogoFile">Service logo</label><div class="logo-upload-row"><div class="service-logo-preview" id="serviceLogoPreview"><span id="serviceLogoFallback">🔧</span><img id="serviceLogoImage" alt="" hidden></div><div class="settings-actions"><button class="secondary" type="button" id="chooseServiceLogo">Browse image</button><button class="secondary" type="button" id="removeServiceLogo" hidden>Remove image</button><input type="file" id="serviceLogoFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden><input type="hidden" id="serviceLogoKey"><span id="serviceLogoUploadStatus" class="settings-note">Optional · PNG, JPEG, WebP or GIF · up to 5 MB</span></div></div></div><div class="modal-actions"><button class="secondary" type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save service</button></div></form></div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.15";
+const APP_VERSION="0.1.16";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -550,7 +569,7 @@ async function apiRequest(path,options={}){const response=await fetch("/api/"+pa
 function apiPayload(s){return {name:s.name,url:s.url,description:s.description||"",icon:s.icon||"🔧",logoKey:s.logoKey||null,category:s.category,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}}
 async function remoteSaveService(s,isNew=false){return apiRequest("services"+(!isNew&&s.id!=null?"?id="+encodeURIComponent(s.id):""),{method:isNew?"POST":"PUT",body:JSON.stringify(apiPayload(s))})}
 async function loadRemoteData(){try{const [remoteServices,remoteSettings,remoteCategories]=await Promise.all([apiRequest("services"),apiRequest("settings"),apiRequest("categories")]);if(!Array.isArray(remoteServices)||!Array.isArray(remoteCategories))throw new Error("Unexpected response from the database API");categoryRecords=remoteCategories;services=remoteServices.map(s=>({...s,id:Number(s.id),favorite:!!s.favorite,tags:Array.isArray(s.tags)?s.tags:[]}));nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;branding={...branding,...(remoteSettings.branding||{})};persistedBrandingLogoKey=branding.logoKey||null;preferences={...preferences,...(remoteSettings.preferences||{})};document.documentElement.dataset.theme=preferences.theme||"dark";apiConnected=true;apiError="";setD1Status("connected","Connection verified. Catalog and portal settings are reachable in shared D1.",{serviceCount:services.length,categoryCount:remoteCategories.length,tagCount:countTagsInUse(services)});render();toast("Connected to shared D1 database")}catch(error){apiConnected=false;apiError=error.message||"Database API unavailable";setD1Status("offline","Connection failed: "+apiError,{serviceCount:null,categoryCount:null,tagCount:null});render();toast("Database unavailable, using browser-local data")}}
-const categories=()=>["All",...new Set([...(categoryRecords||[]).slice().sort((a,b)=>(Number(a.sortOrder??a.sort_order)||9999)-(Number(b.sortOrder??b.sort_order)||9999)).map(c=>c.name),...services.map(s=>s.category)])];
+const categories=()=>["All",...new Set((apiConnected?categoryRecords.slice().sort((a,b)=>(Number(a.sortOrder??a.sort_order)||9999)-(Number(b.sortOrder??b.sort_order)||9999)).map(c=>c.name):services.map(s=>s.category)).filter(Boolean))];
 function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2200)}
 function persist(){try{localStorage.setItem("luxorit-portal-v1",JSON.stringify({services,view,density,theme:document.documentElement.dataset.theme,appVersion:APP_VERSION,branding,preferences}))}catch{}}
 function safe(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -609,20 +628,48 @@ const query=($("categoryFilter")?.value||"").trim().toLowerCase();
 const shown=taxonomyCategories.filter(cat=>!query||cat.name.toLowerCase().includes(query));
 if(!shown.length){host.innerHTML='<div class="taxonomy-empty">'+(query?"No categories match this filter.":"No categories yet. Add one above.")+'</div>';return}
 const options=cat=>CATEGORY_ICON_OPTIONS.map(([value,label])=>'<option value="'+value+'"'+(cat.icon===value?" selected":"")+">"+label+"</option>").join("");
-host.innerHTML=shown.map(cat=>'<div class="taxonomy-row" data-category-row="'+Number(cat.id)+'"><div class="taxonomy-row-fields"><input data-category-name maxlength="60" value="'+safe(cat.name)+'" aria-label="Name for category '+safe(cat.name)+'"><select data-category-icon aria-label="Icon for category '+safe(cat.name)+'">'+options(cat)+'</select><input data-category-order type="number" min="1" max="9999" value="'+Number(cat.sortOrder||1)+'" aria-label="Sort order for category '+safe(cat.name)+'"><span class="taxonomy-usage">'+Number(cat.serviceCount||0)+' services</span></div><div class="taxonomy-row-actions"><button type="button" class="secondary" data-category-save="'+Number(cat.id)+'">Save</button><button type="button" class="secondary taxonomy-danger" data-category-delete="'+Number(cat.id)+'" '+(Number(cat.serviceCount)>0?'disabled title="Move services to another category first"':'title="Delete empty category"')+'>Delete</button></div></div>').join("");
+host.innerHTML=shown.map(cat=>'<div class="taxonomy-row category-manager-item" draggable="'+(!query)+'" data-category-row="'+Number(cat.id)+'"><div class="category-card-head"><span class="category-drag-handle" title="'+(query?"Clear filter to reorder":"Drag to reorder")+'" aria-label="Drag to reorder category">⠿</span><span class="taxonomy-usage">'+Number(cat.serviceCount||cat.service_count||0)+' services</span></div><div class="category-card-fields"><input data-category-name maxlength="60" value="'+safe(cat.name)+'" aria-label="Name for category '+safe(cat.name)+'"><select data-category-icon aria-label="Icon for category '+safe(cat.name)+'">'+options(cat)+'</select></div><div class="taxonomy-row-actions"><button type="button" class="secondary" data-category-save="'+Number(cat.id)+'">Save</button><button type="button" class="secondary taxonomy-danger" data-category-delete="'+Number(cat.id)+'" '+(Number(cat.serviceCount||cat.service_count||0)>0?'disabled title="Move services to another category first"':'title="Delete empty category"')+'>Delete</button></div></div>').join("");
 host.querySelectorAll("[data-category-save]").forEach(button=>button.onclick=async()=>{
  const id=Number(button.dataset.categorySave),row=host.querySelector('[data-category-row="'+id+'"]');if(!row)return;
- const name=row.querySelector("[data-category-name]").value.trim(),icon=row.querySelector("[data-category-icon]").value,sortOrder=Number(row.querySelector("[data-category-order]").value);
+ const name=row.querySelector("[data-category-name]").value.trim(),icon=row.querySelector("[data-category-icon]").value;
  button.disabled=true;taxonomyMessage("categoryManagerMessage","Saving category…");
- try{await apiRequest("categories-manage?id="+id,{method:"PUT",body:JSON.stringify({name,icon,sortOrder})});await loadRemoteData();await refreshTaxonomy(false);taxonomyMessage("categoryManagerMessage","Category saved. Services remain assigned to it.");toast("Category saved")}
+ try{await apiRequest("categories-manage?id="+id,{method:"PUT",body:JSON.stringify({name,icon})});await refreshTaxonomy(false);categoryRecords=taxonomyCategories;nav();taxonomyMessage("categoryManagerMessage","Category saved.");toast("Category saved")}
  catch(error){taxonomyMessage("categoryManagerMessage",error.message||"Could not save category.",true);button.disabled=false}
 });
 host.querySelectorAll("[data-category-delete]").forEach(button=>button.onclick=async()=>{
- const id=Number(button.dataset.categoryDelete),cat=taxonomyCategories.find(c=>Number(c.id)===id);if(!cat||Number(cat.serviceCount)>0)return;
+ const id=Number(button.dataset.categoryDelete),cat=taxonomyCategories.find(c=>Number(c.id)===id);if(!cat||Number(cat.serviceCount||cat.service_count||0)>0)return;
  if(!confirm('Delete the empty category "'+cat.name+'"?'))return;
  button.disabled=true;taxonomyMessage("categoryManagerMessage","Deleting category…");
- try{await apiRequest("categories-manage?id="+id,{method:"DELETE"});await loadRemoteData();await refreshTaxonomy(false);taxonomyMessage("categoryManagerMessage","Empty category deleted.");toast("Category deleted")}
+ try{await apiRequest("categories-manage?id="+id,{method:"DELETE"});await refreshTaxonomy(false);categoryRecords=taxonomyCategories;nav();taxonomyMessage("categoryManagerMessage","Empty category deleted.");toast("Category deleted")}
  catch(error){taxonomyMessage("categoryManagerMessage",error.message||"Could not delete category.",true);button.disabled=false}
+});
+let draggedId=null;
+host.querySelectorAll("[data-category-row]").forEach(card=>{
+ card.addEventListener("dragstart",event=>{
+  if(query){event.preventDefault();return}
+  draggedId=Number(card.dataset.categoryRow);card.classList.add("dragging");
+  if(event.dataTransfer){event.dataTransfer.effectAllowed="move";event.dataTransfer.setData("text/plain",String(draggedId))}
+ });
+ card.addEventListener("dragover",event=>{if(draggedId==null||draggedId===Number(card.dataset.categoryRow)||query)return;event.preventDefault();if(event.dataTransfer)event.dataTransfer.dropEffect="move";card.classList.add("drag-over")});
+ card.addEventListener("dragleave",()=>card.classList.remove("drag-over"));
+ card.addEventListener("drop",async event=>{
+  event.preventDefault();card.classList.remove("drag-over");
+  const fromId=draggedId??Number(event.dataTransfer?.getData("text/plain")),toId=Number(card.dataset.categoryRow);draggedId=null;
+  if(query||!fromId||fromId===toId)return;
+  const order=taxonomyCategories.slice().sort((a,b)=>Number(a.sortOrder??a.sort_order||9999)-Number(b.sortOrder??b.sort_order||9999));
+  const from=order.findIndex(item=>Number(item.id)===fromId),to=order.findIndex(item=>Number(item.id)===toId);
+  if(from<0||to<0)return;
+  const [moved]=order.splice(from,1);order.splice(to,0,moved);
+  host.querySelectorAll("[data-category-row]").forEach(item=>item.classList.remove("dragging","drag-over"));
+  taxonomyMessage("categoryManagerMessage","Saving new category order…");
+  host.querySelectorAll("button").forEach(button=>button.disabled=true);
+  try{
+   const result=await apiRequest("categories-manage",{method:"PATCH",body:JSON.stringify({order:order.map(item=>Number(item.id))})});
+   taxonomyCategories=result;categoryRecords=result;nav();renderCategoryManager();
+   taxonomyMessage("categoryManagerMessage","Category order saved automatically.");toast("Category order saved");
+  }catch(error){taxonomyMessage("categoryManagerMessage",error.message||"Could not save category order.",true);renderCategoryManager()}
+ });
+ card.addEventListener("dragend",()=>{draggedId=null;host.querySelectorAll("[data-category-row]").forEach(item=>item.classList.remove("dragging","drag-over"))});
 });
 }
 function renderTagManager(){
@@ -667,11 +714,11 @@ if(showToast)toast(taxonomyLoaded?"Categories and tags refreshed":"Could not loa
 }
 async function addCategory(){
 if(!apiConnected){taxonomyMessage("categoryManagerMessage","Connect to the shared database first.",true);return}
-const name=$("newCategoryName").value.trim(),icon=$("newCategoryIcon").value,orderValue=$("newCategoryOrder").value;
+const name=$("newCategoryName").value.trim(),icon=$("newCategoryIcon").value;
 if(!name){taxonomyMessage("categoryManagerMessage","Enter a category name.",true);$("newCategoryName").focus();return}
-const payload={name,icon};if(orderValue)payload.sortOrder=Number(orderValue);
+const payload={name,icon};
 const button=$("addCategoryButton");button.disabled=true;taxonomyMessage("categoryManagerMessage","Creating category…");
-try{await apiRequest("categories-manage",{method:"POST",body:JSON.stringify(payload)});$("newCategoryName").value="";$("newCategoryOrder").value="";await loadRemoteData();await refreshTaxonomy(false);taxonomyMessage("categoryManagerMessage","Category added to the sidebar.");toast("Category added")}
+try{await apiRequest("categories-manage",{method:"POST",body:JSON.stringify(payload)});$("newCategoryName").value="";await loadRemoteData();await refreshTaxonomy(false);taxonomyMessage("categoryManagerMessage","Category added to the sidebar.");toast("Category added")}
 catch(error){taxonomyMessage("categoryManagerMessage",error.message||"Could not add category.",true)}
 finally{button.disabled=false}
 }
