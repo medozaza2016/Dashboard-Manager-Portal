@@ -211,7 +211,11 @@ export async function onRequest({ request, env }) {
   const validated = validateAndNormalize(payload);
   if (validated.error) return jsonResponse({ error: validated.error }, 400);
 
-  await restoreBackup(env.DB, validated.backup);
+  try {
+    await restoreBackup(env.DB, validated.backup);
+  } catch {
+    return jsonResponse({ error: "Backup restore failed. The database was not changed." }, 500);
+  }
   return jsonResponse({
     restored: true,
     serviceCount: validated.backup.services.length,
