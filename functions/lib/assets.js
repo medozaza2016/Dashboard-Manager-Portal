@@ -25,7 +25,7 @@ export async function isAssetReferenced(env, key) {
 }
 
 export async function deleteAssetIfUnreferenced(env, key) {
-  if (!env?.ASSETS || !isAllowedAssetKey(key)) return false;
+  if (!env?.R2_LOGOS || !isAllowedAssetKey(key)) return false;
   try {
     if (await isAssetReferenced(env, key)) return false;
     await env.R2_LOGOS.delete(key);
