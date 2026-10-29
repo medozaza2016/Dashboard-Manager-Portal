@@ -40,12 +40,12 @@ function validatePayload(payload) {
   return null;
 }
 
-async function saveTags(db, serviceId, values) {
+async function saveTags(db, serviceId, values, profileId) {
   await db.prepare("DELETE FROM service_tags WHERE service_id = ?").bind(serviceId).run();
   const tags = [...new Set((values || []).map((tag) => tag.trim()).filter(Boolean))];
   for (const name of tags) {
-    await db.prepare("INSERT OR IGNORE INTO tags (name) VALUES (?)").bind(name).run();
-    const tag = await db.prepare("SELECT id FROM tags WHERE name = ?").bind(name).first();
+    await db.prepare("INSERT OR IGNORE INTO tags (name, profile_id) VALUES (?, ?)").bind(name, profileId).run();
+    const tag = await db.prepare("SELECT id FROM tags WHERE name = ? AND profile_id = ?").bind(name, profileId).first();
     if (tag) await db.prepare("INSERT OR IGNORE INTO service_tags (service_id, tag_id) VALUES (?, ?)").bind(serviceId, tag.id).run();
   }
 }
@@ -62,27 +62,19 @@ export async function onRequest(context) {
   if (idParam != null && (!Number.isSafeInteger(id) || id < 1)) return jsonResponse({ error: "Invalid service id." }, 400);
 
   const profileIdParam = searchParams.get("profile");
-  const profileId = profileIdParam ? Number(profileIdParam) : null;
-  if (profileIdParam != null && (!Number.isSafeInteger(profileId) || profileId < 1 || profileId > 2)) {
+  const profileId = profileIdParam == null ? 1 : Number(profileIdParam);
+  if (!Number.isSafeInteger(profileId) || profileId < 1 || profileId > 2) {
     return jsonResponse({ error: "Invalid profile. Use profile=1 (Personal) or profile=2 (Work)." }, 400);
   }
 
   if (request.method === "GET") {
     if (id != null) {
-      const where = profileId ? " AND s.profile_id = ?" : "";
-      const params = profileId ? [id, profileId] : [id];
-      const row = await env.DB.prepare(`${SERVICE_SELECT} WHERE s.id = ?${where} GROUP BY s.id`).bind(...params).first();
-      return row ? jsonResponse(normalize(row)) : jsonResponse({ error: "Service not found." }, 404);
+      const row = await env.DB.prepare(`${SERVICE_SELECT} WHERE s.id = ? AND s.profile_id = ? GROUP BY s.id`).bind(id, profileId).first();
+      return row ? jsonResponse(normalize(row)) : jsonResponse({ error: "Service not found in this profile." }, 404);
     }
 
-    let query = SERVICE_SELECT;
-    const params = [];
-    if (profileId) {
-      query += " WHERE s.profile_id = ?";
-      params.push(profileId);
-    }
-    query += " GROUP BY s.id ORDER BY s.sort_order, s.id";
-    const result = await env.DB.prepare(query).bind(...params).all();
+    const query = SERVICE_SELECT + " WHERE s.profile_id = ? GROUP BY s.id ORDER BY s.sort_order, s.id";
+    const result = await env.DB.prepare(query).bind(profileId).all();
     return jsonResponse((result.results || []).map(normalize));
   }
 
@@ -95,7 +87,7 @@ export async function onRequest(context) {
       return jsonResponse({ error: "Provide an ordered array of unique service IDs." }, 400);
     }
 
-    const current = await env.DB.prepare("SELECT id FROM services").all();
+    const current = await env.DB.prepare("SELECT id FROM services WHERE profile_id = ?").bind(profileId).all();
     const existingIds = (current.results || []).map(row => Number(row.id));
     const requestedIds = payload.order.map(Number);
     if (existingIds.length !== requestedIds.length || existingIds.some(serviceId => !requestedIds.includes(serviceId))) {
@@ -103,11 +95,11 @@ export async function onRequest(context) {
     }
 
     const statements = requestedIds.map((serviceId, index) =>
-      env.DB.prepare("UPDATE services SET sort_order = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?")
-        .bind(index + 1, serviceId)
+      env.DB.prepare("UPDATE services SET sort_order = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND profile_id = ?")
+        .bind(index + 1, serviceId, profileId)
     );
     if (statements.length) await env.DB.batch(statements);
-    const result = await env.DB.prepare(`${SERVICE_SELECT} GROUP BY s.id ORDER BY s.sort_order, s.id`).all();
+    const result = await env.DB.prepare(`${SERVICE_SELECT} WHERE s.profile_id = ? GROUP BY s.id ORDER BY s.sort_order, s.id`).bind(profileId).all();
     return jsonResponse((result.results || []).map(normalize));
   }
 
@@ -150,16 +142,16 @@ export async function onRequest(context) {
       if (existing.logo_key && existing.logo_key !== (payload.logoKey || null)) await deleteAssetIfUnreferenced(env, existing.logo_key);
     }
 
-    await saveTags(env.DB, serviceId, payload.tags);
+    await saveTags(env.DB, serviceId, payload.tags, profileId);
     return jsonResponse(await getService(env.DB, serviceId), request.method === "POST" ? 201 : 200);
   }
 
   if (request.method === "DELETE") {
     if (id == null) return jsonResponse({ error: "The id query parameter is required for deletion." }, 400);
-    const existing = await env.DB.prepare("SELECT id, logo_key FROM services WHERE id = ?").bind(id).first();
-    if (!existing) return jsonResponse({ error: "Service not found." }, 404);
+    const existing = await env.DB.prepare("SELECT id, logo_key FROM services WHERE id = ? AND profile_id = ?").bind(id, profileId).first();
+    if (!existing) return jsonResponse({ error: "Service not found in this profile." }, 404);
     await env.DB.prepare("DELETE FROM service_tags WHERE service_id = ?").bind(id).run();
-    await env.DB.prepare("DELETE FROM services WHERE id = ?").bind(id).run();
+    await env.DB.prepare("DELETE FROM services WHERE id = ? AND profile_id = ?").bind(id, profileId).run();
     if (existing.logo_key) await deleteAssetIfUnreferenced(env, existing.logo_key);
     return jsonResponse({ deleted: true, id });
   }
