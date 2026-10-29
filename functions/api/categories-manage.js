@@ -1,7 +1,7 @@
 import { requireCloudflareAccess, jsonResponse } from "../lib/access.js";
 
 const MAX_NAME = 60;
-const ALLOWED_ICONS = new Set(["cloudflare", "cloud", "windows", "gauge", "monitor", "server", "box", "briefcase"]);
+const ALLOWED_ICONS = new Set(["cloudflare", "cloud", "windows", "gauge", "monitor", "server", "box", "briefcase", "storage", "networking", "remote-access", "development", "infrastructure"]);
 
 function validId(value) {
   const id = Number(value);
