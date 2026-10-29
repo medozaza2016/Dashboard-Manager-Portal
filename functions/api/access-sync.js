@@ -118,26 +118,37 @@ async function importSelected(env, db, payload) {
   const categoryName = typeof payload.category === "string" ? payload.category.trim().slice(0, 60) : "Access Launcher";
   if (!categoryName) return { error: "Choose a category for imported applications." };
 
-  // Re-fetch server-side and validate each selection against current, launcher-visible Access apps.
+  // Re-fetch and validate the whole selection before making any database changes.
   const loaded = await loadAccessApps(env);
-  if (!loaded.configured) return { error: loaded.message };
+  if (!loaded.configured) return { error: loaded.message, setupRequired: true };
   if (loaded.error) return { error: loaded.error };
   const available = new Map(loaded.apps.map((app) => [app.accessId, app]));
   const selected = payload.ids.map((id) => available.get(id));
   if (selected.some((app) => !app)) return { error: "At least one selected application is no longer launcher-visible or is not a supported web application. Refresh the preview and try again." };
+
+  const current = await db.prepare("SELECT id, name, url, description, source_access_id FROM services").all();
+  const services = current.results || [];
+  const planned = [];
+  const reserved = new Set();
+  for (const app of selected) {
+    let existing = services.find((s) => s.source_access_id === app.accessId) || null;
+    if (!existing) existing = services.find((s) => normalizeCompareUrl(s.url) === normalizeCompareUrl(app.url)) || null;
+    if (existing?.source_access_id && existing.source_access_id !== app.accessId) {
+      return { error: "A selected URL is already linked to a different Access application. No items were imported; refresh the preview and review the matching service." };
+    }
+    if (existing && reserved.has(Number(existing.id))) {
+      return { error: "Two selected applications match the same service. No items were imported; import them separately after reviewing the URLs." };
+    }
+    if (existing) reserved.add(Number(existing.id));
+    planned.push({ app, existing });
+  }
 
   await db.prepare("INSERT OR IGNORE INTO categories (name, sort_order, icon) VALUES (?, 999, 'cloud')").bind(categoryName).run();
   const category = await db.prepare("SELECT id FROM categories WHERE name = ?").bind(categoryName).first();
   if (!category) return { error: "Could not resolve the target category." };
 
   const counts = { imported: 0, updated: 0, linkedExisting: 0, services: [] };
-  for (const app of selected) {
-    let existing = await db.prepare("SELECT id, source_access_id, description FROM services WHERE source_access_id = ?").bind(app.accessId).first();
-    if (!existing) existing = await db.prepare("SELECT id, source_access_id, description FROM services WHERE lower(url) = lower(?) ORDER BY id LIMIT 1").bind(app.url).first();
-    if (existing?.source_access_id && existing.source_access_id !== app.accessId) {
-      return { error: "A service is already linked to a different Access application. No further items were imported." };
-    }
-
+  for (const { app, existing } of planned) {
     if (existing) {
       const description = existing.source_access_id === app.accessId
         ? (existing.description === "Imported from Cloudflare Access." ? app.description : existing.description)
