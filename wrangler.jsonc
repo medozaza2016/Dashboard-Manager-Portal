@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dashboard-manager-portal",
+  "compatibility_date": "2026-10-29",
+  "pages_build_output_dir": "./dist",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "luxorit-portal-db",
+      "database_id": "c6df7b2f-9d75-459c-a93a-319c95c193a5",
+      "preview_database_id": "DB"
+    }
+  ]
+}
