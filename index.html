@@ -244,6 +244,15 @@
 .list tr.orderable-card{cursor:grab}
 .list tr.dragging{opacity:.4}
 .list tr.drag-over{outline:2px solid var(--green);outline-offset:-2px}
+
+/* Home favorites follows the global default service layout. */
+.home-favorites-list{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.home-favorites-list table{border-collapse:collapse;width:100%;text-align:left}
+.home-favorites-list th{background:var(--panel2);color:var(--muted);text-transform:uppercase;font-size:10px;letter-spacing:.6px}
+.home-favorites-list td,.home-favorites-list th{padding:12px 14px;border-bottom:1px solid var(--line)}
+.home-favorites-list td{font-size:12px}
+.home-favorites-list tr:hover{background:var(--panel2)}
+.home-favorites-list a{color:var(--green)}
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
@@ -386,7 +395,7 @@
 <div class="modal-backdrop" id="serviceModal"><form class="modal" id="serviceForm"><h2 id="modalTitle">Add service</h2><input type="hidden" id="serviceId"><label for="name">Name</label><input id="name" required><label for="url">URL</label><input id="url" type="url" placeholder="https://service.example" required><label for="category">Category</label><select id="category"></select><label for="description">Description</label><input id="description"><label for="icon">Fallback icon for custom services</label><input id="icon" value="🔧"><label>Tags</label><div class="service-tag-picker"><div id="serviceSelectedTags" class="service-selected-tags" aria-live="polite"></div><input id="serviceTagSearch" class="service-tag-search" type="search" placeholder="Search available tags…" aria-label="Search tags"><div id="serviceTagOptions" class="service-tag-options"></div><div class="settings-note">Choose one or more tags. Manage the tag list in Admin → Tags.</div></div><div class="settings-field full"><label for="serviceLogoFile">Service logo</label><div class="logo-upload-row"><div class="service-logo-preview" id="serviceLogoPreview"><span id="serviceLogoFallback">🔧</span><img id="serviceLogoImage" alt="" hidden></div><div class="settings-actions"><button class="secondary" type="button" id="chooseServiceLogo">Browse image</button><button class="secondary" type="button" id="removeServiceLogo" hidden>Remove image</button><input type="file" id="serviceLogoFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden><input type="hidden" id="serviceLogoKey"><span id="serviceLogoUploadStatus" class="settings-note">Optional · PNG, JPEG, WebP or GIF · up to 5 MB</span></div></div></div><div class="modal-actions"><button class="secondary" type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save service</button></div></form></div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.29";
+const APP_VERSION="0.1.30";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -752,7 +761,7 @@ const action=manage?serviceActionIcon("edit",s.id,s.name)+serviceActionIcon("dup
 return '<tr '+(canDrag?'data-order-id="'+safe(s.id)+'" class="orderable-card"':'')+'><td><span class="table-service-icon">'+serviceIconHtml(s)+'</span>'+handle+safe(s.name)+'</td><td>'+safe(s.category)+'</td><td>'+(s.tags||[]).map(tagHtml).join("")+'</td><td><a href="'+safe(s.url)+'" target="_blank" rel="noopener">Open ↗</a></td><td class="action-cell"><div class="action-group">'+action+'</div></td></tr>';
 }).join("")+'</tbody></table>';
 }
-function renderHome(){const favorites=services.filter(s=>s.favorite&&matchesSearch(s));$("homeFavoriteCards").innerHTML=view==="cards"?renderServiceCards(favorites,false):renderServiceTable(favorites,false)}
+function renderHome(){const favorites=services.filter(s=>s.favorite&&matchesSearch(s)),host=$("homeFavoriteCards");host.classList.toggle("home-favorites-list",view==="list");host.innerHTML=view==="cards"?renderServiceCards(favorites,false):renderServiceTable(favorites,false)}
 function renderCatalog(){
 const items=filtered(),isCategory=page==="category",isFavorites=page==="favorites";
 $("catalogEyebrow").textContent=isFavorites?"WORKSPACE / FAVORITES":"SERVICE CATEGORY / MANAGEMENT";
