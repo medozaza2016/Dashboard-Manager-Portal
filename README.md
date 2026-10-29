@@ -8,11 +8,9 @@ The approved interface uses a near-black navy canvas, subtle blue-gray borders, 
 
 ## Current Status
 
-**Core authenticated D1 path verified; backup and restore hardening is in progress.** The portal is a Vite-built frontend hosted on Cloudflare Pages. Pages Functions in `functions/api/` provide the API, and `luxorit-portal-db` is the current D1 database binding.
+**Authenticated D1 catalog operations and JSON backup/restore are deployed.** The portal is a Vite-built frontend hosted on Cloudflare Pages. Pages Functions in `functions/api/` provide the API, and `luxorit-portal-db` is the current D1 database binding.
 
-During the browser smoke test, Cloudflare Access login succeeded, the test service remained visible after a refresh, and the service was visible in D1. This verifies the authenticated login and initial create/read persistence path. Editing, deleting, favorites, shared settings, unauthenticated rejection, and backup/restore still need explicit verification before production-ready status.
-
-The current working branch adds an authenticated `GET /api/backup` export endpoint and `POST /api/backup` restore endpoint. These changes are not deployed until merged and accepted by Cloudflare Pages. Restore validates the backup before replacing the catalog and runs its D1 statements as a batch transaction.
+During the browser smoke test, Cloudflare Access login succeeded, the test service remained visible after refresh, and the service was visible in D1. That verifies Access login and initial create/read persistence. The backup and restore API and Settings buttons are now deployed, but the actual authenticated export still needs a browser smoke test. Restore replaces the current catalog, so do not use it for casual testing against production.
 
 Some existing service URLs intentionally end in `.example`. Replace them with real addresses only after reviewing the catalog.
 
@@ -37,15 +35,15 @@ The Pages Functions endpoints are:
 - `DELETE /api/services?id=<id>`, delete a service.
 - `GET /api/categories`, list categories and counts.
 - `GET /api/settings` and `PUT /api/settings`, read or save portal branding and preferences.
-- `GET /api/backup` and `POST /api/backup`, export or restore the shared D1 catalog (requires the backup feature branch to be merged and deployed).
+- `GET /api/backup` and `POST /api/backup`, export or restore the shared D1 catalog (restore is destructive and requires an authenticated session).
 
 The D1 schema has `services`, `categories`, `tags`, `service_tags`, and `portal_settings` tables, with indexes and foreign-key relationships. SQL migrations are stored in `migrations/`.
 
 ### Remaining verification steps
-1. Test service create, edit, favorite, duplicate, and delete through the authenticated browser session.
-2. Test Settings persistence after refresh and in a separate authenticated browser session.
-3. Merge and deploy the D1 backup/restore branch, then export a backup and validate restore behavior in a safe test before replacing production catalog data.
-4. Verify requests without a valid Access assertion fail closed, and verify the production and preview environment variables and D1 binding in Cloudflare Pages.
+1. In the authenticated production portal, export a JSON backup and confirm it contains `source: "cloudflare-d1"` and the expected service list.
+2. Test service edit, favorite, duplicate, delete, and Settings persistence after refresh.
+3. Verify requests without a valid Access assertion fail closed, and verify the production and preview environment variables and D1 binding in Cloudflare Pages.
+4. Exercise restore only with a known-good export after confirming there is no unsaved catalog change to preserve.
 
 The API deliberately returns an error when authentication configuration is missing, rather than allowing unauthenticated database changes.
 
@@ -70,4 +68,4 @@ The Pages project is named `dashboard-manager-portal` and tracks the `main` bran
 - Build output directory: `dist`
 - Preview URL: https://dashboard-manager-portal.pages.dev
 
-Cloudflare Pages is the frontend host, Pages Functions run the backend API on the Workers platform, and D1 is connected for authenticated service and settings operations. Backup and restore changes remain pending merge and deployment from the `fix/d1-backup-restore` branch.
+Cloudflare Pages is the frontend host, Pages Functions run the backend API on the Workers platform, and D1 is connected for authenticated service, settings, and backup operations. The latest backup/restore implementation was merged in `c28f4e9755efe5c6c5c220f08b9442be413fb15f` and the associated production Pages deployment completed successfully.
