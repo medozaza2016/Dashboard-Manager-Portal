@@ -8,13 +8,13 @@ The approved interface uses a near-black navy canvas, subtle blue-gray borders, 
 
 ## Current Status
 
-**Backend foundation implemented, end-to-end activation pending.** The canonical frontend is the root `index.html`, built by Vite and deployed through Cloudflare Pages. Pages Functions in `functions/api/` provide the server-side API, and `luxorit-portal-db` stores the current catalog in Cloudflare D1. The frontend has API calls for service CRUD and settings, with a browser-local fallback when the backend is not available.
+**Core authenticated D1 path verified; backup and restore hardening is in progress.** The portal is a Vite-built frontend hosted on Cloudflare Pages. Pages Functions in `functions/api/` provide the API, and `luxorit-portal-db` is the current D1 database binding.
 
-The D1 database has been created and seeded with 12 existing services, 5 categories, 21 tags, 24 service-tag associations, and 3 portal setting records. The SQL migration is checked into `migrations/0001_initial.sql`.
+During the browser smoke test, Cloudflare Access login succeeded, the test service remained visible after a refresh, and the service was visible in D1. This verifies the authenticated login and initial create/read persistence path. Editing, deleting, favorites, shared settings, unauthenticated rejection, and backup/restore still need explicit verification before production-ready status.
 
-**Activation in progress:** a Cloudflare Access application has been created for `dashboard-manager-portal.pages.dev`, with an allow policy for the `ahmedmohamed.org` email domain. The Pages environment and Wrangler configuration contain the Access team domain and application audience. The most recent commits are still moving through Pages deployment, and the protected API has not yet been smoke-tested from an authenticated browser session. Until that test succeeds, changes may remain local to the browser. Do not treat the portal as production-ready for managing infrastructure until the Access gate and CRUD flows have been verified.
+The current working branch adds an authenticated `GET /api/backup` export endpoint and `POST /api/backup` restore endpoint. These changes are not deployed until merged and accepted by Cloudflare Pages. Restore validates the backup before replacing the catalog and runs its D1 statements as a batch transaction.
 
-Some service URLs are intentionally placeholders ending in `.example`. Replace them with real addresses only after the portal is protected and access policies are verified.
+Some existing service URLs intentionally end in `.example`. Replace them with real addresses only after reviewing the catalog.
 
 ## Stack
 
@@ -37,14 +37,15 @@ The Pages Functions endpoints are:
 - `DELETE /api/services?id=<id>`, delete a service.
 - `GET /api/categories`, list categories and counts.
 - `GET /api/settings` and `PUT /api/settings`, read or save portal branding and preferences.
+- `GET /api/backup` and `POST /api/backup`, export or restore the shared D1 catalog (requires the backup feature branch to be merged and deployed).
 
 The D1 schema has `services`, `categories`, `tags`, `service_tags`, and `portal_settings` tables, with indexes and foreign-key relationships. SQL migrations are stored in `migrations/`.
 
-### Remaining activation steps
-1. Verify the latest Pages deployment builds with Functions enabled.
-2. Enable Cloudflare Access on the Pages hostname and allow only authorized identities.
-3. Configure `ACCESS_TEAM_DOMAIN` and `ACCESS_AUD` as production and preview environment variables for Pages Functions.
-4. Test the protected API, CRUD operations, settings persistence, and failed-auth behavior before treating the portal as live.
+### Remaining verification steps
+1. Test service create, edit, favorite, duplicate, and delete through the authenticated browser session.
+2. Test Settings persistence after refresh and in a separate authenticated browser session.
+3. Merge and deploy the D1 backup/restore branch, then export a backup and validate restore behavior in a safe test before replacing production catalog data.
+4. Verify requests without a valid Access assertion fail closed, and verify the production and preview environment variables and D1 binding in Cloudflare Pages.
 
 The API deliberately returns an error when authentication configuration is missing, rather than allowing unauthenticated database changes.
 
@@ -69,4 +70,4 @@ The Pages project is named `dashboard-manager-portal` and tracks the `main` bran
 - Build output directory: `dist`
 - Preview URL: https://dashboard-manager-portal.pages.dev
 
-The current Pages deployment is a public frontend preview only. Cloudflare Workers, D1 persistence, and authentication still need to be implemented before this prototype is used for real administration.
+Cloudflare Pages is the frontend host, Pages Functions run the backend API on the Workers platform, and D1 is connected for authenticated service and settings operations. Backup and restore changes remain pending merge and deployment from the `fix/d1-backup-restore` branch.
