@@ -38,6 +38,32 @@ export async function onRequest({ request, env }) {
     return jsonResponse(result.results || []);
   }
 
+  if (request.method === "PATCH") {
+    let payload;
+    try { payload = await request.json(); } catch { return jsonResponse({ error: "Invalid JSON body." }, 400); }
+    if (!payload || !Array.isArray(payload.order) || payload.order.length > 200 ||
+        payload.order.some(value => !validId(value)) ||
+        new Set(payload.order.map(Number)).size !== payload.order.length) {
+      return jsonResponse({ error: "Provide an ordered array of unique category IDs." }, 400);
+    }
+    const current = await env.DB.prepare("SELECT id FROM categories ORDER BY sort_order, name").all();
+    const existingIds = (current.results || []).map(row => Number(row.id));
+    const requestedIds = payload.order.map(Number);
+    if (existingIds.length !== requestedIds.length || existingIds.some(id => !requestedIds.includes(id))) {
+      return jsonResponse({ error: "The category list changed. Refresh and try reordering again." }, 409);
+    }
+    const statements = requestedIds.map((categoryId, index) =>
+      env.DB.prepare("UPDATE categories SET sort_order = ? WHERE id = ?").bind(index + 1, categoryId)
+    );
+    if (statements.length) await env.DB.batch(statements);
+    const result = await env.DB.prepare(`
+      SELECT c.id, c.name, c.icon, c.sort_order AS sortOrder, COUNT(s.id) AS serviceCount
+      FROM categories c LEFT JOIN services s ON s.category_id = c.id
+      GROUP BY c.id ORDER BY c.sort_order, c.name
+    `).all();
+    return jsonResponse(result.results || []);
+  }
+
   if (request.method === "POST" || request.method === "PUT") {
     let payload;
     try { payload = await request.json(); } catch { return jsonResponse({ error: "Invalid JSON body." }, 400); }
