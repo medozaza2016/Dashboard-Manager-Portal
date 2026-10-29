@@ -841,7 +841,7 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.55";
+const APP_VERSION="0.1.56";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -1157,7 +1157,9 @@ function bindProfileSwitcher(){
     // Invalidate requests from the previous profile before changing visible state.
     profileLoadToken++;taxonomyLoadToken++;
     updateProfileUI();$("search").value="";
-    activeTag=null;sidebarTagsExpanded=false;sidebarCategoriesExpanded=false;sidebarTagsExpanded=false;reorderEnabled=false;
+    if($("categoryFilter"))$("categoryFilter").value="";
+    if($("tagFilter"))$("tagFilter").value="";
+    activeTag=null;sidebarTagsExpanded=false;sidebarCategoriesExpanded=false;reorderEnabled=false;
     current="All";page=preferences.landingPage==="favorites"?"favorites":preferences.landingPage==="all"?"all":"home";
     restoreProfileCache(currentProfile);
     persist();render();
@@ -1211,7 +1213,7 @@ async function loadRemoteData(profileId=currentProfile){
   render();toast("Database unavailable, showing only this profile's saved data");return false;
  }
 }
-const categories=()=>["All",...new Set((apiConnected?categoryRecords.filter(c=>Number(c.serviceCount??c.service_count??0)>0).slice().sort((a,b)=>(Number(a.sortOrder??a.sort_order)||9999)-(Number(b.sortOrder??b.sort_order)||9999)).map(c=>c.name):services.map(s=>s.category)).filter(Boolean))];
+const categories=()=>["All",...new Set((apiConnected?categoryRecords.slice().sort((a,b)=>(Number(a.sortOrder??a.sort_order)||9999)-(Number(b.sortOrder??b.sort_order)||9999)).map(c=>c.name):services.map(s=>s.category)).filter(Boolean))];
 function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2200)}
 function profileCacheKey(profileId){return "luxorit-profile-cache-v1-"+profileId}
 function saveProfileCache(profileId=currentProfile){
@@ -1620,7 +1622,7 @@ const [categoriesResult,tagsResult]=await Promise.all([apiRequest("categories-ma
 if(profileId!==currentProfile||requestToken!==taxonomyLoadToken)return false;
 if(!Array.isArray(categoriesResult)||!Array.isArray(tagsResult))throw new Error("Unexpected category or tag response.");
 taxonomyCategories=categoriesResult;categoryRecords=categoriesResult;tagRecords=tagsResult;taxonomyLoaded=true;dataProfileId=profileId;saveProfileCache(profileId);
-taxonomyMessage("categoryManagerMessage",taxonomyCategories.length+" categories, including empty sidebar placeholders.");taxonomyMessage("tagManagerMessage",tagRecords.length+" tags available across the catalog.");
+taxonomyMessage("categoryManagerMessage",taxonomyCategories.length+" categories, including empty sidebar placeholders.");taxonomyMessage("tagManagerMessage",tagRecords.length+" tags in the "+(profileId===1?"Personal":"Work")+" profile.");
 }catch(error){if(profileId!==currentProfile||requestToken!==taxonomyLoadToken)return false;taxonomyMessage("categoryManagerMessage",error.message||"Could not load categories.",true);taxonomyMessage("tagManagerMessage",error.message||"Could not load tags.",true);taxonomyLoaded=false}
 finally{if(requestToken===taxonomyLoadToken)taxonomyBusy=false}
 nav();renderCategoryManager();renderTagManager();
@@ -1642,7 +1644,7 @@ categoriesPanel.hidden=adminTab!=="categories";tagsPanel.hidden=adminTab!=="tags
 document.querySelectorAll("[data-admin-tab]").forEach(button=>{const active=button.dataset.adminTab===adminTab;button.classList.toggle("active",active);button.setAttribute("aria-selected",active?"true":"false")});
 if(adminTab==="categories")renderCategoryManager();if(adminTab==="tags")renderTagManager();
 }
-function setAdminTab(tab){if(!["categories","tags"].includes(tab))return;adminTab=tab;page="admin";showPage();renderAdminPage();bindRenderedActions()}
+function setAdminTab(tab){if(!["categories","tags"].includes(tab))return;adminTab=tab;page="admin";showPage();renderAdminPage();bindRenderedActions();void refreshTaxonomy(false,currentProfile)}
 function renderSettings(){$("brandingName").value=branding.name||"Luxorit";$("brandingSubtitle").value=branding.subtitle||"";$("brandingLogo").value=branding.logo||"";$("themeSetting").value=document.documentElement.dataset.theme||"dark";$("landingSetting").value=preferences.landingPage||"home";$("defaultViewSetting").value=preferences.defaultView||"list";$("serviceImageSizeSetting").value=normalizeServiceImageSize(preferences.serviceImageSize);renderServiceImageSizePreview(preferences.serviceImageSize);$("showSlimDescriptionsSetting").checked=!!preferences.showSlimDescriptions;$("sidebarCollapsedSetting").checked=!!preferences.sidebarCollapsed;$("settingsVersion").textContent=APP_VERSION;applyBranding();renderD1Status();renderR2Status()}
 function render(){applyServiceImageSize(preferences.serviceImageSize);nav();showPage();if(page==="home")renderHome();else if(page==="settings")renderSettings();else if(page==="admin")renderAdminPage();else renderCatalog();$("versionLabel").textContent="v"+APP_VERSION;applyBranding();bindRenderedActions();persist()}
 function renderServiceLogoPreview(source,fallback="🔧"){
