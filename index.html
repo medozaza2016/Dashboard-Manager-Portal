@@ -638,7 +638,7 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.41";
+const APP_VERSION="0.1.42";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -656,9 +656,22 @@ server:'<rect x="3" y="3" width="18" height="7" rx="1.5"/><rect x="3" y="14" wid
 gauge:'<path d="M4.5 19a9 9 0 1 1 15 0"/><path d="m12 13 4-4M7 19h10"/>',
 box:'<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="M3 8v8l9 5 9-5V8M12 13v8"/>',
 briefcase:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V4h8v3M3 12h18M10 12v2h4v-2"/>',
+'heart-pulse':'<path d="M20.8 4.8a5.5 5.5 0 0 0-7.8 0L12 5.9l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.3 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/><path d="M3.5 12h4l2-3.5 3 7 2-3.5h5"/>',
+landmark:'<path d="m3 9 9-6 9 6H3Z"/><path d="M5 10v8M9 10v8M15 10v8M19 10v8M3 21h18M2 18h20"/>',
+'shopping-bag':'<path d="M5 8h14l1 13H4L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+utensils:'<path d="M4 3v6a3 3 0 0 0 6 0V3M7 3v18M17 3v18M17 3c-3 3-3 8 0 10h3V3"/>',
+house:'<path d="m3 10 9-7 9 7"/><path d="M5 9v12h14V9M9 21v-7h6v7"/>',
+'graduation-cap':'<path d="m2 9 10-6 10 6-10 6L2 9Z"/><path d="M6 12v5c4 3 8 3 12 0v-5M22 9v6"/>',
+plane:'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+'car-front':'<path d="m5 11 2-5h10l2 5"/><path d="M3 11h18v8H3z"/><path d="M6 19v2M18 19v2M6 15h3M15 15h3"/>',
+lightbulb:'<path d="M9 18h6M10 22h4"/><path d="M8 14a7 7 0 1 1 8 0c-1.2.8-1.5 2-1.5 4h-5c0-2-.3-3.2-1.5-4Z"/>',
+film:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 3v18M17 3v18M3 8h4M3 16h4M17 8h4M17 16h4"/>',
+'shield-check':'<path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m8.5 12 2.3 2.3 4.8-5"/>',
+scale:'<path d="M12 3v18M5 6h14M3 21h18"/><path d="m5 6-3 7h6L5 6ZM19 6l-3 7h6l-3-7Z"/><path d="M8 13c-.5 2 1 3 4 3s4-1 4-3"/>',
+'wallet-cards':'<rect x="3" y="5" width="18" height="15" rx="2"/><path d="M3 9h18M7 15h4M16 15h.01"/><path d="M6 5V3h12v2"/>',
 plus:'<path d="M12 5v14M5 12h14"/>'
 };return '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">'+(p[name]||p.box)+'</svg>'}
-function categorySvg(category){if(category==="Cloudflare")return '<svg class="category-cloudflare" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 9.1a4.9 4.9 0 0 0-9.7-.9 3.8 3.8 0 0 0 .2 7.6h11a3.5 3.5 0 0 0 .1-7c-.5 0-1 .1-1.6.3Z" fill="#F38020" stroke="none"/><path d="M6.8 16.1h12.3a3.6 3.6 0 0 1-3.3 2.2H8.1a1.5 1.5 0 0 1-1.3-2.2Z" fill="#F38020" stroke="none"/></svg>';const stored=(categoryRecords||[]).find(item=>item.name===category)?.icon;const iconMap={cloudflare:"cloud",cloud:"cloud",windows:"windows",gauge:"gauge",monitor:"monitor",server:"server",box:"box",briefcase:"briefcase",storage:"box",networking:"cloud","remote-access":"server",development:"monitor",infrastructure:"server"};const k=iconMap[stored]||({Cloudflare:"cloud",Microsoft:"windows",Monitoring:"gauge",Development:"monitor",Infrastructure:"server",Productivity:"briefcase",Storage:"box",Networking:"cloud","Remote Access":"server",Other:"box"})[category]||"box";if(k==="windows")return '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" fill="#F35325" stroke="none"/><rect x="13" y="3" width="8" height="8" fill="#81BC06" stroke="none"/><rect x="3" y="13" width="8" height="8" fill="#05A6F0" stroke="none"/><rect x="13" y="13" width="8" height="8" fill="#FFBA08" stroke="none"/></svg>';return svg(k)}
+function categorySvg(category){if(category==="Cloudflare")return '<svg class="category-cloudflare" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 9.1a4.9 4.9 0 0 0-9.7-.9 3.8 3.8 0 0 0 .2 7.6h11a3.5 3.5 0 0 0 .1-7c-.5 0-1 .1-1.6.3Z" fill="#F38020" stroke="none"/><path d="M6.8 16.1h12.3a3.6 3.6 0 0 1-3.3 2.2H8.1a1.5 1.5 0 0 1-1.3-2.2Z" fill="#F38020" stroke="none"/></svg>';const stored=(categoryRecords||[]).find(item=>item.name===category)?.icon;const iconMap={cloudflare:"cloud",cloud:"cloud",windows:"windows",gauge:"gauge",monitor:"monitor",server:"server",box:"box",briefcase:"briefcase",storage:"box",networking:"cloud","remote-access":"server",development:"monitor",infrastructure:"server","heart-pulse":"heart-pulse",landmark:"landmark","shopping-bag":"shopping-bag",utensils:"utensils",house:"house","graduation-cap":"graduation-cap",plane:"plane","car-front":"car-front",lightbulb:"lightbulb",film:"film","shield-check":"shield-check",scale:"scale","wallet-cards":"wallet-cards"};const k=iconMap[stored]||({Cloudflare:"cloud",Microsoft:"windows",Monitoring:"gauge",Development:"monitor",Infrastructure:"server",Productivity:"briefcase",Storage:"box",Networking:"cloud","Remote Access":"server",Other:"box"})[category]||"box";if(k==="windows")return '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" fill="#F35325" stroke="none"/><rect x="13" y="3" width="8" height="8" fill="#81BC06" stroke="none"/><rect x="3" y="13" width="8" height="8" fill="#05A6F0" stroke="none"/><rect x="13" y="13" width="8" height="8" fill="#FFBA08" stroke="none"/></svg>';return svg(k)}
 function serviceIconHtml(s){if(s.logoKey)return '<span class="icon-fallback" style="display:none">'+safe(s.icon||"◆")+'</span><img class="uploaded-logo" src="'+safe(assetUrl(s.logoKey))+'" alt="" loading="lazy" onerror="this.style.display=\'none\';this.previousElementSibling.style.display=\'grid\'">';const key=String(s.name||"").toLowerCase();const meta=[
 [/cloudflare/,{url:"https://cdn.simpleicons.org/cloudflare/F38020",fallback:"☁"}],
 [/^pages$/, {svg:'<path d="M13 2 5 13h5l-1 9 10-13h-6l2-7Z" fill="#FFB21A" stroke="#FFB21A" stroke-linejoin="round"/>'}],
@@ -1207,7 +1220,7 @@ const pText=$("settingsLogoText"),pGraphic=$("settingsLogoGraphic");if(pText&&pG
 if($("removeBrandingLogo"))$("removeBrandingLogo").hidden=!logoKey&&!brandingLogoPreviewUrl;
 }
 const CATEGORY_ICON_OPTIONS=[
-["box","General icon"],["cloudflare","Cloudflare icon"],["cloud","Cloud icon"],["server","Server icon"],["infrastructure","Infrastructure icon"],["storage","Storage icon"],["networking","Network icon"],["remote-access","Remote access icon"],["development","Development / code icon"],["monitor","Monitor icon"],["gauge","Monitoring icon"],["briefcase","Productivity icon"],["windows","Microsoft icon"]
+["box","General"],["heart-pulse","Healthcare / medical"],["landmark","Banking / finance"],["wallet-cards","Payments / wallet"],["shield-check","Insurance / security"],["house","Home / real estate"],["shopping-bag","Shopping / retail"],["utensils","Food / restaurants"],["graduation-cap","Education / learning"],["plane","Travel / airlines"],["car-front","Transportation / vehicles"],["lightbulb","Utilities / energy"],["film","Entertainment / media"],["scale","Legal / government"],["briefcase","Business / work"],["cloudflare","Cloudflare"],["cloud","Cloud services"],["server","Servers"],["infrastructure","Infrastructure"],["storage","Storage"],["networking","Networking"],["remote-access","Remote access"],["development","Development / code"],["monitor","Computer / monitor"],["gauge","Monitoring"],["windows","Microsoft"]
 ];
 function taxonomyMessage(id,message,isError=false){const el=$(id);if(!el)return;el.textContent=message||"";el.classList.toggle("error",!!isError)}
 function closeTaxonomyModal(){
