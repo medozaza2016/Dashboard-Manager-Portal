@@ -6,9 +6,9 @@ const SERVICE_SELECT = `
          s.sort_order, s.category_sort_order AS categorySortOrder, s.category_id AS categoryId, c.name AS category,
          COALESCE(GROUP_CONCAT(t.name, char(31)), '') AS tag_list
   FROM services s
-  JOIN categories c ON c.id = s.category_id
+  JOIN categories c ON c.id = s.category_id AND c.profile_id = s.profile_id
   LEFT JOIN service_tags st ON st.service_id = s.id
-  LEFT JOIN tags t ON t.id = st.tag_id
+  LEFT JOIN tags t ON t.id = st.tag_id AND t.profile_id = s.profile_id
 `;
 
 function normalize(row) {
@@ -17,8 +17,8 @@ function normalize(row) {
   return { ...service, id: Number(service.id), favorite: Boolean(service.favorite), tags: tag_list ? tag_list.split("\u001f") : [] };
 }
 
-async function getService(db, id) {
-  const row = await db.prepare(`${SERVICE_SELECT} WHERE s.id = ? GROUP BY s.id`).bind(id).first();
+async function getService(db, id, profileId) {
+  const row = await db.prepare(`${SERVICE_SELECT} WHERE s.id = ? AND s.profile_id = ? GROUP BY s.id`).bind(id, profileId).first();
   return normalize(row);
 }
 
@@ -169,7 +169,7 @@ export async function onRequest(context) {
     }
 
     await saveTags(env.DB, serviceId, payload.tags, profileId);
-    return jsonResponse(await getService(env.DB, serviceId), request.method === "POST" ? 201 : 200);
+    return jsonResponse(await getService(env.DB, serviceId, profileId), request.method === "POST" ? 201 : 200);
   }
 
   if (request.method === "DELETE") {
