@@ -420,6 +420,46 @@
  .catalog-display-controls .reorder-control{margin-left:0}
  .catalog-display-controls .reorder-toggle{padding:0 10px}
 }
+
+/* v0.1.37 collapsible filters and display controls */
+.catalog-toolbar{display:flex;flex-direction:column;align-items:stretch;gap:10px;margin-bottom:20px}
+.catalog-controls-toggle{align-self:flex-start;display:inline-flex;align-items:center;gap:11px;min-width:245px;max-width:100%;padding:10px 13px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--text);text-align:left;cursor:pointer;box-shadow:0 2px 8px rgba(15,23,42,.035);transition:border-color .18s ease,background .18s ease,box-shadow .18s ease}
+.catalog-controls-toggle:hover,.catalog-controls-toggle.active{border-color:var(--green);background:var(--panel2);box-shadow:0 3px 12px rgba(15,23,42,.07)}
+.catalog-controls-toggle:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+.catalog-controls-toggle-icon{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border:1px solid var(--line);border-radius:9px;background:var(--panel2);color:var(--green)}
+.catalog-controls-toggle-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.catalog-controls-toggle-copy{display:flex;flex:1;flex-direction:column;gap:2px;min-width:0}
+.catalog-controls-toggle-copy strong{font-size:12px;font-weight:750;line-height:1.3}
+.catalog-controls-toggle-copy small{max-width:260px;overflow:hidden;color:var(--muted);font-size:10px;text-overflow:ellipsis;white-space:nowrap}
+.catalog-controls-chevron{flex:0 0 16px;width:16px;height:16px;fill:none;stroke:var(--muted);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .24s ease,color .18s ease}
+.catalog-controls-toggle.active .catalog-controls-chevron{transform:rotate(180deg);color:var(--green)}
+.catalog-controls-panel{display:grid;grid-template-rows:0fr;opacity:0;transform:translateY(-5px);transition:grid-template-rows .28s ease,opacity .2s ease,transform .24s ease;pointer-events:none}
+.catalog-controls-panel.expanded{grid-template-rows:1fr;opacity:1;transform:translateY(0);pointer-events:auto}
+.catalog-controls-clip{min-height:0;overflow:hidden}
+.catalog-controls-panel-inner{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px;background:var(--panel2);border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 14px rgba(15,23,42,.055)}
+.catalog-controls-panel-inner>.chips{align-content:center;flex:1 1 auto;min-width:240px;row-gap:8px}
+.catalog-controls-panel-inner .catalog-display-controls{max-width:100%;margin-left:auto}
+@media(max-width:850px){
+ .catalog-controls-panel-inner{align-items:flex-start;flex-direction:column;gap:12px}
+ .catalog-controls-panel-inner>.chips{min-width:0;width:100%}
+ .catalog-controls-panel-inner .catalog-display-controls{align-self:flex-start;margin-left:0;flex-wrap:wrap}
+}
+@media(max-width:520px){
+ .catalog-controls-toggle{width:100%;min-width:0}
+ .catalog-controls-panel-inner{padding:9px}
+ .catalog-controls-panel-inner .catalog-display-controls{width:100%;justify-content:space-between;flex-wrap:wrap}
+ .catalog-controls-panel-inner .catalog-display-controls .reorder-control{width:auto;margin-left:auto}
+}
+@media(max-width:400px){
+ .catalog-controls-panel-inner .catalog-display-controls{justify-content:flex-start;gap:6px}
+ .catalog-controls-panel-inner .catalog-display-controls .density{flex:1}
+ .catalog-controls-panel-inner .catalog-display-controls .density button{flex:1;padding:0 7px}
+ .catalog-controls-panel-inner .catalog-display-controls .density button svg{display:none}
+ .catalog-controls-panel-inner .catalog-display-controls .reorder-control{margin-left:0}
+}
+@media(prefers-reduced-motion:reduce){
+ .catalog-controls-panel,.catalog-controls-chevron,.catalog-controls-toggle{transition:none}
+}
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
@@ -437,8 +477,16 @@
 </section>
 <section id="catalogPage" hidden><div class="pagehead"><div><div class="eyebrow" id="catalogEyebrow">SERVICE CATALOG</div><h1 id="heading">Browse by category</h1><p id="catalogDescription">Open a category to browse and manage its services.</p></div><button class="primary" id="add">＋ Add Service</button></div>
 <div class="toolbar catalog-toolbar">
-  <div class="chips" id="chips"></div>
-  <div class="catalog-display-controls" role="group" aria-label="Catalog display controls">
+  <button type="button" class="catalog-controls-toggle" id="catalogControlsToggle" aria-expanded="false" aria-controls="catalogControlsPanel">
+    <span class="catalog-controls-toggle-icon" aria-hidden="true"><svg viewBox="0 0 20 20" focusable="false"><path d="M3 5h14M5.5 10h9M8 15h4"/><circle cx="7" cy="5" r="1.5"/><circle cx="12.5" cy="10" r="1.5"/></svg></span>
+    <span class="catalog-controls-toggle-copy"><strong>Filters &amp; display</strong><small id="catalogControlsSummary">All services · Compact list</small></span>
+    <svg class="catalog-controls-chevron" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m5 7.5 5 5 5-5"/></svg>
+  </button>
+  <div class="catalog-controls-panel" id="catalogControlsPanel" aria-hidden="true">
+    <div class="catalog-controls-clip">
+      <div class="catalog-controls-panel-inner">
+        <div class="chips" id="chips"></div>
+        <div class="catalog-display-controls role="group" aria-label="Catalog display controls">
     <div class="views" role="group" aria-label="Layout view">
       <button id="cardsBtn" type="button" title="Cards view" aria-label="Cards view" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="2.25" y="2.25" width="6.25" height="6.25" rx="1.25"/><rect x="11.5" y="2.25" width="6.25" height="6.25" rx="1.25"/><rect x="2.25" y="11.5" width="6.25" height="6.25" rx="1.25"/><rect x="11.5" y="11.5" width="6.25" height="6.25" rx="1.25"/></svg></button>
       <button id="listBtn" type="button" class="active" title="Compact list view" aria-label="Compact list view" aria-pressed="true"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M7.5 4h9M7.5 10h9M7.5 16h9"/><circle cx="3.5" cy="4" r=".65" fill="currentColor" stroke="none"/><circle cx="3.5" cy="10" r=".65" fill="currentColor" stroke="none"/><circle cx="3.5" cy="16" r=".65" fill="currentColor" stroke="none"/></svg></button>
@@ -448,6 +496,9 @@
       <button id="slimBtn" type="button" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="2" y="3" width="16" height="3" rx="1"/><rect x="2" y="8.5" width="16" height="3" rx="1"/><rect x="2" y="14" width="16" height="3" rx="1"/></svg><span>Slim</span></button>
     </div>
     <div class="reorder-control" id="reorderControl" hidden><button type="button" id="reorderToggle" class="reorder-toggle" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M12.8 3.2 16.8 7.2M3 17l4-.9 9.8-9.8a2.1 2.1 0 0 0-3-3L4 13.1 3 17Z"/><path d="M10.5 4.5 14.5 8.5"/></svg><span>Edit mode</span></button></div>
+  </div
+      </div>
+    </div>
   </div>
 </div><div id="cardArea"></div><div id="listArea" class="list"></div></section>
 <section id="adminPage" hidden>
@@ -581,7 +632,7 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.36";
+const APP_VERSION="0.1.37";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -634,7 +685,7 @@ const seed=[
 {id:11,name:"Proxmox",icon:"🖥️",description:"Virtualization platform",category:"Infrastructure",tags:["Infrastructure","VMs"],url:"https://proxmox.example",favorite:true},
 {id:12,name:"TrueNAS",icon:"🗄️",description:"File storage",category:"Infrastructure",tags:["Infrastructure","Storage"],url:"https://truenas.example",favorite:false}
 ];
-let services=structuredClone(seed),current="All",view="list",density="regular",page="home",nextId=13,reorderEnabled=false;
+let services=structuredClone(seed),current="All",view="list",density="regular",page="home",nextId=13,reorderEnabled=false,catalogControlsExpanded=false;
 let currentProfile=1,sidebarCategoriesExpanded=false; // 1=Personal, 2=Work
 let branding={name:"Luxorit",subtitle:"Pro",logo:""};
 let preferences={theme:"dark",landingPage:"home",defaultView:"list",sidebarCollapsed:false,sidebarCategoriesCollapsed:false,sidebarTagsCollapsed:false,showSlimDescriptions:false,serviceImageSize:34};
@@ -926,7 +977,7 @@ async function loadRemoteData(){try{
   render();
   toast("Database unavailable, using browser-local data")
 }}
-const categories=()=>["All",...new Set((apiConnected?categoryRecords.slice().sort((a,b)=>(Number(a.sortOrder??a.sort_order)||9999)-(Number(b.sortOrder??b.sort_order)||9999)).map(c=>c.name):services.map(s=>s.category)).filter(Boolean))];
+const categories=()=>["All",...new Set((apiConnected?categoryRecords.filter(c=>Number(c.serviceCount??c.service_count??0)>0).slice().sort((a,b)=>(Number(a.sortOrder??a.sort_order)||9999)-(Number(b.sortOrder??b.sort_order)||9999)).map(c=>c.name):services.map(s=>s.category)).filter(Boolean))];
 function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2200)}
 function persist(){try{localStorage.setItem("luxorit-portal-v1",JSON.stringify({services,view,density,theme:document.documentElement.dataset.theme,appVersion:APP_VERSION,branding,preferences}))}catch{}}
 function safe(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
@@ -1012,6 +1063,14 @@ $("chips").innerHTML=[{label:"All",value:"All"},{label:"Favorites",value:"Favori
 const active=(c.value==="All"&&isAll)||(c.value==="Favorites"&&isFavorites)||(isCategory&&c.value===current);
 return '<button class="chip '+(active?"active":"")+'" data-chip="'+safe(c.value)+'">'+safe(c.label)+'</button>';
 }).join("");
+const filterSummary=isFavorites?"Favorites":isTag?"Tag: "+activeTag:isCategory?current:"All services";
+const layoutSummary=view==="list"?"Compact list":density==="slim"?"Slim cards":"Regular cards";
+$("catalogControlsSummary").textContent=filterSummary+" · "+layoutSummary;
+const controlsPanel=$("catalogControlsPanel"),controlsToggle=$("catalogControlsToggle");
+controlsPanel.classList.toggle("expanded",catalogControlsExpanded);
+controlsPanel.setAttribute("aria-hidden",catalogControlsExpanded?"false":"true");
+controlsToggle.setAttribute("aria-expanded",catalogControlsExpanded?"true":"false");
+controlsToggle.classList.toggle("active",catalogControlsExpanded);
 $("chips").querySelectorAll("[data-chip]").forEach(b=>b.onclick=()=>{
 const value=b.dataset.chip;
 if(value==="All")navigatePage("all");else if(value==="Favorites")navigatePage("favorites");else navigateCategory(value);
@@ -1362,6 +1421,14 @@ closeServiceModal();if(wasOnCategoryPage){page="category";current=originalCatego
 };
 $("cancel").onclick=()=>closeServiceModal();$("add").onclick=()=>{if(page==="category"&&reorderEnabled)openModal(null,current)};$("search").oninput=()=>{if(reorderEnabled&&$("search").value.trim())reorderEnabled=false;render()};
 $("reorderToggle").onclick=()=>{if(page!=="category")return;if(!reorderEnabled&&$("search").value.trim()){toast("Clear the global search before entering Edit mode.");return}reorderEnabled=!reorderEnabled;render();toast(reorderEnabled?"Edit mode enabled for "+current:"Edit mode finished")};
+$("catalogControlsToggle").onclick=()=>{
+ catalogControlsExpanded=!catalogControlsExpanded;
+ const panel=$("catalogControlsPanel"),button=$("catalogControlsToggle");
+ panel.classList.toggle("expanded",catalogControlsExpanded);
+ panel.setAttribute("aria-hidden",catalogControlsExpanded?"false":"true");
+ button.setAttribute("aria-expanded",catalogControlsExpanded?"true":"false");
+ button.classList.toggle("active",catalogControlsExpanded);
+};
 $("cardsBtn").onclick=()=>{view="cards";render()};$("listBtn").onclick=()=>{view="list";render()};$("regularBtn").onclick=()=>{density="regular";view="cards";render()};$("slimBtn").onclick=()=>{density="slim";view="cards";render()};
 function updateCollapseButton(){const collapsed=$("sidebar").classList.contains("collapsed");$("collapse").title=collapsed?"Expand sidebar":"Collapse sidebar";$("collapse").setAttribute("aria-label",collapsed?"Expand sidebar":"Collapse sidebar");$("collapse").innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="'+(collapsed?"m10 7 5 5-5 5":"m14 7-5 5 5 5")+'"/></svg>'}
 $("collapse").onclick=()=>{$("sidebar").classList.toggle("collapsed");updateCollapseButton()};updateCollapseButton();
