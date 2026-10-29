@@ -44,7 +44,25 @@
 .integration-name{font-size:12px;font-weight:750;margin:0 0 5px}
 .integration-desc{font-size:11px;line-height:1.5;color:var(--muted);min-height:33px}
 .integration-status{display:inline-flex;margin-top:10px;border:1px solid var(--line);border-radius:6px;padding:3px 7px;font-size:10px;color:var(--muted);background:var(--panel)}
-.integration-card.deployment-card{grid-column:span 2}
+.integration-card.deployment-card,.integration-card.access-sync-card{grid-column:span 2}
+.access-sync-controls{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px}
+.access-sync-controls .settings-field{min-width:190px;flex:1}
+.access-sync-setup{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:10px 12px;font-size:11px;line-height:1.55;color:var(--muted);margin-top:10px}
+.access-sync-setup a{color:var(--green);text-decoration:underline;text-underline-offset:2px}
+.access-sync-preview{border-top:1px solid var(--line);margin-top:13px;padding-top:12px}
+.access-sync-selectall{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-bottom:9px}
+.access-sync-selectall label{display:flex;align-items:center;gap:7px}
+.access-sync-app-list{display:grid;gap:7px;max-height:390px;overflow:auto}
+.access-sync-app{display:flex;align-items:flex-start;gap:9px;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--panel);min-width:0}
+.access-sync-app input{margin-top:3px;flex:0 0 auto}
+.access-sync-app-main{min-width:0;flex:1;display:grid;gap:3px}
+.access-sync-app-title{font-size:12px;font-weight:650;overflow-wrap:anywhere}
+.access-sync-app-url{font-size:11px;overflow-wrap:anywhere;color:var(--muted)}
+.access-sync-app-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:10px;color:var(--muted)}
+.access-sync-app-state{border:1px solid var(--line);border-radius:5px;padding:2px 5px}
+.access-sync-app-state.matched{color:var(--green);border-color:var(--green)}
+.access-sync-preview-empty{font-size:11px;color:var(--muted);padding:12px;border:1px dashed var(--line);border-radius:8px}
+@media(max-width:550px){.integration-grid{grid-template-columns:1fr}.integration-card.deployment-card,.integration-card.access-sync-card{grid-column:auto}}
 .deployment-info{display:grid;gap:7px;margin-top:11px}
 .deployment-item{display:grid;gap:2px;padding-top:7px;border-top:1px solid var(--line);min-width:0}
 .deployment-item-label{font-size:10px;color:var(--muted)}
@@ -89,7 +107,7 @@
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
 <div class="group-label">Workspace</div>
 <button class="nav active" data-page="home" title="Home"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/></svg></span><span>Home</span></button><button class="nav" data-page="all" title="All services"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span>All Services</span></button>
-<div class="group-label">Categories</div><div id="categoryNav"></div><div class="bottom"><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.10</div></div></aside>
+<div class="group-label">Categories</div><div id="categoryNav"></div><div class="bottom"><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.11</div></div></aside>
 <main class="main"><header class="topbar"><button class="iconbtn" id="collapse" title="Collapse sidebar" aria-label="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="m14 7-5 5 5 5"/></svg></button><div class="search"><span class="search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="search" placeholder="Search applications, tools, or tags..." aria-label="Search applications"></div><div class="top-actions"><button class="iconbtn" id="theme" title="Toggle theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg></button><button class="iconbtn help" id="help" title="About" aria-label="About"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button><div class="avatar">JD</div></div></header>
 <div class="content">
 <section id="homePage">
@@ -160,12 +178,28 @@
             <div class="d1-check-row"><span class="d1-last-checked" id="d1LastChecked">Not checked yet</span><div class="settings-actions"><button class="secondary" type="button" id="testD1Connection">Test connection</button><a href="https://dash.cloudflare.com/4ed0b7cda99d43ce679d2aace4d3f525/workers/d1" target="_blank" rel="noopener">Open D1 dashboard ↗</a></div></div>
           </div>
           <div class="integration-card"><div class="integration-name">Cloudflare R2</div><div class="integration-desc">Private bucket <strong>dashboard-manager-portal-assets</strong> for portal and service logos. Images are served through the authenticated app, not a public bucket URL.</div><span id="r2StatusBadge" class="integration-status status-checking" role="status">Checking…</span><p id="r2StatusMessage" class="d1-status-message" aria-live="polite">Checking R2 binding.</p><div class="d1-check-row"><span class="d1-last-checked" id="r2LastChecked">Not checked yet</span><div class="settings-actions"><button class="secondary" type="button" id="refreshR2Connection">Test connection</button><a href="https://dash.cloudflare.com/?to=/:account/r2/overview" target="_blank" rel="noopener">Open R2 dashboard ↗</a></div></div></div>
+          <div class="integration-card access-sync-card">
+            <div class="integration-name">Cloudflare Access Launcher</div>
+            <div class="integration-desc">Preview launcher-visible browser applications and import them into the shared service catalog. Re-sync updates linked items instead of creating duplicates.</div>
+            <span id="accessSyncStatusBadge" class="integration-status status-checking" role="status">Checking…</span>
+            <p id="accessSyncStatusMessage" class="d1-status-message" aria-live="polite">Checking Cloudflare Access API configuration.</p>
+            <div id="accessSyncSetupHint" class="access-sync-setup" hidden></div>
+            <div class="access-sync-controls">
+              <div class="settings-field"><label for="accessSyncCategory">Category for imported services</label><select id="accessSyncCategory"><option value="Access Launcher">Access Launcher</option></select></div>
+              <div class="settings-actions"><button class="secondary" type="button" id="refreshAccessApps">Load / refresh apps</button><button class="primary" type="button" id="importAccessApps" disabled>Import selected</button></div>
+            </div>
+            <div id="accessSyncPreview" class="access-sync-preview" hidden>
+              <div class="access-sync-selectall"><label><input type="checkbox" id="accessSyncSelectAll" checked> Select all new apps</label><span id="accessSyncSelectionCount">0 selected</span></div>
+              <div id="accessSyncAppList" class="access-sync-app-list"></div>
+            </div>
+            <p class="deployment-note">Only Access apps marked visible in the launcher and supported as browser links are included. Hidden apps, wildcard hosts, SSH, WARP, and the portal itself are excluded.</p>
+          </div>
           <div class="integration-card"><div class="integration-name">GitHub</div><div class="integration-desc">Repository, commit, and deployment workflow details.</div><span class="integration-status">Planned</span></div>
           
         </div>
       </article>
       <article class="settings-card wide">
-        <h2>About this portal</h2><div class="settings-version">Version <span id="settingsVersion">0.1.10</span></div><div class="settings-note">Cloudflare Pages · Authenticated Pages Functions · Shared Cloudflare D1 storage · Cloudflare Access</div>
+        <h2>About this portal</h2><div class="settings-version">Version <span id="settingsVersion">0.1.11</span></div><div class="settings-note">Cloudflare Pages · Authenticated Pages Functions · Shared Cloudflare D1 storage · Cloudflare Access</div>
       </article>
     </div>
     <div class="settings-actions" style="justify-content:flex-end;margin-top:16px"><button class="secondary" type="button" id="resetBranding">Reset branding</button><button class="primary" type="submit">Save settings</button></div>
@@ -175,7 +209,7 @@
 <div class="modal-backdrop" id="serviceModal"><form class="modal" id="serviceForm"><h2 id="modalTitle">Add service</h2><input type="hidden" id="serviceId"><label for="name">Name</label><input id="name" required><label for="url">URL</label><input id="url" type="url" placeholder="https://service.example" required><label for="category">Category</label><select id="category"></select><label for="description">Description</label><input id="description"><label for="icon">Fallback icon for custom services</label><input id="icon" value="🔧"><label for="tags">Tags (comma-separated)</label><input id="tags" placeholder="Admin, Cloud"><div class="settings-field full"><label for="serviceLogoFile">Service logo</label><div class="logo-upload-row"><div class="service-logo-preview" id="serviceLogoPreview"><span id="serviceLogoFallback">🔧</span><img id="serviceLogoImage" alt="" hidden></div><div class="settings-actions"><button class="secondary" type="button" id="chooseServiceLogo">Browse image</button><button class="secondary" type="button" id="removeServiceLogo" hidden>Remove image</button><input type="file" id="serviceLogoFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden><input type="hidden" id="serviceLogoKey"><span id="serviceLogoUploadStatus" class="settings-note">Optional · PNG, JPEG, WebP or GIF · up to 5 MB</span></div></div></div><div class="modal-actions"><button class="secondary" type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save service</button></div></form></div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.10";
+const APP_VERSION="0.1.11";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -342,6 +376,73 @@ r2Status={state:"offline",message:"R2 connection failed: "+(error.message||"bind
 if(showToast)toast("R2 connection failed: "+(error.message||"binding unavailable"));
 }finally{renderR2Status();if(button){button.disabled=false;button.textContent="Test connection"}}
 }
+let accessSyncState={state:"checking",message:"Checking Cloudflare Access API configuration.",apps:[],lastChecked:null,configured:false,categories:[]};
+let accessSyncBusy=false;
+function renderAccessSync(){
+const badge=$("accessSyncStatusBadge");if(!badge)return;
+badge.className="integration-status "+(accessSyncState.state==="connected"?"status-connected":accessSyncState.state==="offline"?"status-offline":"status-checking");
+badge.textContent=accessSyncState.state==="connected"?"Ready":accessSyncState.state==="setup"?"Setup needed":accessSyncState.state==="offline"?"Unavailable":"Checking…";
+$("accessSyncStatusMessage").textContent=accessSyncState.message;
+const hint=$("accessSyncSetupHint");hint.hidden=accessSyncState.state!=="setup";hint.replaceChildren();
+if(accessSyncState.state==="setup"){
+const p=document.createElement("div");p.textContent="To enable sync, create a Cloudflare API token with Account permission “Access: Apps and Policies Read”, scoped to this account. Add it in Pages Settings → Variables and Secrets as a Secret named ACCESS_SYNC_API_TOKEN. The account ID is already configured. Never paste the token into this page.";hint.appendChild(p);
+const a=document.createElement("a");a.href="https://dash.cloudflare.com/4ed0b7cda99d43ce679d2aace4d3f525/api-tokens";a.target="_blank";a.rel="noopener noreferrer";a.textContent="Open Cloudflare dashboard ↗";a.style.display="inline-block";a.style.marginTop="7px";hint.appendChild(a);
+}
+const preview=$("accessSyncPreview");preview.hidden=accessSyncState.state!=="connected";
+const list=$("accessSyncAppList");list.replaceChildren();
+if(accessSyncState.state==="connected"&&accessSyncState.apps.length===0){const empty=document.createElement("div");empty.className="access-sync-preview-empty";empty.textContent="No supported, launcher-visible browser apps were found.";list.appendChild(empty)}
+for(const app of accessSyncState.apps){
+const label=document.createElement("label");label.className="access-sync-app";
+const check=document.createElement("input");check.type="checkbox";check.checked=app.existingServiceId==null;check.dataset.accessApp=app.accessId;check.addEventListener("change",updateAccessSelection);
+const main=document.createElement("span");main.className="access-sync-app-main";
+const name=document.createElement("span");name.className="access-sync-app-title";name.textContent=app.name;
+const url=document.createElement("span");url.className="access-sync-app-url";url.textContent=app.url;
+const meta=document.createElement("span");meta.className="access-sync-app-meta";
+const type=document.createElement("span");type.className="access-sync-app-state";type.textContent=app.type.replaceAll("_"," ");
+const state=document.createElement("span");state.className="access-sync-app-state"+(app.matchType?" matched":"");state.textContent=app.matchType==="source"?"Already synced":app.matchType==="url"?"Link existing #"+app.existingServiceId:"New service";
+meta.append(type,state);main.append(name,url,meta);label.append(check,main);list.appendChild(label);
+}
+const select=$("accessSyncCategory"),prior=select.value||"Access Launcher";select.replaceChildren();
+for(const category of [...new Set([...accessSyncState.categories.map(c=>c.name),"Access Launcher"])].filter(Boolean).sort((a,b)=>a.localeCompare(b))){
+const option=document.createElement("option");option.value=category;option.textContent=category;select.appendChild(option);
+}
+select.value=[...select.options].some(o=>o.value===prior)?prior:"Access Launcher";
+$("refreshAccessApps").disabled=accessSyncState.state==="checking"||accessSyncBusy;
+$("importAccessApps").disabled=accessSyncState.state!=="connected"||accessSyncBusy||accessSyncState.apps.length===0;
+updateAccessSelection();
+}
+function updateAccessSelection(){
+const checks=[...document.querySelectorAll("[data-access-app]")],selected=checks.filter(x=>x.checked).length;
+$("accessSyncSelectionCount").textContent=selected+" selected";
+$("accessSyncSelectAll").checked=checks.length>0&&selected===checks.length;
+$("accessSyncSelectAll").indeterminate=selected>0&&selected<checks.length;
+$("importAccessApps").disabled=accessSyncState.state!=="connected"||accessSyncBusy||selected===0;
+}
+async function refreshAccessApps(showToast=false){
+accessSyncState={...accessSyncState,state:"checking",message:"Loading visible web applications from Cloudflare Access."};renderAccessSync();
+try{
+const [data,categories]=await Promise.all([apiRequest("access-sync"),apiRequest("categories")]);
+if(data.configured===false){
+accessSyncState={state:"setup",message:data.message||"Cloudflare Access sync needs a read-only API token.",apps:[],lastChecked:new Date(),configured:false,categories:Array.isArray(categories)?categories:[]};
+}else if(!Array.isArray(data.apps)){throw new Error(data.error||"Unexpected Access application response")}
+else{
+accessSyncState={state:"connected",message:data.apps.length+" launcher-visible browser application"+(data.apps.length===1?"":"s")+" available for preview.",apps:data.apps,lastChecked:new Date(),configured:true,categories:Array.isArray(categories)?categories:[]};
+}
+}catch(error){accessSyncState={...accessSyncState,state:"offline",message:error.message||"Could not load Cloudflare Access applications.",lastChecked:new Date()}}
+renderAccessSync();if(showToast)toast(accessSyncState.state==="connected"?"Access application preview refreshed":accessSyncState.message);
+}
+async function importSelectedAccessApps(){
+if(accessSyncBusy)return;
+const ids=[...document.querySelectorAll("[data-access-app]:checked")].map(x=>x.dataset.accessApp);
+if(!ids.length){toast("Select at least one Access application.");return}
+accessSyncBusy=true;renderAccessSync();
+try{
+const result=await apiRequest("access-sync",{method:"POST",body:JSON.stringify({ids,category:$("accessSyncCategory").value||"Access Launcher"})});
+await loadRemoteData();await refreshAccessApps(false);
+toast("Access sync complete: "+result.imported+" added, "+result.updated+" updated, "+result.linkedExisting+" linked to existing services.");
+}catch(error){toast("Access sync failed: "+(error.message||"request failed"));await refreshAccessApps(false)}
+finally{accessSyncBusy=false;renderAccessSync()}
+}
 async function checkD1Connection(showToast=true){
 const button=$("testD1Connection");if(button){button.disabled=true;button.textContent="Testing…"}
 setD1Status("checking","Checking the authenticated API and shared D1 database.",{serviceCount:null,categoryCount:null,tagCount:null});
@@ -496,6 +597,9 @@ $("serviceLogoUploadStatus").textContent="Logo removal will take effect when you
 };
 $("testD1Connection").onclick=()=>checkD1Connection(true);
 $("refreshR2Connection").onclick=()=>checkR2Connection(true);
+$("refreshAccessApps").onclick=()=>refreshAccessApps(true);
+$("importAccessApps").onclick=()=>importSelectedAccessApps();
+$("accessSyncSelectAll").onchange=e=>{document.querySelectorAll("[data-access-app]").forEach(x=>x.checked=e.target.checked);updateAccessSelection()};
 $("refreshPagesDeployment").onclick=()=>checkPagesDeployment(true);
 $("settingsForm").onsubmit=async e=>{
 e.preventDefault();if(brandingLogoUploadBusy){toast("Wait for the portal logo upload to finish.");return}
@@ -513,4 +617,4 @@ $("sidebar").classList.toggle("collapsed",preferences.sidebarCollapsed);updateCo
 };
 $("resetBranding").onclick=()=>{branding={name:"Luxorit",subtitle:"Pro",logo:"",logoKey:null};if(brandingLogoPreviewUrl){URL.revokeObjectURL(brandingLogoPreviewUrl);brandingLogoPreviewUrl=null}renderSettings();toast("Branding reset. Save settings to keep it.")};
 $("themeSetting").onchange=()=>{document.documentElement.dataset.theme=$("themeSetting").value};
-load();preferences.theme=document.documentElement.dataset.theme||preferences.theme;page=preferences.landingPage||"home";view=preferences.defaultView==="cards"||preferences.defaultView==="slim"?"cards":"list";density=preferences.defaultView==="slim"?"slim":"regular";$("sidebar").classList.toggle("collapsed",!!preferences.sidebarCollapsed);render();loadRemoteData();checkPagesDeployment(false);checkR2Connection(false);</script></body></html>
+load();preferences.theme=document.documentElement.dataset.theme||preferences.theme;page=preferences.landingPage||"home";view=preferences.defaultView==="cards"||preferences.defaultView==="slim"?"cards":"list";density=preferences.defaultView==="slim"?"slim":"regular";$("sidebar").classList.toggle("collapsed",!!preferences.sidebarCollapsed);render();loadRemoteData();checkPagesDeployment(false);checkR2Connection(false);refreshAccessApps(false);</script></body></html>
