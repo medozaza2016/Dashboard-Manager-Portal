@@ -133,7 +133,7 @@
           
           <div class="integration-card deployment-card">
             <div class="integration-name">Cloudflare Pages</div>
-            <div class="integration-desc">Portal hosting, authenticated Pages Functions API, and GitHub-driven deployments.</div>
+            <div class="integration-desc">Portal hosting, protected backend endpoints, and GitHub-driven deployments.</div>
             <span id="pagesApiStatusBadge" class="integration-status status-checking" role="status">Checking…</span>
             <p id="pagesApiStatusMessage" class="d1-status-message" aria-live="polite">Loading current Pages deployment information.</p>
             <div class="deployment-info">
@@ -292,7 +292,7 @@ function renderPagesDeployment(){
 const data=pagesDeployment.data||{};
 const badge=$("pagesApiStatusBadge");if(!badge)return;
 badge.className="integration-status "+(pagesDeployment.state==="connected"?"status-connected":pagesDeployment.state==="offline"?"status-offline":"status-checking");
-badge.textContent=pagesDeployment.state==="connected"?"Connected":pagesDeployment.state==="offline"?"Unavailable":"Checking…";
+badge.textContent=pagesDeployment.state==="connected"?"Live":pagesDeployment.state==="offline"?"Unavailable":"Checking…";
 $("pagesApiStatusMessage").textContent=pagesDeployment.state==="connected"?"Authenticated deployment metadata loaded.":(data.error||"Could not load deployment metadata.");
 addSafeExternalLink("pagesDeploymentUrl",data.deploymentUrl,data.deploymentUrl||"",data.deploymentUrl?"":"Current deployment URL was not exposed by this runtime.");
 addSafeExternalLink("pagesProjectUrl",data.projectUrl,data.projectUrl||"https://dashboard-manager-portal.pages.dev","Project URL unavailable");
