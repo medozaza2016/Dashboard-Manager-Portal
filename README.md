@@ -8,42 +8,45 @@ The approved interface uses a near-black navy canvas, subtle blue-gray borders, 
 
 ## Current Status
 
-**Frontend prototype.** The initial HTML prototype is stored at [prototype/index.html](prototype/index.html). It demonstrates the interface and client-side interactions. It is not yet a React application and is not connected to a persistent backend or Cloudflare services.
+**Backend foundation implemented, end-to-end activation pending.** The canonical frontend is the root `index.html`, built by Vite and deployed through Cloudflare Pages. Pages Functions in `functions/api/` provide the server-side API, and `luxorit-portal-db` stores the current catalog in Cloudflare D1. The frontend has API calls for service CRUD and settings, with a browser-local fallback when the backend is not available.
 
-Some internal service URLs in the public prototype are replaced with `.example` placeholders. Configure actual URLs locally or through a future authenticated settings workflow.
+The D1 database has been created and seeded with 12 existing services, 5 categories, 21 tags, 24 service-tag associations, and 3 portal setting records. The SQL migration is checked into `migrations/0001_initial.sql`.
 
-## Planned Stack
+**Not yet fully live:** the latest frontend/API release is still being deployed, and Cloudflare Access variables and the Pages hostname's Access policy must be configured before the browser can use the protected API. Until that authentication configuration is complete, changes may remain local to the browser. Do not treat the portal as production-ready for managing infrastructure until the Access gate has been tested.
 
-- **Frontend:** React, Vite, TypeScript, Tailwind CSS
+Some service URLs are intentionally placeholders ending in `.example`. Replace them with real addresses only after the portal is protected and access policies are verified.
+
+## Stack
+
+- **Frontend:** Vite-built HTML/CSS/JavaScript prototype, with React/TypeScript/Tailwind migration as a later refactor
 - **Hosting:** Cloudflare Pages
-- **API:** Cloudflare Workers
-- **Database:** Cloudflare D1
-- **Optional object storage:** Cloudflare R2, if required
+- **API:** Cloudflare Pages Functions, executed on the Workers platform
+- **Database:** Cloudflare D1 (SQLite)
+- **Optional object storage:** Cloudflare R2 only if future features require file storage
 
-These integrations are planned and are not represented as implemented.
+Keeping Pages for the static UI while using Pages Functions for server-side API logic avoids a full hosting migration. A separate standalone Worker is not required for this application's current needs.
 
-## Roadmap
+## API and Data Model
 
-### Phase 1: Frontend
-- Match the approved mockup and responsive layouts.
-- Complete regular-card, compact-card, and list views.
-- Complete navigation, search, favorites, categories, and tags.
-- Complete add, edit, duplicate, and delete workflows.
-- Ensure first-run behavior displays usable sample services.
-- Use application-native confirmation dialogs.
+The Pages Functions endpoints are:
 
-### Phase 2: Application structure
-- Migrate the prototype into a maintainable React/Vite/TypeScript project.
-- Add reusable UI components and typed data models.
-- Add linting, formatting, and automated tests.
-- Document local development and production builds.
+- `GET /api/services`, list services.
+- `GET /api/services?id=<id>`, read one service.
+- `POST /api/services`, create a service.
+- `PUT /api/services?id=<id>`, update a service.
+- `DELETE /api/services?id=<id>`, delete a service.
+- `GET /api/categories`, list categories and counts.
+- `GET /api/settings` and `PUT /api/settings`, read or save portal branding and preferences.
 
-### Phase 3: Cloudflare integration
-- Add Workers API endpoints.
-- Store services, categories, tags, and preferences in D1.
-- Add authentication and authorization before enabling administration.
-- Configure Pages deployment and environment bindings.
-- Add R2 only if file/object storage is needed.
+The D1 schema has `services`, `categories`, `tags`, `service_tags`, and `portal_settings` tables, with indexes and foreign-key relationships. SQL migrations are stored in `migrations/`.
+
+### Remaining activation steps
+1. Verify the latest Pages deployment builds with Functions enabled.
+2. Enable Cloudflare Access on the Pages hostname and allow only authorized identities.
+3. Configure `ACCESS_TEAM_DOMAIN` and `ACCESS_AUD` as production and preview environment variables for Pages Functions.
+4. Test the protected API, CRUD operations, settings persistence, and failed-auth behavior before treating the portal as live.
+
+The API deliberately returns an error when authentication configuration is missing, rather than allowing unauthenticated database changes.
 
 ## Security
 
