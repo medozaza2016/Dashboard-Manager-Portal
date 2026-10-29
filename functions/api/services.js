@@ -70,6 +70,31 @@ export async function onRequest(context) {
     return jsonResponse((result.results || []).map(normalize));
   }
 
+  if (request.method === "PATCH" && id == null) {
+    let payload;
+    try { payload = await request.json(); } catch { return jsonResponse({ error: "Invalid JSON body." }, 400); }
+    if (!payload || !Array.isArray(payload.order) || payload.order.length > 200 ||
+        payload.order.some(value => !Number.isSafeInteger(Number(value)) || Number(value) < 1) ||
+        new Set(payload.order.map(Number)).size !== payload.order.length) {
+      return jsonResponse({ error: "Provide an ordered array of unique service IDs." }, 400);
+    }
+
+    const current = await env.DB.prepare("SELECT id FROM services").all();
+    const existingIds = (current.results || []).map(row => Number(row.id));
+    const requestedIds = payload.order.map(Number);
+    if (existingIds.length !== requestedIds.length || existingIds.some(serviceId => !requestedIds.includes(serviceId))) {
+      return jsonResponse({ error: "The service list changed. Refresh and try reordering again." }, 409);
+    }
+
+    const statements = requestedIds.map((serviceId, index) =>
+      env.DB.prepare("UPDATE services SET sort_order = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?")
+        .bind(index + 1, serviceId)
+    );
+    if (statements.length) await env.DB.batch(statements);
+    const result = await env.DB.prepare(`${SERVICE_SELECT} GROUP BY s.id ORDER BY s.sort_order, s.id`).all();
+    return jsonResponse((result.results || []).map(normalize));
+  }
+
   if (request.method === "POST" || request.method === "PUT") {
     let payload;
     try { payload = await request.json(); } catch { return jsonResponse({ error: "Invalid JSON body." }, 400); }
