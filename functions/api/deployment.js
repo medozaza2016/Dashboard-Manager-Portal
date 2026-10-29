@@ -22,7 +22,7 @@ export async function onRequest({ request, env }) {
 
   const branch = typeof env.CF_PAGES_BRANCH === "string" ? env.CF_PAGES_BRANCH : null;
   const commitSha = typeof env.CF_PAGES_COMMIT_SHA === "string" ? env.CF_PAGES_COMMIT_SHA.trim() : "";
-  const deploymentUrl = safeDeploymentUrl(env.CF_PAGES_URL);
+  const deploymentUrl = safeDeploymentUrl(env.CF_PAGES_URL) || safeDeploymentUrl(new URL(request.url).origin);
   const environment = branch ? (branch === "main" ? "production" : "preview") : null;
 
   let commit = null;
