@@ -329,6 +329,13 @@
 .tag-overview-mark{font-size:18px;font-weight:800}
 @media(max-width:950px){.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:700px){.taxonomy-overview-row{grid-template-columns:22px minmax(0,1fr) auto}.taxonomy-overview-actions{grid-column:2/4;justify-content:flex-end}.taxonomy-panel-head{align-items:flex-start;flex-wrap:wrap}}
+
+/* Override the former tall inline category cards; taxonomy is now a compact overview. */
+.taxonomy-list.category-manager-grid .category-manager-item,
+.taxonomy-list.tag-manager-grid .taxonomy-overview-row{min-height:52px;grid-template-rows:auto;align-content:center;gap:9px;padding:9px 11px;cursor:default}
+.taxonomy-list.category-manager-grid .category-manager-item{cursor:grab}
+.taxonomy-list.category-manager-grid .taxonomy-overview-row .category-drag-handle{cursor:grab}
+.taxonomy-overview-copy small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
@@ -476,7 +483,7 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.31";
+const APP_VERSION="0.1.32";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -1146,24 +1153,6 @@ if(accessCategory){const current=accessCategory.value;const names=[...new Set(ta
 if($("serviceModal")?.classList.contains("open"))renderServiceTagPicker();
 if(page==="admin")renderAdminPage();
 if(showToast)toast(taxonomyLoaded?"Categories and tags refreshed":"Could not load categories and tags");
-}
-async function addCategory(){
-if(!apiConnected){taxonomyMessage("categoryManagerMessage","Connect to the shared database first.",true);return}
-const name=$("newCategoryName").value.trim(),icon=$("newCategoryIcon").value;
-if(!name){taxonomyMessage("categoryManagerMessage","Enter a category name.",true);$("newCategoryName").focus();return}
-const payload={name,icon};
-const button=$("addCategoryButton");button.disabled=true;taxonomyMessage("categoryManagerMessage","Creating category…");
-try{await apiRequest("categories-manage",{method:"POST",body:JSON.stringify(payload)});$("newCategoryName").value="";await loadRemoteData();await refreshTaxonomy(false);taxonomyMessage("categoryManagerMessage","Category added to the sidebar.");toast("Category added")}
-catch(error){taxonomyMessage("categoryManagerMessage",error.message||"Could not add category.",true)}
-finally{button.disabled=false}
-}
-async function addTag(){
-if(!apiConnected){taxonomyMessage("tagManagerMessage","Connect to the shared database first.",true);return}
-const name=$("newTagName").value.trim();if(!name){taxonomyMessage("tagManagerMessage","Enter a tag name.",true);$("newTagName").focus();return}
-const button=$("addTagButton");button.disabled=true;taxonomyMessage("tagManagerMessage","Creating tag…");
-try{await apiRequest("tags",{method:"POST",body:JSON.stringify({name})});$("newTagName").value="";await loadRemoteData();await refreshTaxonomy(false);taxonomyMessage("tagManagerMessage","Tag added. Assign it to services in each service's Edit dialog.");toast("Tag added")}
-catch(error){taxonomyMessage("tagManagerMessage",error.message||"Could not add tag.",true)}
-finally{button.disabled=false}
 }
 function renderAdminPage(){
 const categoriesPanel=$("adminCategoriesPanel"),tagsPanel=$("adminTagsPanel");if(!categoriesPanel||!tagsPanel)return;
