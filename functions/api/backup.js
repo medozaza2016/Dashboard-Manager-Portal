@@ -1,5 +1,5 @@
 import { requireCloudflareAccess, jsonResponse } from "../lib/access.js";
-import { isAllowedAssetKey } from "../lib/assets.js";
+import { deleteAssetIfUnreferenced, isAllowedAssetKey } from "../lib/assets.js";
 
 const DEFAULTS = {
   branding: { name: "Luxorit", subtitle: "Pro", logo: "", logoKey: null },
@@ -155,7 +155,12 @@ async function exportBackup(db) {
   };
 }
 
-async function restoreBackup(db, backup) {
+async function restoreBackup(env, backup) {
+  const db = env.DB;
+  const [previousServiceLogos, previousBranding] = await Promise.all([
+    db.prepare("SELECT logo_key FROM services WHERE logo_key IS NOT NULL").all(),
+    readSetting(db, "branding", DEFAULTS.branding),
+  ]);
   const statements = [
     db.prepare("DELETE FROM service_tags"),
     db.prepare("DELETE FROM services"),
@@ -192,6 +197,9 @@ async function restoreBackup(db, backup) {
 
   // D1 batches run as a transaction: on a statement failure, the restore is rolled back.
   await db.batch(statements);
+  const previousKeys = new Set((previousServiceLogos.results || []).map((row) => row.logo_key).filter(Boolean));
+  if (previousBranding?.logoKey) previousKeys.add(previousBranding.logoKey);
+  for (const key of previousKeys) await deleteAssetIfUnreferenced(env, key);
 }
 
 export async function onRequest({ request, env }) {
@@ -216,7 +224,7 @@ export async function onRequest({ request, env }) {
   if (validated.error) return jsonResponse({ error: validated.error }, 400);
 
   try {
-    await restoreBackup(env.DB, validated.backup);
+    await restoreBackup(env, validated.backup);
   } catch {
     return jsonResponse({ error: "Backup restore failed. The database was not changed." }, 500);
   }
