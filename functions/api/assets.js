@@ -34,6 +34,9 @@ export async function onRequest({ request, env }) {
   const { searchParams } = new URL(request.url);
   if (request.method === "GET") {
     const key = searchParams.get("key");
+    if (key == null) {
+      return jsonResponse({ connected: true, bucket: "dashboard-manager-portal-assets", access: "private", publicAccessEnabled: false, maxImageBytes: MAX_IMAGE_BYTES, acceptedTypes: Object.keys(IMAGE_TYPES) });
+    }
     if (!isAllowedAssetKey(key)) return jsonResponse({ error: "Invalid asset key." }, 400);
     try {
       if (!(await isAssetReferenced(env, key))) return jsonResponse({ error: "Asset not found." }, 404);
