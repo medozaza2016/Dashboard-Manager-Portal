@@ -3,7 +3,7 @@ import { deleteAssetIfUnreferenced, isAllowedAssetKey } from "../lib/assets.js";
 
 const DEFAULTS = {
   branding: { name: "Luxorit", subtitle: "Pro", logo: "", logoKey: null },
-  preferences: { theme: "dark", landingPage: "home", defaultView: "list", sidebarCollapsed: false, showSlimDescriptions: false },
+  preferences: { theme: "dark", landingPage: "home", defaultView: "list", sidebarCollapsed: false, showSlimDescriptions: false, serviceImageSize: 34 },
 };
 const MAX_SERVICES = 200;
 const MAX_TAGS = 300;
@@ -29,12 +29,14 @@ function cleanBranding(value = {}) {
 }
 
 function cleanPreferences(value = {}, legacyTheme) {
+  const requestedImageSize = Number(value.serviceImageSize);
   return {
     theme: value.theme === "light" || (!value.theme && legacyTheme === "light") ? "light" : "dark",
     landingPage: ["home", "all"].includes(value.landingPage) ? value.landingPage : "home",
     defaultView: ["list", "cards", "slim"].includes(value.defaultView) ? value.defaultView : "list",
     sidebarCollapsed: Boolean(value.sidebarCollapsed),
     showSlimDescriptions: Boolean(value.showSlimDescriptions),
+    serviceImageSize: value.serviceImageSize == null || !Number.isFinite(requestedImageSize) ? 34 : Math.min(64, Math.max(20, Math.round(requestedImageSize / 2) * 2)),
   };
 }
 

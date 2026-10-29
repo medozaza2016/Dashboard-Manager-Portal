@@ -352,6 +352,28 @@
 .service-tag-create-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px}
 .service-tag-create-row .settings-note{margin:0}
 @media(max-width:480px){.service-inline-create{grid-template-columns:minmax(0,1fr)}.service-inline-create .service-create-inline-button{justify-self:start}.service-tag-create-row{align-items:flex-start;flex-wrap:wrap}}
+
+/* v0.1.35 service logo sizing and consistent image presentation */
+:root{--service-image-size:34px}
+.service-icon{width:calc(var(--service-image-size) + 8px);height:calc(var(--service-image-size) + 8px);background:var(--panel2);border:1px solid var(--line);border-radius:12px;gap:0}
+.service-icon>img{width:var(--service-image-size);height:var(--service-image-size);max-width:100%;max-height:100%;object-fit:contain;display:block}
+.service-icon .uploaded-logo{width:var(--service-image-size);height:var(--service-image-size);object-fit:contain;border-radius:8px;background:transparent;padding:0}
+.service-icon .custom-svg{width:var(--service-image-size);height:var(--service-image-size);display:block}
+.service-icon .icon-fallback{width:var(--service-image-size);height:var(--service-image-size);font-size:min(32px,var(--service-image-size));background:transparent;border-radius:8px}
+.grid.slim .service-icon{width:calc(var(--service-image-size) + 8px);height:calc(var(--service-image-size) + 8px);font-size:var(--service-image-size)}
+.grid.slim .service-icon>img,.grid.slim .service-icon .uploaded-logo,.grid.slim .service-icon .icon-fallback{width:var(--service-image-size);height:var(--service-image-size)}
+.grid.slim .service-icon .custom-svg{width:var(--service-image-size);height:var(--service-image-size)}
+.table-service-icon{width:calc(var(--service-image-size) + 8px);height:calc(var(--service-image-size) + 8px);background:var(--panel2);border:1px solid var(--line);border-radius:11px;line-height:0;vertical-align:middle}
+.table-service-icon .custom-svg,.table-service-icon img{width:var(--service-image-size);height:var(--service-image-size);max-width:100%;max-height:100%;object-fit:contain}
+.table-service-icon .uploaded-logo{width:var(--service-image-size);height:var(--service-image-size);object-fit:contain;border-radius:7px;background:transparent;padding:0}
+.table-service-icon .icon-fallback{width:var(--service-image-size);height:var(--service-image-size);font-size:min(32px,var(--service-image-size));background:transparent;border-radius:7px;line-height:1}
+.service-logo-preview{width:calc(var(--service-image-size) + 6px);height:calc(var(--service-image-size) + 6px);flex:0 0 calc(var(--service-image-size) + 6px);border-radius:12px}
+.service-logo-preview img{width:100%;height:100%;padding:2px;object-fit:contain}
+.service-image-size-control{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:6px 0 2px}
+.service-image-size-control input[type=range]{width:min(100%,360px);min-width:180px;flex:1;padding:0;border:0;background:transparent;accent-color:var(--green)}
+.service-image-size-preview{flex:0 0 calc(var(--service-image-size) + 6px);box-shadow:0 2px 8px #0001}
+.service-image-size-preview #serviceImageSizePreviewFallback{font-size:min(40px,var(--service-image-size));line-height:1}
+@media(max-width:550px){.service-image-size-control{align-items:flex-start}.service-image-size-control input[type=range]{min-width:100%}}
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
@@ -411,6 +433,7 @@
           <div class="settings-field"><label for="themeSetting">Color theme</label><select id="themeSetting"><option value="dark">Dark · deep green</option><option value="light">Light · deep green</option></select></div>
           <div class="settings-field"><label for="landingSetting">Default page</label><select id="landingSetting"><option value="home">Home</option><option value="favorites">Favorites</option></select></div>
           <div class="settings-field full"><label for="defaultViewSetting">Default service layout</label><select id="defaultViewSetting"><option value="list">Compact list</option><option value="cards">Regular cards</option><option value="slim">Slim cards</option></select></div>
+          <div class="settings-field full"><label for="serviceImageSizeSetting">Service logo size <span id="serviceImageSizeValue">34 px</span></label><div class="service-image-size-control"><input id="serviceImageSizeSetting" type="range" min="20" max="64" step="2" value="34" aria-label="Service logo size in pixels"><div class="service-logo-preview service-image-size-preview" id="serviceImageSizePreview"><span id="serviceImageSizePreviewFallback">🔧</span><img id="serviceImageSizePreviewImage" alt="" hidden></div></div><p class="settings-help">Adjusts uploaded logos and built-in icons across regular cards, Slim cards, compact rows, and the service editor preview. Original uploaded files remain unchanged.</p></div>
         </div>
         <label class="settings-check"><input id="showSlimDescriptionsSetting" type="checkbox"><span>Show descriptions in Slim cards</span></label>
         <p class="settings-help" style="margin-top:6px">When off, Slim cards show just the service name and icon. The card itself opens the service. This applies across Home, Favorites, and category pages, including filtered results.</p>
@@ -499,7 +522,7 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.34";
+const APP_VERSION="0.1.35";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -555,7 +578,31 @@ const seed=[
 let services=structuredClone(seed),current="All",view="list",density="regular",page="home",nextId=13,reorderEnabled=false;
 let currentProfile=1,sidebarCategoriesExpanded=false; // 1=Personal, 2=Work
 let branding={name:"Luxorit",subtitle:"Pro",logo:""};
-let preferences={theme:"dark",landingPage:"home",defaultView:"list",sidebarCollapsed:false,sidebarCategoriesCollapsed:false,sidebarTagsCollapsed:false,showSlimDescriptions:false};
+let preferences={theme:"dark",landingPage:"home",defaultView:"list",sidebarCollapsed:false,sidebarCategoriesCollapsed:false,sidebarTagsCollapsed:false,showSlimDescriptions:false,serviceImageSize:34};
+function normalizeServiceImageSize(value){
+ const size=Number(value);
+ return value==null||!Number.isFinite(size)?34:Math.min(64,Math.max(20,Math.round(size/2)*2));
+}
+function applyServiceImageSize(value){
+ document.documentElement.style.setProperty("--service-image-size",normalizeServiceImageSize(value)+"px");
+}
+function renderServiceImageSizePreview(value=preferences.serviceImageSize){
+ const size=normalizeServiceImageSize(value);
+ const range=$("serviceImageSizeSetting"),output=$("serviceImageSizeValue"),preview=$("serviceImageSizePreview");
+ const image=$("serviceImageSizePreviewImage"),fallback=$("serviceImageSizePreviewFallback");
+ if(range&&Number(range.value)!==size)range.value=String(size);
+ if(output)output.textContent=size+" px";
+ if(preview)preview.style.setProperty("--service-image-size",size+"px");
+ const service=apiConnected?services.find(item=>item.logoKey):null;
+ if(image&&fallback&&service){
+   const source=assetUrl(service.logoKey);
+   if(image.dataset.source!==source){image.dataset.source=source;image.src=source}
+   image.hidden=false;fallback.hidden=true;
+   image.onerror=()=>{image.hidden=true;fallback.hidden=false};
+ }else if(image&&fallback){
+   image.hidden=true;image.removeAttribute("src");delete image.dataset.source;fallback.hidden=false;
+ }
+}
 let apiConnected=false,apiError="";
 let adminTab="categories",adminServiceQuery="";
 let serviceSelectedTags=new Set(),serviceTagQuery="";
@@ -1202,8 +1249,8 @@ document.querySelectorAll("[data-admin-tab]").forEach(button=>{const active=butt
 if(adminTab==="categories")renderCategoryManager();if(adminTab==="tags")renderTagManager();
 }
 function setAdminTab(tab){if(!["categories","tags"].includes(tab))return;adminTab=tab;page="admin";showPage();renderAdminPage();bindRenderedActions()}
-function renderSettings(){$("brandingName").value=branding.name||"Luxorit";$("brandingSubtitle").value=branding.subtitle||"";$("brandingLogo").value=branding.logo||"";$("themeSetting").value=document.documentElement.dataset.theme||"dark";$("landingSetting").value=preferences.landingPage||"home";$("defaultViewSetting").value=preferences.defaultView||"list";$("showSlimDescriptionsSetting").checked=!!preferences.showSlimDescriptions;$("sidebarCollapsedSetting").checked=!!preferences.sidebarCollapsed;$("settingsVersion").textContent=APP_VERSION;applyBranding();renderD1Status();renderR2Status()}
-function render(){nav();showPage();if(page==="home")renderHome();else if(page==="settings")renderSettings();else if(page==="admin")renderAdminPage();else renderCatalog();$("versionLabel").textContent="v"+APP_VERSION;applyBranding();bindRenderedActions();persist()}
+function renderSettings(){$("brandingName").value=branding.name||"Luxorit";$("brandingSubtitle").value=branding.subtitle||"";$("brandingLogo").value=branding.logo||"";$("themeSetting").value=document.documentElement.dataset.theme||"dark";$("landingSetting").value=preferences.landingPage||"home";$("defaultViewSetting").value=preferences.defaultView||"list";$("serviceImageSizeSetting").value=normalizeServiceImageSize(preferences.serviceImageSize);renderServiceImageSizePreview(preferences.serviceImageSize);$("showSlimDescriptionsSetting").checked=!!preferences.showSlimDescriptions;$("sidebarCollapsedSetting").checked=!!preferences.sidebarCollapsed;$("settingsVersion").textContent=APP_VERSION;applyBranding();renderD1Status();renderR2Status()}
+function render(){applyServiceImageSize(preferences.serviceImageSize);nav();showPage();if(page==="home")renderHome();else if(page==="settings")renderSettings();else if(page==="admin")renderAdminPage();else renderCatalog();$("versionLabel").textContent="v"+APP_VERSION;applyBranding();bindRenderedActions();persist()}
 function renderServiceLogoPreview(source,fallback="🔧"){
 const image=$("serviceLogoImage"),text=$("serviceLogoFallback");
 if(source){image.src=source;image.hidden=false;text.hidden=true;image.onerror=()=>{image.hidden=true;text.hidden=false}}
@@ -1346,7 +1393,7 @@ $("refreshPagesDeployment").onclick=()=>checkPagesDeployment(true);
 $("settingsForm").onsubmit=async e=>{
 e.preventDefault();if(brandingLogoUploadBusy){toast("Wait for the portal logo upload to finish.");return}
 const nextBranding={name:$("brandingName").value.trim()||"Luxorit",subtitle:$("brandingSubtitle").value.trim(),logo:$("brandingLogo").value.trim(),logoKey:branding.logoKey||null};
-const nextPreferences={theme:$("themeSetting").value,landingPage:$("landingSetting").value,defaultView:$("defaultViewSetting").value,sidebarCollapsed:$("sidebarCollapsedSetting").checked,showSlimDescriptions:$("showSlimDescriptionsSetting").checked};
+const nextPreferences={theme:$("themeSetting").value,landingPage:$("landingSetting").value,defaultView:$("defaultViewSetting").value,sidebarCollapsed:$("sidebarCollapsedSetting").checked,showSlimDescriptions:$("showSlimDescriptionsSetting").checked,serviceImageSize:normalizeServiceImageSize($("serviceImageSizeSetting").value)};
 try{
 if(apiConnected)await apiRequest("settings",{method:"PUT",body:JSON.stringify({branding:nextBranding,preferences:nextPreferences})});
 branding=nextBranding;persistedBrandingLogoKey=nextBranding.logoKey;preferences=nextPreferences;document.documentElement.dataset.theme=preferences.theme;
@@ -1360,4 +1407,5 @@ $("sidebar").classList.toggle("collapsed",preferences.sidebarCollapsed);updateCo
 };
 $("resetBranding").onclick=()=>{branding={name:"Luxorit",subtitle:"Pro",logo:"",logoKey:null};if(brandingLogoPreviewUrl){URL.revokeObjectURL(brandingLogoPreviewUrl);brandingLogoPreviewUrl=null}renderSettings();toast("Branding reset. Save settings to keep it.")};
 $("themeSetting").onchange=()=>{document.documentElement.dataset.theme=$("themeSetting").value};
+$("serviceImageSizeSetting").oninput=()=>renderServiceImageSizePreview($("serviceImageSizeSetting").value);
 load();preferences.theme=document.documentElement.dataset.theme||preferences.theme;page=preferences.landingPage==="all"?"home":(preferences.landingPage||"home");view=preferences.defaultView==="cards"||preferences.defaultView==="slim"?"cards":"list";density=preferences.defaultView==="slim"?"slim":"regular";$("sidebar").classList.toggle("collapsed",!!preferences.sidebarCollapsed);render();loadRemoteData();refreshTaxonomy(false);checkPagesDeployment(false);checkR2Connection(false);refreshAccessApps(false);</script></body></html>
