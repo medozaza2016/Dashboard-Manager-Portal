@@ -3,6 +3,12 @@
   "name": "dashboard-manager-portal",
   "compatibility_date": "2026-10-29",
   "pages_build_output_dir": "./dist",
+  "r2_buckets": [
+    {
+      "binding": "ASSETS",
+      "bucket_name": "dashboard-manager-portal-assets"
+    }
+  ],
   "d1_databases": [
     {
       "binding": "DB",
