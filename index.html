@@ -290,6 +290,45 @@
 .taxonomy-panel-head .settings-help{margin:4px 0 0}
 @media(max-width:850px){.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:700px){.taxonomy-overview-row{grid-template-columns:22px minmax(0,1fr) auto}.taxonomy-overview-actions{grid-column:2/4;justify-content:flex-end}}
+
+/* App-native confirmation and taxonomy editing dialogs */
+.tag-nav-heading{margin-top:6px}
+.tag-filter-nav{padding:8px 10px;gap:9px;font-size:11px}
+.tag-nav-mark{display:inline-grid;place-items:center;width:18px;flex:0 0 18px;height:18px;border-radius:6px;background:var(--panel2);color:var(--green);font-weight:800}
+.tag-sidebar-name{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.tag-more-toggle{font-size:10px;padding:7px 12px;margin:0;color:var(--muted);border:1px dashed var(--line)}
+.sidebar.collapsed .tag-sidebar-name,.sidebar.collapsed .tag-nav-heading{display:none}
+.app-modal-backdrop{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.58);display:flex;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(3px)}
+.app-modal-backdrop[hidden]{display:none}
+.app-form-dialog,.app-confirm-dialog{width:min(460px,100%);max-height:min(82vh,720px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.38);padding:23px}
+.app-form-dialog h2,.app-confirm-dialog h2{margin:0 0 8px;font-size:18px}
+.app-dialog-kicker{font-size:10px;letter-spacing:1.2px;color:var(--muted);margin-bottom:9px}
+.app-form-dialog label{display:block;font-size:11px;color:var(--muted);margin:15px 0 6px}
+.app-form-dialog input,.app-form-dialog select{width:100%;min-width:0;padding:10px 11px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text);font-size:12px}
+.app-modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px}
+.app-modal-actions button{min-width:90px}
+.app-confirm-dialog p{font-size:13px;line-height:1.6;color:var(--muted);margin:10px 0 0;overflow-wrap:anywhere}
+.confirm-symbol{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);font-weight:800;color:var(--green);margin-bottom:15px}
+.danger-button{border:1px solid #B91C1C;background:#DC2626;color:white;border-radius:8px;padding:9px 13px;font-size:12px;font-weight:700}
+.danger-button:hover{background:#B91C1C}
+.taxonomy-overview-row{display:grid;grid-template-columns:22px minmax(0,1fr) auto auto;align-items:center;gap:9px;padding:9px 11px;min-height:52px;cursor:grab}
+.taxonomy-overview-main{display:flex;align-items:center;gap:9px;min-width:0}
+.taxonomy-overview-icon{width:30px;height:30px;flex:0 0 30px;display:grid;place-items:center;border-radius:8px;background:var(--green2);color:var(--green)}
+.taxonomy-overview-icon svg{width:17px;height:17px}
+.taxonomy-overview-copy{min-width:0}
+.taxonomy-overview-copy strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.taxonomy-overview-copy small{display:block;font-size:10px;color:var(--muted);margin-top:3px}
+.taxonomy-overview-actions{display:flex;align-items:center;gap:4px}
+.taxonomy-overview-actions .icon-action{width:28px;height:28px;min-width:28px;padding:5px}
+.taxonomy-overview-actions .action-icon{width:14px;height:14px}
+.taxonomy-overview-actions button:disabled{opacity:.35;cursor:not-allowed}
+.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-height:62vh;gap:8px}
+.taxonomy-panel-head{align-items:center}
+.taxonomy-panel-head>div:first-child{min-width:0}
+.taxonomy-panel-head .settings-help{margin:4px 0 0}
+.tag-overview-mark{font-size:18px;font-weight:800}
+@media(max-width:950px){.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:700px){.taxonomy-overview-row{grid-template-columns:22px minmax(0,1fr) auto}.taxonomy-overview-actions{grid-column:2/4;justify-content:flex-end}.taxonomy-panel-head{align-items:flex-start;flex-wrap:wrap}}
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
@@ -710,12 +749,12 @@ function bindProfileSwitcher(){
   const btn = $("profileToggle");
   if(!btn) return;
 
-  btn.onclick = () => {
+  btn.onclick = async () => {
     currentProfile = currentProfile === 1 ? 2 : 1;
-    updateProfileUI();
+    updateProfileUI();activeTag=null;sidebarTagsExpanded=false;reorderEnabled=false;
     if (apiConnected) {
       setD1Status("checking","Loading "+(currentProfile===1?"Personal":"Work")+" profile data…",{serviceCount:null,categoryCount:null,tagCount:null});
-      loadRemoteData();
+      await loadRemoteData();await refreshTaxonomy(false);render();
     }
   };
 }
@@ -853,7 +892,7 @@ $("listArea").classList.toggle("service-order-host",isCategory&&reorderEnabled&&
 function bindRenderedActions(){
 document.querySelectorAll("[data-fav]").forEach(b=>b.onclick=async e=>{e.stopPropagation();const s=services.find(item=>String(item.id)===String(b.dataset.fav));if(!s)return;const changed={...s,favorite:!s.favorite};try{if(apiConnected){const saved=await remoteSaveService(changed,false);Object.assign(s,saved)}else{s.favorite=changed.favorite;toast("Favorite changed locally only")}render()}catch(error){toast("Could not save favorite: "+(error.message||"database error"))}});
 document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=e=>{e.stopPropagation();openModal(b.dataset.edit)});
-document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=async e=>{e.stopPropagation();const id=b.dataset.delete;const s=services.find(item=>String(item.id)===String(id));if(!s||!confirm('Delete "'+s.name+'"? This cannot be undone.'))return;try{if(apiConnected)await apiRequest("services?id="+encodeURIComponent(id),{method:"DELETE"});services=services.filter(item=>String(item.id)!==String(id));render();toast(apiConnected?"Service deleted":"Service deleted locally only")}catch(error){toast("Could not delete service: "+(error.message||"database error"))}});
+document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=async e=>{e.stopPropagation();const id=b.dataset.delete;const item=services.find(record=>String(record.id)===String(id));if(!item)return;const confirmed=await confirmInApp({title:"Delete service?",message:'Delete "'+item.name+'"? This cannot be undone.',confirmLabel:"Delete service"});if(!confirmed)return;try{if(apiConnected)await apiRequest("services?id="+encodeURIComponent(id),{method:"DELETE"});services=services.filter(record=>String(record.id)!==String(id));render();toast(apiConnected?"Service deleted":"Service deleted locally only")}catch(error){toast("Could not delete service: "+(error.message||"database error"))}});
 document.querySelectorAll("[data-duplicate]").forEach(b=>b.onclick=async e=>{e.stopPropagation();const s=services.find(item=>String(item.id)===String(b.dataset.duplicate));if(!s)return;const copy={...s,id:nextId++,name:s.name+" copy",tags:[...(s.tags||[])],favorite:false};try{if(apiConnected){const saved=await remoteSaveService(copy,true);services.unshift(saved)}else services.unshift(copy);render();toast(apiConnected?"Service duplicated":"Duplicate exists locally only")}catch(error){toast("Could not duplicate service: "+(error.message||"database error"))}});
 document.querySelectorAll("[data-open]").forEach(el=>el.onclick=e=>{if(e.target.closest("a,button"))return;const s=services.find(item=>String(item.id)===String(el.dataset.open));if(s)window.open(s.url,"_blank","noopener")});
 document.querySelectorAll("[data-category-open]").forEach(b=>b.onclick=()=>navigateCategory(b.dataset.categoryOpen))
@@ -953,6 +992,66 @@ const CATEGORY_ICON_OPTIONS=[
 ["box","General icon"],["cloudflare","Cloudflare icon"],["cloud","Cloud icon"],["server","Server icon"],["infrastructure","Infrastructure icon"],["storage","Storage icon"],["networking","Network icon"],["remote-access","Remote access icon"],["development","Development / code icon"],["monitor","Monitor icon"],["gauge","Monitoring icon"],["briefcase","Productivity icon"],["windows","Microsoft icon"]
 ];
 function taxonomyMessage(id,message,isError=false){const el=$(id);if(!el)return;el.textContent=message||"";el.classList.toggle("error",!!isError)}
+function closeTaxonomyModal(){
+ $("taxonomyModalBackdrop").hidden=true;
+ $("taxonomyModalBackdrop").setAttribute("aria-hidden","true");
+ taxonomyModalType=null;taxonomyModalId=null;taxonomyModalOriginalName="";
+}
+function openTaxonomyModal(type,id=null){
+ if(!apiConnected){toast("Connect to the shared database first.");return}
+ const isCategory=type==="category",isNew=id==null;
+ const record=isCategory?taxonomyCategories.find(item=>Number(item.id)===Number(id)):tagRecords.find(item=>Number(item.id)===Number(id));
+ taxonomyModalType=type;taxonomyModalId=isNew?null:Number(id);taxonomyModalOriginalName=record?.name||"";
+ $("taxonomyModalTitle").textContent=(isNew?"Add ":"Edit ")+(isCategory?"category":"tag");
+ $("taxonomyModalHelp").textContent=isCategory?"Category names appear in the sidebar. Empty categories can be retained as placeholders.":"Tags can be assigned to services and used as sidebar filters.";
+ if(isCategory){
+  const options=CATEGORY_ICON_OPTIONS.map(([value,label])=>'<option value="'+safe(value)+'"'+((record?.icon||"box")===value?" selected":"")+'>'+safe(label)+'</option>').join("");
+  $("taxonomyModalFields").innerHTML='<label for="taxonomyName">Category name</label><input id="taxonomyName" name="name" maxlength="60" required placeholder="Category name" value="'+safe(record?.name||"")+'"><label for="taxonomyIcon">Sidebar icon</label><select id="taxonomyIcon" name="icon">'+options+'</select>';
+ }else{
+  $("taxonomyModalFields").innerHTML='<label for="taxonomyName">Tag name</label><input id="taxonomyName" name="name" maxlength="40" required placeholder="Tag name" value="'+safe(record?.name||"")+'">';
+ }
+ $("taxonomyModalMessage").textContent="";$("taxonomyModalMessage").classList.remove("error");
+ $("taxonomyModalSave").disabled=false;$("taxonomyModalCancel").disabled=false;
+ $("taxonomyModalSave").textContent=isNew?"Create":"Save changes";
+ $("taxonomyModalBackdrop").hidden=false;$("taxonomyModalBackdrop").setAttribute("aria-hidden","false");
+ $("taxonomyName").focus();
+}
+function closeAppConfirm(value=false){
+ const modal=$("appConfirmModal");
+ if(modal){modal.hidden=true;modal.setAttribute("aria-hidden","true")}
+ if(confirmResolver){const resolve=confirmResolver;confirmResolver=null;resolve(!!value)}
+}
+function confirmInApp({title="Confirm action",message="",confirmLabel="Continue",danger=true}={}){
+ if(confirmResolver)closeAppConfirm(false);
+ $("appConfirmTitle").textContent=title;$("appConfirmMessage").textContent=message;
+ $("appConfirmAccept").textContent=confirmLabel;$("appConfirmAccept").className=danger?"danger-button":"primary";
+ $("appConfirmModal").hidden=false;$("appConfirmModal").setAttribute("aria-hidden","false");
+ $("appConfirmCancel").focus();
+ return new Promise(resolve=>{confirmResolver=resolve});
+}
+async function saveTaxonomyModal(event){
+ event?.preventDefault();
+ if(!taxonomyModalType)return;
+ const type=taxonomyModalType,id=taxonomyModalId,isNew=id==null,isCategory=type==="category";
+ const name=$("taxonomyName").value.trim();
+ if(!name){$("taxonomyModalMessage").textContent="Enter a name.";return}
+ const payload={name};if(isCategory)payload.icon=$("taxonomyIcon").value;
+ const endpoint=(isCategory?"categories-manage":"tags")+(isNew?"":"?id="+encodeURIComponent(id));
+ $("taxonomyModalSave").disabled=true;$("taxonomyModalCancel").disabled=true;
+ $("taxonomyModalMessage").textContent=isNew?"Creating…":"Saving…";
+ try{
+  await apiRequest(endpoint,{method:isNew?"POST":"PUT",body:JSON.stringify(payload)});
+  if(isCategory&&page==="category"&&current===taxonomyModalOriginalName)current=name;
+  if(type==="tag"&&activeTag===taxonomyModalOriginalName)activeTag=name;
+  closeTaxonomyModal();await loadRemoteData();await refreshTaxonomy(false);
+  toast((isNew?"Added ":"Saved ")+(isCategory?"category":"tag"));
+ }catch(error){
+  $("taxonomyModalMessage").textContent=error.message||"Could not save changes.";
+  $("taxonomyModalMessage").classList.add("error");
+ }finally{
+  if(!$("taxonomyModalBackdrop").hidden){$("taxonomyModalSave").disabled=false;$("taxonomyModalCancel").disabled=false}
+ }
+}
 function renderCategoryManager(){
 const host=$("categoryManagerList");if(!host)return;
 if(!apiConnected){host.innerHTML='<div class="taxonomy-empty">The shared database is not connected. Category changes cannot be saved.</div>';return}
@@ -960,21 +1059,22 @@ if(!taxonomyLoaded){host.innerHTML='<div class="taxonomy-empty">Loading categori
 const query=($("categoryFilter")?.value||"").trim().toLowerCase();
 const shown=taxonomyCategories.filter(cat=>!query||cat.name.toLowerCase().includes(query));
 if(!shown.length){host.innerHTML='<div class="taxonomy-empty">'+(query?"No categories match this filter.":"No categories yet. Add one above.")+'</div>';return}
-const options=cat=>CATEGORY_ICON_OPTIONS.map(([value,label])=>'<option value="'+value+'"'+(cat.icon===value?" selected":"")+">"+label+"</option>").join("");
-host.innerHTML=shown.map(cat=>'<div class="taxonomy-row category-manager-item" draggable="'+(!query)+'" data-category-row="'+Number(cat.id)+'"><div class="category-card-head"><span class="category-drag-handle" title="'+(query?"Clear filter to reorder":"Drag to reorder")+'" aria-label="Drag to reorder category">⠿</span><span class="taxonomy-usage">'+Number(cat.serviceCount||cat.service_count||0)+' services</span></div><div class="category-card-fields"><label class="category-field"><span>Category name</span><input data-category-name maxlength="60" value="'+safe(cat.name)+'" aria-label="Name for category '+safe(cat.name)+'"></label><label class="category-field"><span>Sidebar icon</span><select data-category-icon aria-label="Icon for category '+safe(cat.name)+'">'+options(cat)+'</select></label></div><div class="taxonomy-row-actions"><button type="button" class="secondary" data-category-save="'+Number(cat.id)+'">Save</button><button type="button" class="secondary taxonomy-danger" data-category-delete="'+Number(cat.id)+'" '+(Number(cat.serviceCount||cat.service_count||0)>0?'disabled title="Move services to another category first"':'title="Delete empty category"')+'>Delete</button></div></div>').join("");
-host.querySelectorAll("[data-category-save]").forEach(button=>button.onclick=async()=>{
- const id=Number(button.dataset.categorySave),row=host.querySelector('[data-category-row="'+id+'"]');if(!row)return;
- const name=row.querySelector("[data-category-name]").value.trim(),icon=row.querySelector("[data-category-icon]").value;
- button.disabled=true;taxonomyMessage("categoryManagerMessage","Saving category…");
- try{await apiRequest("categories-manage?id="+id,{method:"PUT",body:JSON.stringify({name,icon})});await loadRemoteData();await refreshTaxonomy(false);categoryRecords=taxonomyCategories;nav();taxonomyMessage("categoryManagerMessage","Category saved.");toast("Category saved")}
- catch(error){taxonomyMessage("categoryManagerMessage",error.message||"Could not save category.",true);button.disabled=false}
-});
+host.innerHTML=shown.map(cat=>{
+ const id=Number(cat.id),count=Number(cat.serviceCount||cat.service_count||0);
+ return '<div class="taxonomy-row taxonomy-overview-row category-manager-item" draggable="'+(!query)+'" data-category-row="'+id+'"><span class="category-drag-handle" title="'+(query?"Clear filter to reorder":"Drag to reorder category")+'" aria-label="Drag to reorder category">⠿</span><div class="taxonomy-overview-main"><span class="taxonomy-overview-icon">'+categorySvg(cat.name)+'</span><div class="taxonomy-overview-copy"><strong>'+safe(cat.name)+'</strong><small>'+safe(cat.icon||"box")+' icon</small></div></div><span class="taxonomy-usage">'+count+' services</span><div class="taxonomy-overview-actions"><button type="button" class="secondary icon-action" data-taxonomy-edit="category" data-taxonomy-id="'+id+'" title="Edit '+safe(cat.name)+'" aria-label="Edit category '+safe(cat.name)+'"><svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg></button><button type="button" class="secondary icon-action taxonomy-danger" data-category-delete="'+id+'" '+(count>0?'disabled title="Move services to another category first"':'title="Delete empty category"')+' aria-label="Delete category '+safe(cat.name)+'"><svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/><path d="M10 11v5M14 11v5"/></svg></button></div></div>'
+}).join("");
+host.querySelectorAll('[data-taxonomy-edit="category"]').forEach(button=>button.onclick=()=>openTaxonomyModal("category",Number(button.dataset.taxonomyId)));
 host.querySelectorAll("[data-category-delete]").forEach(button=>button.onclick=async()=>{
- const id=Number(button.dataset.categoryDelete),cat=taxonomyCategories.find(c=>Number(c.id)===id);if(!cat||Number(cat.serviceCount||cat.service_count||0)>0)return;
- if(!confirm('Delete the empty category "'+cat.name+'"?'))return;
+ const id=Number(button.dataset.categoryDelete),cat=taxonomyCategories.find(c=>Number(c.id)===id);
+ if(!cat||Number(cat.serviceCount||cat.service_count||0)>0)return;
+ const confirmed=await confirmInApp({title:"Delete category?",message:'Delete the empty category "'+cat.name+'"? This cannot be undone.',confirmLabel:"Delete category"});
+ if(!confirmed)return;
  button.disabled=true;taxonomyMessage("categoryManagerMessage","Deleting category…");
- try{await apiRequest("categories-manage?id="+id,{method:"DELETE"});await refreshTaxonomy(false);categoryRecords=taxonomyCategories;nav();taxonomyMessage("categoryManagerMessage","Empty category deleted.");toast("Category deleted")}
- catch(error){taxonomyMessage("categoryManagerMessage",error.message||"Could not delete category.",true);button.disabled=false}
+ try{
+  await apiRequest("categories-manage?id="+id,{method:"DELETE"});
+  await loadRemoteData();await refreshTaxonomy(false);categoryRecords=taxonomyCategories;nav();
+  taxonomyMessage("categoryManagerMessage","Empty category deleted.");toast("Category deleted");
+ }catch(error){taxonomyMessage("categoryManagerMessage",error.message||"Could not delete category.",true);button.disabled=false}
 });
 let draggedId=null;
 host.querySelectorAll("[data-category-row]").forEach(card=>{
@@ -994,7 +1094,7 @@ host.querySelectorAll("[data-category-row]").forEach(card=>{
   if(from<0||to<0)return;
   const [moved]=order.splice(from,1);order.splice(to,0,moved);
   host.querySelectorAll("[data-category-row]").forEach(item=>item.classList.remove("dragging","drag-over"));
-  taxonomyMessage("categoryManagerMessage","Saving new category order…");
+  taxonomyMessage("categoryManagerMessage","Saving category order…");
   host.querySelectorAll("button").forEach(button=>button.disabled=true);
   try{
    const result=await apiRequest("categories-manage",{method:"PATCH",body:JSON.stringify({order:order.map(item=>Number(item.id))})});
@@ -1013,19 +1113,21 @@ const query=($("tagFilter")?.value||"").trim().toLowerCase();
 const shown=tagRecords.filter(tag=>!query||tag.name.toLowerCase().includes(query));
 if($("tagManagerCount"))$("tagManagerCount").textContent=tagRecords.length+" tags";
 if(!shown.length){host.innerHTML='<div class="taxonomy-empty">'+(query?"No tags match this filter.":"No tags yet. Add one above.")+'</div>';return}
-host.innerHTML=shown.map(tag=>'<div class="taxonomy-row taxonomy-tag-row" data-tag-row="'+Number(tag.id)+'"><div class="taxonomy-row-fields"><input data-tag-name maxlength="40" value="'+safe(tag.name)+'" aria-label="Name for tag '+safe(tag.name)+'"><span class="taxonomy-usage">'+Number(tag.serviceCount||0)+' services</span></div><div class="taxonomy-row-actions"><button type="button" class="secondary" data-tag-save="'+Number(tag.id)+'">Save</button><button type="button" class="secondary taxonomy-danger" data-tag-delete="'+Number(tag.id)+'" title="Delete tag and remove its assignments">Delete</button></div></div>').join("");
-host.querySelectorAll("[data-tag-save]").forEach(button=>button.onclick=async()=>{
- const id=Number(button.dataset.tagSave),row=host.querySelector('[data-tag-row="'+id+'"]');if(!row)return;
- const name=row.querySelector("[data-tag-name]").value.trim();button.disabled=true;taxonomyMessage("tagManagerMessage","Saving tag…");
- try{await apiRequest("tags?id="+id,{method:"PUT",body:JSON.stringify({name})});await loadRemoteData();await refreshTaxonomy(false);taxonomyMessage("tagManagerMessage","Tag renamed across the catalog.");toast("Tag saved")}
- catch(error){taxonomyMessage("tagManagerMessage",error.message||"Could not save tag.",true);button.disabled=false}
-});
+host.innerHTML=shown.map(tag=>{
+ const id=Number(tag.id),count=Number(tag.serviceCount||0);
+ return '<div class="taxonomy-row taxonomy-overview-row taxonomy-tag-overview" data-tag-row="'+id+'"><div class="taxonomy-overview-main"><span class="taxonomy-overview-icon tag-overview-mark">#</span><div class="taxonomy-overview-copy"><strong>'+safe(tag.name)+'</strong><small>Reusable service tag</small></div></div><span class="taxonomy-usage">'+count+' services</span><div class="taxonomy-overview-actions"><button type="button" class="secondary icon-action" data-taxonomy-edit="tag" data-taxonomy-id="'+id+'" title="Edit '+safe(tag.name)+'" aria-label="Edit tag '+safe(tag.name)+'"><svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg></button><button type="button" class="secondary icon-action taxonomy-danger" data-tag-delete="'+id+'" title="Delete tag and remove its assignments" aria-label="Delete tag '+safe(tag.name)+'"><svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/><path d="M10 11v5M14 11v5"/></svg></button></div></div>'
+}).join("");
+host.querySelectorAll('[data-taxonomy-edit="tag"]').forEach(button=>button.onclick=()=>openTaxonomyModal("tag",Number(button.dataset.taxonomyId)));
 host.querySelectorAll("[data-tag-delete]").forEach(button=>button.onclick=async()=>{
  const id=Number(button.dataset.tagDelete),tag=tagRecords.find(t=>Number(t.id)===id);if(!tag)return;
- const count=Number(tag.serviceCount||0);if(!confirm('Delete tag "'+tag.name+'"'+(count?' and remove it from '+count+' service(s)':'')+'?'))return;
+ const count=Number(tag.serviceCount||0);
+ const confirmed=await confirmInApp({title:"Delete tag?",message:'Delete "'+tag.name+'"'+(count?' and remove it from '+count+' service(s)':'')+'? This cannot be undone.',confirmLabel:"Delete tag"});
+ if(!confirmed)return;
  button.disabled=true;taxonomyMessage("tagManagerMessage","Deleting tag…");
- try{await apiRequest("tags?id="+id,{method:"DELETE"});await loadRemoteData();await refreshTaxonomy(false);taxonomyMessage("tagManagerMessage","Tag deleted.");toast("Tag deleted")}
- catch(error){taxonomyMessage("tagManagerMessage",error.message||"Could not delete tag.",true);button.disabled=false}
+ try{
+  await apiRequest("tags?id="+id,{method:"DELETE"});
+  await loadRemoteData();await refreshTaxonomy(false);taxonomyMessage("tagManagerMessage","Tag deleted.");toast("Tag deleted");
+ }catch(error){taxonomyMessage("tagManagerMessage",error.message||"Could not delete tag.",true);button.disabled=false}
 });
 }
 async function refreshTaxonomy(showToast=true){
@@ -1125,20 +1227,27 @@ $("collapse").onclick=()=>{$("sidebar").classList.toggle("collapsed");updateColl
 $("theme").onclick=()=>{document.documentElement.dataset.theme=document.documentElement.dataset.theme==="dark"?"light":"dark";preferences.theme=document.documentElement.dataset.theme;render()};
 document.querySelectorAll(".nav[data-page]").forEach(b=>b.onclick=()=>navigatePage(b.dataset.page));
 $("refreshTaxonomy").onclick=()=>refreshTaxonomy(true);
-$("addCategoryButton").onclick=()=>addCategory();
-$("addTagButton").onclick=()=>addTag();
+$("addCategoryButton").onclick=()=>openTaxonomyModal("category");
+$("addTagButton").onclick=()=>openTaxonomyModal("tag");
+$("taxonomyModalForm").onsubmit=saveTaxonomyModal;
+$("taxonomyModalCancel").onclick=closeTaxonomyModal;
+$("taxonomyModalBackdrop").addEventListener("click",event=>{if(event.target===$("taxonomyModalBackdrop"))closeTaxonomyModal()});
+$("appConfirmCancel").onclick=()=>closeAppConfirm(false);
+$("appConfirmAccept").onclick=()=>closeAppConfirm(true);
+$("appConfirmModal").addEventListener("click",event=>{if(event.target===$("appConfirmModal"))closeAppConfirm(false)});
+document.addEventListener("keydown",event=>{if(event.key==="Escape"){if(!$("taxonomyModalBackdrop").hidden)closeTaxonomyModal();if(!$("appConfirmModal").hidden)closeAppConfirm(false)}});
 document.querySelectorAll("[data-admin-tab]").forEach(button=>button.onclick=()=>setAdminTab(button.dataset.adminTab));
 
 $("categoryFilter").oninput=()=>renderCategoryManager();
 $("tagFilter").oninput=()=>renderTagManager();
 $("serviceTagSearch").oninput=()=>{serviceTagQuery=$("serviceTagSearch").value;renderServiceTagPicker()};
-for(const id of ["newCategoryName","newTagName"]){$(id).addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$(id==="newCategoryName"?"addCategoryButton":"addTagButton").click()}})}
+
 $("homeFavoritesMore").onclick=()=>navigatePage("favorites");
 updateProfileUI();
 bindProfileSwitcher();
 loadRemoteData();
 $("export").onclick=async()=>{try{let backup;if(apiConnected){backup=await apiRequest("backup")}else{backup={schemaVersion:1,exportedAt:new Date().toISOString(),source:"browser-local",version:APP_VERSION,services,categories:[...new Map(services.map(s=>[s.category,{name:s.category,icon:"grid"}])).values()],branding,preferences,theme:document.documentElement.dataset.theme}}const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:"application/json"}));a.download="dashboard-manager-portal-backup-"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast(apiConnected?"Shared D1 backup exported":"Browser-only backup exported, D1 is not connected")}catch(error){toast("Backup export failed: "+(error.message||"database error"))}};
-$("import").onclick=()=>$("importFile").click();$("importFile").onchange=async e=>{try{const file=e.target.files&&e.target.files[0];if(!file)return;const d=JSON.parse(await file.text());if(!d||!Array.isArray(d.services))throw Error("Backup must contain a services array");if(d.services.length>200)throw Error("Backups can contain at most 200 services");if(apiConnected){const proceed=confirm("Restore this backup to the shared D1 database? This will replace the current services, categories, tags, branding, and preferences. Export a backup first if you need to keep the current data.");if(!proceed)return;const result=await apiRequest("backup",{method:"POST",body:JSON.stringify(d)});await loadRemoteData();page="home";current="All";render();toast("D1 restored: "+result.serviceCount+" services, "+result.categoryCount+" categories")}else{const proceed=confirm("The shared database is not connected. Import this backup into this browser only? It will not update D1.");if(!proceed)return;services=d.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences};if(d.theme)document.documentElement.dataset.theme=d.theme;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;page="home";current="All";render();toast("Backup imported into this browser only")}}catch(error){toast("Could not restore backup: "+(error.message||"invalid JSON"))}finally{e.target.value=""}};
+$("import").onclick=()=>$("importFile").click();$("importFile").onchange=async e=>{try{const file=e.target.files&&e.target.files[0];if(!file)return;const d=JSON.parse(await file.text());if(!d||!Array.isArray(d.services))throw Error("Backup must contain a services array");if(d.services.length>200)throw Error("Backups can contain at most 200 services");if(apiConnected){const proceed=await confirmInApp({title:"Restore shared database backup?",message:"This will replace the current services, categories, tags, branding, and preferences in the shared database. Export a backup first if you need to keep the current data.",confirmLabel:"Restore database"});if(!proceed)return;const result=await apiRequest("backup",{method:"POST",body:JSON.stringify(d)});await loadRemoteData();page="home";current="All";render();toast("D1 restored: "+result.serviceCount+" services, "+result.categoryCount+" categories")}else{const proceed=await confirmInApp({title:"Import browser-only backup?",message:"The shared database is not connected. This imports the backup into this browser only and will not update D1.",confirmLabel:"Import backup"});if(!proceed)return;services=d.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences};if(d.theme)document.documentElement.dataset.theme=d.theme;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;page="home";current="All";render();toast("Backup imported into this browser only")}}catch(error){toast("Could not restore backup: "+(error.message||"invalid JSON"))}finally{e.target.value=""}};
 $("help").onclick=()=>toast("Dashboard Manager Portal. Version "+APP_VERSION+". Catalog changes save to shared D1 when connected.");
 $("brandingName").addEventListener("input",()=>{$("settingsBrandPreview").textContent=($("brandingName").value||"Luxorit")+(($("brandingSubtitle").value)?" "+$("brandingSubtitle").value:"")});
 $("brandingSubtitle").addEventListener("input",()=>{$("settingsBrandPreview").textContent=($("brandingName").value||"Luxorit")+(($("brandingSubtitle").value)?" "+$("brandingSubtitle").value:"")});
