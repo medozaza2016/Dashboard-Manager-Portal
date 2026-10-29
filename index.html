@@ -490,6 +490,88 @@
  .catalog-head-actions .catalog-controls-toggle{width:100%}
  .catalog-head-actions #add{align-self:flex-start}
 }
+
+/* v0.1.48 service card layout refinement */
+.grid .card{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  min-width:0;
+  box-sizing:border-box;
+}
+.card-top{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  width:100%;
+  min-width:0;
+  box-sizing:border-box;
+}
+.card-top .service-icon{
+  flex:0 0 calc(var(--service-image-size,34px) + 8px);
+  min-width:0;
+}
+.card-top .slim-card-identity{
+  flex:1 1 auto;
+  min-width:0;
+  overflow:hidden;
+}
+.service-title{
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  min-width:0;
+  overflow:hidden;
+  overflow-wrap:anywhere;
+  white-space:normal;
+  text-overflow:ellipsis;
+  line-height:1.35;
+}
+.card-top .star{
+  display:grid;
+  flex:0 0 28px;
+  place-items:center;
+  width:28px;
+  min-width:28px;
+  height:28px;
+  margin:0;
+  padding:0;
+  border:1px solid transparent;
+  border-radius:8px;
+  line-height:1;
+  font-size:21px;
+  box-sizing:border-box;
+}
+.card-top .star:hover{background:var(--panel2);border-color:var(--line)}
+.service-desc{
+  display:block;
+  width:100%;
+  min-width:0;
+  box-sizing:border-box;
+  line-height:1.5;
+  overflow-wrap:anywhere;
+  word-break:normal;
+}
+.tags{max-width:100%;min-width:0}
+.tag{max-width:100%;box-sizing:border-box;overflow-wrap:anywhere}
+.card-actions{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+  min-width:0;
+  margin-top:auto;
+  padding-top:12px;
+}
+.card-actions a{min-width:0;overflow-wrap:anywhere}
+.grid.slim .service-title{-webkit-line-clamp:1}
+.grid.slim .card-actions{padding-top:8px}
+@media(max-width:550px){
+  .card{padding:13px}
+  .card-top{gap:9px}
+  .card-top .star{flex-basis:26px;width:26px;min-width:26px;height:26px}
+  .service-desc{overflow-wrap:anywhere}
+}
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
@@ -665,7 +747,7 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.47";
+const APP_VERSION="0.1.48";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
