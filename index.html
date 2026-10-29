@@ -73,15 +73,23 @@
 .brand .brand-copy{display:flex;flex-direction:column;gap:0;min-width:0;line-height:1.2}
 .brand .brand-copy small{font-weight:450;color:var(--muted);margin-top:3px}
 .brand-logo-text{font-size:18px;font-weight:800;line-height:1}
+.logo .brand-logo-image{width:100%;height:100%;padding:3px;object-fit:contain;border-radius:inherit}
+.service-icon .uploaded-logo{width:34px;height:34px;object-fit:contain;border-radius:8px;background:var(--panel2)}
+.table-service-icon .uploaded-logo{width:24px;height:24px;object-fit:contain;border-radius:5px;background:var(--panel2)}
+.logo-upload-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.service-logo-preview{width:48px;height:48px;display:grid;place-items:center;flex:0 0 48px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--muted);font-size:22px;overflow:hidden}
+.service-logo-preview img{width:100%;height:100%;padding:4px;object-fit:contain}
+.logo-upload-row .settings-actions{min-width:180px;flex:1}
+.settings-note{line-height:1.5}
 @media(max-width:950px){.integration-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:700px){.settings-grid{grid-template-columns:1fr}.settings-card.wide{grid-column:auto}.settings-fields{grid-template-columns:1fr}.settings-field.full{grid-column:auto}}
 @media(max-width:550px){.integration-grid{grid-template-columns:1fr}.integration-card.deployment-card{grid-column:auto}}
 </style></head>
 <body><div class="app">
-<aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
+<aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
 <div class="group-label">Workspace</div>
 <button class="nav active" data-page="home" title="Home"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/></svg></span><span>Home</span></button><button class="nav" data-page="all" title="All services"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span>All Services</span></button>
-<div class="group-label">Categories</div><div id="categoryNav"></div><div class="bottom"><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.7</div></div></aside>
+<div class="group-label">Categories</div><div id="categoryNav"></div><div class="bottom"><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.8</div></div></aside>
 <main class="main"><header class="topbar"><button class="iconbtn" id="collapse" title="Collapse sidebar" aria-label="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="m14 7-5 5 5 5"/></svg></button><div class="search"><span class="search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="search" placeholder="Search applications, tools, or tags..." aria-label="Search applications"></div><div class="top-actions"><button class="iconbtn" id="theme" title="Toggle theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg></button><button class="iconbtn help" id="help" title="About" aria-label="About"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button><div class="avatar">JD</div></div></header>
 <div class="content">
 <section id="homePage">
@@ -101,7 +109,8 @@
           <div class="settings-field"><label for="brandingName">Portal name</label><input id="brandingName" maxlength="42" required value="Luxorit" placeholder="Luxorit"></div>
           <div class="settings-field"><label for="brandingSubtitle">Subtitle</label><input id="brandingSubtitle" maxlength="32" value="Pro" placeholder="Pro"></div>
           <div class="settings-field"><label for="brandingLogo">Logo mark (optional)</label><input id="brandingLogo" maxlength="4" value="" placeholder="Letter or emoji"></div>
-          <div class="settings-field"><label>Logo preview</label><div class="settings-actions"><div class="logo" id="settingsLogoPreview" style="width:38px;height:38px;border-radius:11px"><span id="settingsLogoText" class="brand-logo-text" hidden></span><svg id="settingsLogoGraphic" viewBox="0 0 24 24" style="width:25px;height:25px"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span id="settingsBrandPreview" class="settings-version">Luxorit Pro</span></div></div>
+          <div class="settings-field full"><label for="brandingLogoFile">Upload portal logo</label><div class="settings-actions"><button class="secondary" type="button" id="chooseBrandingLogo">Browse image</button><button class="secondary" type="button" id="removeBrandingLogo" hidden>Remove image</button><input type="file" id="brandingLogoFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden><span id="brandingLogoUploadStatus" class="settings-note">PNG, JPEG, WebP or GIF · up to 5 MB · stored privately in R2</span></div></div>
+          <div class="settings-field"><label>Logo preview</label><div class="settings-actions"><div class="logo" id="settingsLogoPreview" style="width:38px;height:38px;border-radius:11px"><img id="settingsLogoImage" class="brand-logo-image" alt="" hidden><span id="settingsLogoText" class="brand-logo-text" hidden></span><svg id="settingsLogoGraphic" viewBox="0 0 24 24" style="width:25px;height:25px"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span id="settingsBrandPreview" class="settings-version">Luxorit Pro</span></div></div>
         </div>
       </article>
       <article class="settings-card">
@@ -121,10 +130,10 @@
       <article class="settings-card wide">
         <h2>Integrations & connections</h2><p class="settings-help">Connection status for the services this portal actually uses. Cloudflare D1 is accessed through authenticated Pages Functions. Its database binding is managed in Cloudflare, not by exposing connection credentials in this page.</p>
         <div class="integration-grid">
-          <div class="integration-card"><div class="integration-name">Cloudflare Pages</div><div class="integration-desc">Hosts this portal and deploys changes from GitHub.</div><span class="integration-status status-connected">Live</span></div>
+          
           <div class="integration-card deployment-card">
-            <div class="integration-name">Pages Functions API</div>
-            <div class="integration-desc">Authenticated API routes for services, settings, backups, and current deployment metadata.</div>
+            <div class="integration-name">Cloudflare Pages</div>
+            <div class="integration-desc">Portal hosting, authenticated Pages Functions API, and GitHub-driven deployments.</div>
             <span id="pagesApiStatusBadge" class="integration-status status-checking" role="status">Checking…</span>
             <p id="pagesApiStatusMessage" class="d1-status-message" aria-live="polite">Loading current Pages deployment information.</p>
             <div class="deployment-info">
@@ -150,23 +159,23 @@
             </div>
             <div class="d1-check-row"><span class="d1-last-checked" id="d1LastChecked">Not checked yet</span><div class="settings-actions"><button class="secondary" type="button" id="testD1Connection">Test connection</button><a href="https://dash.cloudflare.com/4ed0b7cda99d43ce679d2aace4d3f525/workers/d1" target="_blank" rel="noopener">Open D1 dashboard ↗</a></div></div>
           </div>
-          <div class="integration-card"><div class="integration-name">Cloudflare R2</div><div class="integration-desc">Potential storage for logo assets and portable backups.</div><span class="integration-status">Planned</span></div>
+          <div class="integration-card"><div class="integration-name">Cloudflare R2</div><div class="integration-desc">Private bucket <strong>dashboard-manager-portal-assets</strong> for portal and service logos. Images are served through the authenticated app, not a public bucket URL.</div><span id="r2StatusBadge" class="integration-status status-checking" role="status">Checking…</span><p id="r2StatusMessage" class="d1-status-message" aria-live="polite">Checking R2 binding.</p><div class="d1-check-row"><span class="d1-last-checked" id="r2LastChecked">Not checked yet</span><div class="settings-actions"><button class="secondary" type="button" id="refreshR2Connection">Test connection</button><a href="https://dash.cloudflare.com/?to=/:account/r2/overview" target="_blank" rel="noopener">Open R2 dashboard ↗</a></div></div></div>
           <div class="integration-card"><div class="integration-name">GitHub</div><div class="integration-desc">Repository, commit, and deployment workflow details.</div><span class="integration-status">Planned</span></div>
           <div class="integration-card"><div class="integration-name">Supabase</div><div class="integration-desc">Optional authentication or data source; not used by this portal currently.</div><span class="integration-status">Optional</span></div>
         </div>
       </article>
       <article class="settings-card wide">
-        <h2>About this portal</h2><div class="settings-version">Version <span id="settingsVersion">0.1.4</span></div><div class="settings-note">Cloudflare Pages · Authenticated Pages Functions · Shared Cloudflare D1 storage · Cloudflare Access</div>
+        <h2>About this portal</h2><div class="settings-version">Version <span id="settingsVersion">0.1.8</span></div><div class="settings-note">Cloudflare Pages · Authenticated Pages Functions · Shared Cloudflare D1 storage · Cloudflare Access</div>
       </article>
     </div>
     <div class="settings-actions" style="justify-content:flex-end;margin-top:16px"><button class="secondary" type="button" id="resetBranding">Reset branding</button><button class="primary" type="submit">Save settings</button></div>
   </form>
 </section>
 </div></main></div>
-<div class="modal-backdrop" id="serviceModal"><form class="modal" id="serviceForm"><h2 id="modalTitle">Add service</h2><input type="hidden" id="serviceId"><label for="name">Name</label><input id="name" required><label for="url">URL</label><input id="url" type="url" placeholder="https://service.example" required><label for="category">Category</label><select id="category"></select><label for="description">Description</label><input id="description"><label for="icon">Fallback icon for custom services</label><input id="icon" value="🔧"><label for="tags">Tags (comma-separated)</label><input id="tags" placeholder="Admin, Cloud"><div class="modal-actions"><button class="secondary" type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save service</button></div></form></div>
+<div class="modal-backdrop" id="serviceModal"><form class="modal" id="serviceForm"><h2 id="modalTitle">Add service</h2><input type="hidden" id="serviceId"><label for="name">Name</label><input id="name" required><label for="url">URL</label><input id="url" type="url" placeholder="https://service.example" required><label for="category">Category</label><select id="category"></select><label for="description">Description</label><input id="description"><label for="icon">Fallback icon for custom services</label><input id="icon" value="🔧"><label for="tags">Tags (comma-separated)</label><input id="tags" placeholder="Admin, Cloud"><div class="settings-field full"><label for="serviceLogoFile">Service logo</label><div class="logo-upload-row"><div class="service-logo-preview" id="serviceLogoPreview"><span id="serviceLogoFallback">🔧</span><img id="serviceLogoImage" alt="" hidden></div><div class="settings-actions"><button class="secondary" type="button" id="chooseServiceLogo">Browse image</button><button class="secondary" type="button" id="removeServiceLogo" hidden>Remove image</button><input type="file" id="serviceLogoFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden><input type="hidden" id="serviceLogoKey"><span id="serviceLogoUploadStatus" class="settings-note">Optional · PNG, JPEG, WebP or GIF · up to 5 MB</span></div></div></div><div class="modal-actions"><button class="secondary" type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save service</button></div></form></div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.7";
+const APP_VERSION="0.1.8";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -187,7 +196,7 @@ briefcase:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V4h8v3M
 plus:'<path d="M12 5v14M5 12h14"/>'
 };return '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">'+(p[name]||p.box)+'</svg>'}
 function categorySvg(category){if(category==="Cloudflare")return '<svg class="category-cloudflare" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 9.1a4.9 4.9 0 0 0-9.7-.9 3.8 3.8 0 0 0 .2 7.6h11a3.5 3.5 0 0 0 .1-7c-.5 0-1 .1-1.6.3Z" fill="#F38020" stroke="none"/><path d="M6.8 16.1h12.3a3.6 3.6 0 0 1-3.3 2.2H8.1a1.5 1.5 0 0 1-1.3-2.2Z" fill="#F38020" stroke="none"/></svg>';const k=({Cloudflare:"cloud",Microsoft:"windows",Monitoring:"gauge",Development:"monitor",Infrastructure:"server",Productivity:"briefcase",Other:"box"})[category]||"box";if(k==="windows")return '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" fill="#F35325" stroke="none"/><rect x="13" y="3" width="8" height="8" fill="#81BC06" stroke="none"/><rect x="3" y="13" width="8" height="8" fill="#05A6F0" stroke="none"/><rect x="13" y="13" width="8" height="8" fill="#FFBA08" stroke="none"/></svg>';return svg(k)}
-function serviceIconHtml(s){const key=String(s.name||"").toLowerCase();const meta=[
+function serviceIconHtml(s){if(s.logoKey)return '<span class="icon-fallback" style="display:grid">'+safe(s.icon||"◆")+'</span><img class="uploaded-logo" src="'+safe(assetUrl(s.logoKey))+'" alt="" loading="lazy" onerror="this.style.display=\'none\';this.previousElementSibling.style.display=\'grid\'">';const key=String(s.name||"").toLowerCase();const meta=[
 [/cloudflare/,{url:"https://cdn.simpleicons.org/cloudflare/F38020",fallback:"☁"}],
 [/^pages$/, {svg:'<path d="M13 2 5 13h5l-1 9 10-13h-6l2-7Z" fill="#FFB21A" stroke="#FFB21A" stroke-linejoin="round"/>'}],
 [/workers/, {svg:'<path d="M12 2.6 20.1 7v10L12 21.4 3.9 17V7Z" fill="#F38020" stroke="#F38020"/><path d="m9 8 4 4-4 4m4-8 4 4-4 4" fill="none" stroke="#14211B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'}],
@@ -223,6 +232,33 @@ let services=structuredClone(seed),current="All",view="list",density="regular",p
 let branding={name:"Luxorit",subtitle:"Pro",logo:""};
 let preferences={theme:"dark",landingPage:"home",defaultView:"list",sidebarCollapsed:false};
 let apiConnected=false,apiError="";
+let persistedBrandingLogoKey=null,brandingLogoPreviewUrl=null,brandingLogoUploadToken=0,brandingLogoUploadBusy=false;
+let pendingBrandingLogoKeys=new Set();
+let serviceLogoPreviewUrl=null,serviceUploadToken=0,serviceLogoUploadBusy=false;
+let pendingServiceLogoKeys=new Set();
+const MAX_IMAGE_BYTES=5*1024*1024;
+function assetUrl(key){return "/api/assets?key="+encodeURIComponent(key)}
+async function uploadImage(file,scope){
+if(!apiConnected)throw new Error("Connect to the shared database before uploading a logo.");
+const form=new FormData();form.append("scope",scope);form.append("file",file,file.name||"logo");
+const response=await fetch("/api/assets",{method:"POST",credentials:"same-origin",body:form});
+const body=await response.json().catch(()=>({}));
+if(!response.ok)throw new Error(body.error||("Upload failed ("+response.status+")"));
+return body;
+}
+async function deleteUploadedImage(key){
+if(!key||!apiConnected)return false;
+try{const response=await fetch("/api/assets?key="+encodeURIComponent(key),{method:"DELETE",credentials:"same-origin"});const body=await response.json().catch(()=>({}));return response.ok&&!!body.deleted}catch{return false}
+}
+async function cleanupPendingServiceLogos(keepKey=null){
+for(const key of [...pendingServiceLogoKeys]){if(key===keepKey){pendingServiceLogoKeys.delete(key);continue}await deleteUploadedImage(key);pendingServiceLogoKeys.delete(key)}
+}
+function discardUncommittedBrandingLogo(){
+brandingLogoUploadToken++;brandingLogoUploadBusy=false;if($("chooseBrandingLogo"))$("chooseBrandingLogo").disabled=false;
+for(const key of [...pendingBrandingLogoKeys]){pendingBrandingLogoKeys.delete(key);void deleteUploadedImage(key)}
+if(brandingLogoPreviewUrl){URL.revokeObjectURL(brandingLogoPreviewUrl);brandingLogoPreviewUrl=null}
+branding.logoKey=persistedBrandingLogoKey;
+}
 let d1Status={state:"checking",message:"Checking the authenticated database connection.",serviceCount:null,categoryCount:null,tagCount:null,lastChecked:null};
 function renderD1Status(){
 const badge=$("d1StatusBadge");if(!badge)return;
@@ -285,6 +321,27 @@ renderPagesDeployment();
 if(showToast)toast("Could not refresh deployment details: "+(error.message||"request failed"));
 }finally{if(button){button.disabled=false;button.textContent="Refresh details"}}
 }
+let r2Status={state:"checking",message:"Checking R2 binding.",lastChecked:null};
+function renderR2Status(){
+const badge=$("r2StatusBadge");if(!badge)return;
+badge.className="integration-status "+(r2Status.state==="connected"?"status-connected":r2Status.state==="offline"?"status-offline":"status-checking");
+badge.textContent=r2Status.state==="connected"?"Connected":r2Status.state==="offline"?"Unavailable":"Checking…";
+$("r2StatusMessage").textContent=r2Status.message;
+$("r2LastChecked").textContent=r2Status.lastChecked?"Last checked "+r2Status.lastChecked.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}):"Not checked yet";
+}
+async function checkR2Connection(showToast=false){
+const button=$("refreshR2Connection");if(button){button.disabled=true;button.textContent="Testing…"}
+r2Status={...r2Status,state:"checking",message:"Checking the authenticated R2 binding."};renderR2Status();
+try{
+const data=await apiRequest("assets");
+if(!data.connected||data.access!=="private")throw new Error("R2 binding did not report a private connected bucket.");
+r2Status={state:"connected",message:"R2 is connected. Logo uploads are private and delivered through authenticated Pages Functions.",lastChecked:new Date()};
+if(showToast)toast("R2 connection successful");
+}catch(error){
+r2Status={state:"offline",message:"R2 connection failed: "+(error.message||"binding unavailable"),lastChecked:new Date()};
+if(showToast)toast("R2 connection failed: "+(error.message||"binding unavailable"));
+}finally{renderR2Status();if(button){button.disabled=false;button.textContent="Test connection"}}
+}
 async function checkD1Connection(showToast=true){
 const button=$("testD1Connection");if(button){button.disabled=true;button.textContent="Testing…"}
 setD1Status("checking","Checking the authenticated API and shared D1 database.",{serviceCount:null,categoryCount:null,tagCount:null});
@@ -301,9 +358,9 @@ if(showToast)toast("D1 connection failed: "+apiError);
 }finally{if(button){button.disabled=false;button.textContent="Test connection"}}
 }
 async function apiRequest(path,options={}){const response=await fetch("/api/"+path,{credentials:"same-origin",...options,headers:{"content-type":"application/json",...(options.headers||{})}});const body=await response.json().catch(()=>({}));if(!response.ok)throw new Error(body.error||("API request failed ("+response.status+")"));return body}
-function apiPayload(s){return {name:s.name,url:s.url,description:s.description||"",icon:s.icon||"🔧",category:s.category,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}}
+function apiPayload(s){return {name:s.name,url:s.url,description:s.description||"",icon:s.icon||"🔧",logoKey:s.logoKey||null,category:s.category,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}}
 async function remoteSaveService(s,isNew=false){return apiRequest("services"+(!isNew&&s.id!=null?"?id="+encodeURIComponent(s.id):""),{method:isNew?"POST":"PUT",body:JSON.stringify(apiPayload(s))})}
-async function loadRemoteData(){try{const [remoteServices,remoteSettings,remoteCategories]=await Promise.all([apiRequest("services"),apiRequest("settings"),apiRequest("categories")]);if(!Array.isArray(remoteServices)||!Array.isArray(remoteCategories))throw new Error("Unexpected response from the database API");services=remoteServices.map(s=>({...s,id:Number(s.id),favorite:!!s.favorite,tags:Array.isArray(s.tags)?s.tags:[]}));nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;branding={...branding,...(remoteSettings.branding||{})};preferences={...preferences,...(remoteSettings.preferences||{})};document.documentElement.dataset.theme=preferences.theme||"dark";apiConnected=true;apiError="";setD1Status("connected","Connection verified. Catalog and portal settings are reachable in shared D1.",{serviceCount:services.length,categoryCount:remoteCategories.length,tagCount:countTagsInUse(services)});render();toast("Connected to shared D1 database")}catch(error){apiConnected=false;apiError=error.message||"Database API unavailable";setD1Status("offline","Connection failed: "+apiError,{serviceCount:null,categoryCount:null,tagCount:null});render();toast("Database unavailable, using browser-local data")}}
+async function loadRemoteData(){try{const [remoteServices,remoteSettings,remoteCategories]=await Promise.all([apiRequest("services"),apiRequest("settings"),apiRequest("categories")]);if(!Array.isArray(remoteServices)||!Array.isArray(remoteCategories))throw new Error("Unexpected response from the database API");services=remoteServices.map(s=>({...s,id:Number(s.id),favorite:!!s.favorite,tags:Array.isArray(s.tags)?s.tags:[]}));nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;branding={...branding,...(remoteSettings.branding||{})};persistedBrandingLogoKey=branding.logoKey||null;preferences={...preferences,...(remoteSettings.preferences||{})};document.documentElement.dataset.theme=preferences.theme||"dark";apiConnected=true;apiError="";setD1Status("connected","Connection verified. Catalog and portal settings are reachable in shared D1.",{serviceCount:services.length,categoryCount:remoteCategories.length,tagCount:countTagsInUse(services)});render();toast("Connected to shared D1 database")}catch(error){apiConnected=false;apiError=error.message||"Database API unavailable";setD1Status("offline","Connection failed: "+apiError,{serviceCount:null,categoryCount:null,tagCount:null});render();toast("Database unavailable, using browser-local data")}}
 const categories=()=>["All",...new Set(services.map(s=>s.category))];
 function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2200)}
 function persist(){try{localStorage.setItem("luxorit-portal-v1",JSON.stringify({services,view,density,theme:document.documentElement.dataset.theme,appVersion:APP_VERSION,branding,preferences}))}catch{}}
@@ -315,8 +372,8 @@ function tagHtml(t){return '<span class="tag">'+safe(t)+'</span>'}
 function updateActiveNavigation(){document.querySelectorAll(".nav[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".nav[data-cat]").forEach(b=>b.classList.toggle("active",page==="category"&&b.dataset.cat===current))}
 function nav(){const host=$("categoryNav");host.innerHTML=categories().filter(c=>c!=="All").map(c=>'<button class="nav" data-cat="'+safe(c)+'" title="'+safe(c)+'"><span class="ico">'+categorySvg(c)+'</span><span>'+safe(c)+'</span><span class="count">'+services.filter(item=>item.category===c).length+'</span></button>').join("");host.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>navigateCategory(b.dataset.cat));updateActiveNavigation()}
 function showPage(){["homePage","catalogPage","settingsPage"].forEach(id=>$(id).hidden=true);const target=page==="home"?"homePage":page==="settings"?"settingsPage":"catalogPage";$(target).hidden=false;updateActiveNavigation()}
-function navigatePage(target){page=target;if(target==="all"){current="All";view="list"}else if(target==="favorites"){current="Favorites";view="cards"}else if(target==="home")current="All";render()}
-function navigateCategory(category){page="category";current=category;view="cards";render()}
+function navigatePage(target){if(page==="settings"&&target!=="settings")discardUncommittedBrandingLogo();page=target;if(target==="all"){current="All";view="list"}else if(target==="favorites"){current="Favorites";view="cards"}else if(target==="home")current="All";render()}
+function navigateCategory(category){if(page==="settings")discardUncommittedBrandingLogo();page="category";current=category;view="cards";render()}
 function statCard(label,value,note){return '<article class="stat-card"><div class="stat-label">'+label+'</div><div class="stat-number">'+value+'</div><div class="stat-note">'+note+'</div></article>'}
 function renderServiceCards(items,manage){if(!items.length)return '<div class="empty">No services match this view. Try another search or category.</div>';return '<div class="grid '+(density==="slim"?"slim":"")+'">'+items.map(s=>'<article class="card" data-open="'+safe(s.id)+'"><div class="card-top"><div class="service-icon">'+serviceIconHtml(s)+'</div><div style="min-width:0"><div class="service-title">'+safe(s.name)+'</div><div class="service-desc" style="margin:2px 0 0;min-height:0">'+safe(s.category)+'</div></div><button class="star" data-fav="'+safe(s.id)+'" title="Toggle favorite" aria-label="Toggle favorite for '+safe(s.name)+'">'+(s.favorite?"★":"☆")+'</button></div><div class="service-desc">'+safe(s.description||"")+'</div><div class="tags">'+(s.tags||[]).map(tagHtml).join("")+'</div><div class="card-actions"><a href="'+safe(s.url)+'" target="_blank" rel="noopener">Open service ↗</a>'+(manage?'<span class="manage-actions"><button class="secondary" data-edit="'+safe(s.id)+'">Edit</button><button class="secondary" data-delete="'+safe(s.id)+'">Delete</button></span>':"")+'</div></article>').join("")+'</div>'}
 function renderServiceTable(items,manage){if(!items.length)return '<div class="empty">No services match this view. Try another search or category.</div>';return '<table><thead><tr><th>Service</th><th>Category</th><th>Tags</th><th>URL</th><th>Actions</th></tr></thead><tbody>'+items.map(s=>'<tr><td><span class="table-service-icon">'+serviceIconHtml(s)+'</span>'+safe(s.name)+'</td><td>'+safe(s.category)+'</td><td>'+(s.tags||[]).map(tagHtml).join("")+'</td><td><a href="'+safe(s.url)+'" target="_blank" rel="noopener">Open ↗</a></td><td class="action-cell"><div class="action-group">'+(manage?'<button class="secondary" data-edit="'+safe(s.id)+'">Edit</button><button class="secondary" data-duplicate="'+safe(s.id)+'">Duplicate</button><button class="secondary" data-delete="'+safe(s.id)+'">Delete</button>':'<button class="secondary" data-fav="'+safe(s.id)+'">'+(s.favorite?"★ Favorited":"☆ Favorite")+'</button>')+'</div></td></tr>').join("")+'</tbody></table>'}
@@ -330,12 +387,52 @@ document.querySelectorAll("[data-duplicate]").forEach(b=>b.onclick=async e=>{e.s
 document.querySelectorAll("[data-open]").forEach(el=>el.onclick=e=>{if(e.target.closest("a,button"))return;const s=services.find(item=>String(item.id)===String(el.dataset.open));if(s)window.open(s.url,"_blank","noopener")});
 document.querySelectorAll("[data-category-open]").forEach(b=>b.onclick=()=>navigateCategory(b.dataset.categoryOpen))
 }
-function applyBranding(){const name=branding.name||"Luxorit";const subtitle=branding.subtitle||"";const mark=branding.logo||"";$("brandName").textContent=name;$("brandSubtitle").textContent=subtitle;$("brandSubtitle").hidden=!subtitle;$("brandLogoText").textContent=mark;$("brandLogoText").hidden=!mark;$("brandLogoGraphic").hidden=!!mark;document.title=name+(subtitle?" "+subtitle:"")+" Portal";const preview=$("settingsBrandPreview");if(preview)preview.textContent=name+(subtitle?" "+subtitle:"");const pText=$("settingsLogoText");const pGraphic=$("settingsLogoGraphic");if(pText&&pGraphic){pText.textContent=mark;pText.hidden=!mark;pGraphic.hidden=!!mark}}
-function renderSettings(){$("brandingName").value=branding.name||"Luxorit";$("brandingSubtitle").value=branding.subtitle||"";$("brandingLogo").value=branding.logo||"";$("themeSetting").value=document.documentElement.dataset.theme||"dark";$("landingSetting").value=preferences.landingPage||"home";$("defaultViewSetting").value=preferences.defaultView||"list";$("sidebarCollapsedSetting").checked=!!preferences.sidebarCollapsed;$("settingsVersion").textContent=APP_VERSION;applyBranding();renderD1Status()}
+function applyBranding(){
+const name=branding.name||"Luxorit",subtitle=branding.subtitle||"",mark=branding.logo||"",logoKey=branding.logoKey||"";
+$("brandName").textContent=name;$("brandSubtitle").textContent=subtitle;$("brandSubtitle").hidden=!subtitle;document.title=name+(subtitle?" "+subtitle:"")+" Portal";
+const source=brandingLogoPreviewUrl||(logoKey&&apiConnected?assetUrl(logoKey):"");
+const sidebarImage=$("brandLogoImage");sidebarImage.hidden=!source;if(source)sidebarImage.src=source;else sidebarImage.removeAttribute("src");
+$("brandLogoText").textContent=mark;$("brandLogoText").hidden=!!source||!mark;$("brandLogoGraphic").hidden=!!source||!!mark;
+sidebarImage.onerror=()=>{sidebarImage.hidden=true;$("brandLogoText").hidden=!mark;$("brandLogoGraphic").hidden=!!mark};
+const preview=$("settingsBrandPreview");if(preview)preview.textContent=name+(subtitle?" "+subtitle:"");
+const pImage=$("settingsLogoImage");if(pImage){pImage.hidden=!source;if(source)pImage.src=source;else pImage.removeAttribute("src");pImage.onerror=()=>{pImage.hidden=true;$("settingsLogoText").hidden=!mark;$("settingsLogoGraphic").hidden=!!mark}}
+const pText=$("settingsLogoText"),pGraphic=$("settingsLogoGraphic");if(pText&&pGraphic){pText.textContent=mark;pText.hidden=!!source||!mark;pGraphic.hidden=!!source||!!mark}
+if($("removeBrandingLogo"))$("removeBrandingLogo").hidden=!logoKey&&!brandingLogoPreviewUrl;
+}
+function renderSettings(){$("brandingName").value=branding.name||"Luxorit";$("brandingSubtitle").value=branding.subtitle||"";$("brandingLogo").value=branding.logo||"";$("themeSetting").value=document.documentElement.dataset.theme||"dark";$("landingSetting").value=preferences.landingPage||"home";$("defaultViewSetting").value=preferences.defaultView||"list";$("sidebarCollapsedSetting").checked=!!preferences.sidebarCollapsed;$("settingsVersion").textContent=APP_VERSION;applyBranding();renderD1Status();renderR2Status()}
 function render(){nav();showPage();if(page==="home")renderHome();else if(page==="settings")renderSettings();else renderCatalog();$("versionLabel").textContent="v"+APP_VERSION;applyBranding();bindRenderedActions();persist()}
-function openModal(id){const s=services.find(s=>s.id==id);$("serviceForm").reset();$("serviceId").value=s?s.id:"";$("modalTitle").textContent=s?"Edit service":"Add service";$("name").value=s?.name||"";$("url").value=s?.url||"";$("description").value=s?.description||"";$("icon").value=s?.icon||"🔧";$("tags").value=s?.tags.join(", ")||"";$("category").innerHTML=[...new Set([...categories().filter(c=>c!=="All"),"Cloudflare","Infrastructure","Networking","Storage","Development","Monitoring","Productivity","Other"])].map(c=>'<option>'+safe(c)+'</option>').join("");$("category").value=s?.category||"Infrastructure";$("serviceModal").classList.add("open")}
-$("serviceForm").onsubmit=async e=>{e.preventDefault();const id=$("serviceId").value;let item={id:id?Number(id):nextId++,name:$("name").value.trim(),url:$("url").value.trim(),category:$("category").value,description:$("description").value.trim(),icon:$("icon").value.trim()||"🔧",tags:$("tags").value.split(",").map(t=>t.trim()).filter(Boolean),favorite:services.find(s=>s.id==id)?.favorite||false};try{if(apiConnected)item=await remoteSaveService(item,!id);if(id)services=services.map(s=>s.id==id?item:s);else{if(!apiConnected)nextId=Math.max(nextId,Number(item.id)+1);services.unshift(item)}$("serviceModal").classList.remove("open");page="all";current="All";view="list";render();toast(apiConnected?(id?"Service saved to database":"Service added to database"):(id?"Service saved locally only":"Service added locally only"))}catch(error){toast("Could not save service: "+(error.message||"database error"))}};
-$("cancel").onclick=()=>$("serviceModal").classList.remove("open");$("serviceModal").onclick=e=>{if(e.target===$("serviceModal"))$("serviceModal").classList.remove("open")};$("add").onclick=()=>openModal();$("search").oninput=render;
+function renderServiceLogoPreview(source,fallback="🔧"){
+const image=$("serviceLogoImage"),text=$("serviceLogoFallback");
+if(source){image.src=source;image.hidden=false;text.hidden=true;image.onerror=()=>{image.hidden=true;text.hidden=false}}
+else{image.removeAttribute("src");image.hidden=true;text.textContent=fallback||"🔧";text.hidden=false}
+$("removeServiceLogo").hidden=!$("serviceLogoKey").value;
+}
+function releaseServiceLogoPreview(){if(serviceLogoPreviewUrl){URL.revokeObjectURL(serviceLogoPreviewUrl);serviceLogoPreviewUrl=null}}
+function closeServiceModal(){
+serviceUploadToken++;serviceLogoUploadBusy=false;$("serviceModal").classList.remove("open");releaseServiceLogoPreview();$("serviceLogoFile").value="";
+$("serviceLogoUploadStatus").textContent="Optional · PNG, JPEG, WebP or GIF · up to 5 MB";$("chooseServiceLogo").disabled=false;void cleanupPendingServiceLogos();
+}
+function openModal(id){
+const s=services.find(item=>item.id==id);void cleanupPendingServiceLogos();serviceUploadToken++;serviceLogoUploadBusy=false;releaseServiceLogoPreview();
+$("serviceForm").reset();$("serviceId").value=s?s.id:"";$("serviceLogoKey").value=s?.logoKey||"";
+$("modalTitle").textContent=s?"Edit service":"Add service";$("name").value=s?.name||"";$("url").value=s?.url||"";$("description").value=s?.description||"";$("icon").value=s?.icon||"🔧";$("tags").value=s?.tags.join(", ")||"";
+$("category").innerHTML=[...new Set([...categories().filter(c=>c!=="All"),"Cloudflare","Infrastructure","Networking","Storage","Development","Monitoring","Productivity","Other"])].map(c=>'<option>'+safe(c)+'</option>').join("");
+$("category").value=s?.category||"Infrastructure";renderServiceLogoPreview(s?.logoKey&&apiConnected?assetUrl(s.logoKey):"",s?.icon||"🔧");
+$("serviceLogoUploadStatus").textContent="Optional · PNG, JPEG, WebP or GIF · up to 5 MB · saved with the service";$("serviceModal").classList.add("open");
+}
+
+$("serviceForm").onsubmit=async e=>{
+e.preventDefault();if(serviceLogoUploadBusy){toast("Wait for the image upload to finish.");return}
+const id=$("serviceId").value;
+let item={id:id?Number(id):nextId++,name:$("name").value.trim(),url:$("url").value.trim(),category:$("category").value,description:$("description").value.trim(),icon:$("icon").value.trim()||"🔧",logoKey:$("serviceLogoKey").value||null,tags:$("tags").value.split(",").map(t=>t.trim()).filter(Boolean),favorite:services.find(s=>s.id==id)?.favorite||false};
+try{
+if(apiConnected)item=await remoteSaveService(item,!id);
+if(id)services=services.map(s=>s.id==id?item:s);else{if(!apiConnected)nextId=Math.max(nextId,Number(item.id)+1);services.unshift(item)}
+if(item.logoKey)pendingServiceLogoKeys.delete(item.logoKey);
+closeServiceModal();page="all";current="All";view="list";render();toast(apiConnected?(id?"Service saved to database":"Service added to database"):(id?"Service saved locally only":"Service added locally only"))
+}catch(error){toast("Could not save service: "+(error.message||"database error"))}
+};
+$("cancel").onclick=()=>closeServiceModal();$("serviceModal").onclick=e=>{if(e.target===$("serviceModal"))closeServiceModal()};$("add").onclick=()=>openModal();$("search").oninput=render;
 $("cardsBtn").onclick=()=>{view="cards";render()};$("listBtn").onclick=()=>{view="list";render()};$("regularBtn").onclick=()=>{density="regular";view="cards";render()};$("slimBtn").onclick=()=>{density="slim";view="cards";render()};
 function updateCollapseButton(){const collapsed=$("sidebar").classList.contains("collapsed");$("collapse").title=collapsed?"Expand sidebar":"Collapse sidebar";$("collapse").setAttribute("aria-label",collapsed?"Expand sidebar":"Collapse sidebar");$("collapse").innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="'+(collapsed?"m10 7 5 5-5 5":"m14 7-5 5 5 5")+'"/></svg>'}
 $("collapse").onclick=()=>{$("sidebar").classList.toggle("collapsed");updateCollapseButton()};updateCollapseButton();
@@ -347,10 +444,73 @@ $("import").onclick=()=>$("importFile").click();$("importFile").onchange=async e
 $("help").onclick=()=>toast("Dashboard Manager Portal. Version "+APP_VERSION+". Catalog changes save to shared D1 when connected.");
 $("brandingName").addEventListener("input",()=>{$("settingsBrandPreview").textContent=($("brandingName").value||"Luxorit")+(($("brandingSubtitle").value)?" "+$("brandingSubtitle").value:"")});
 $("brandingSubtitle").addEventListener("input",()=>{$("settingsBrandPreview").textContent=($("brandingName").value||"Luxorit")+(($("brandingSubtitle").value)?" "+$("brandingSubtitle").value:"")});
-$("brandingLogo").addEventListener("input",()=>{const mark=$("brandingLogo").value.trim();$("settingsLogoText").textContent=mark;$("settingsLogoText").hidden=!mark;$("settingsLogoGraphic").hidden=!!mark});
+$("brandingLogo").addEventListener("input",()=>{branding.logo=$("brandingLogo").value.trim();applyBranding()});
+$("chooseBrandingLogo").onclick=()=>{if(!apiConnected){toast("The shared database connection is required for R2 uploads.");return}$("brandingLogoFile").click()};
+$("brandingLogoFile").onchange=async e=>{
+const file=e.target.files&&e.target.files[0];e.target.value="";if(!file)return;
+if(file.size<1||file.size>MAX_IMAGE_BYTES){toast("Choose an image no larger than 5 MB.");return}
+if(!["image/png","image/jpeg","image/webp","image/gif"].includes(file.type.toLowerCase())){toast("Use a PNG, JPEG, WebP or GIF image.");return}
+const token=++brandingLogoUploadToken;brandingLogoUploadBusy=true;$("chooseBrandingLogo").disabled=true;$("brandingLogoUploadStatus").textContent="Uploading logo to private R2 storage…";
+const objectUrl=URL.createObjectURL(file),previousUrl=brandingLogoPreviewUrl,previousKey=branding.logoKey||null;
+try{
+const uploaded=await uploadImage(file,"branding");
+if(token!==brandingLogoUploadToken){await deleteUploadedImage(uploaded.key);URL.revokeObjectURL(objectUrl);return}
+branding.logoKey=uploaded.key;brandingLogoPreviewUrl=objectUrl;pendingBrandingLogoKeys.add(uploaded.key);
+if(previousKey&&pendingBrandingLogoKeys.has(previousKey)&&previousKey!==uploaded.key){pendingBrandingLogoKeys.delete(previousKey);await deleteUploadedImage(previousKey)}
+if(previousUrl)URL.revokeObjectURL(previousUrl);
+$("brandingLogoUploadStatus").textContent="Uploaded to R2. Select Save settings to publish the logo.";applyBranding();
+}catch(error){URL.revokeObjectURL(objectUrl);$("brandingLogoUploadStatus").textContent=error.message||"Upload failed.";toast("Portal logo upload failed: "+(error.message||"upload failed"))}
+finally{if(token===brandingLogoUploadToken){brandingLogoUploadBusy=false;$("chooseBrandingLogo").disabled=false}}
+};
+$("removeBrandingLogo").onclick=()=>{
+if(brandingLogoUploadBusy){toast("Wait for the upload to finish.");return}
+if(brandingLogoPreviewUrl){URL.revokeObjectURL(brandingLogoPreviewUrl);brandingLogoPreviewUrl=null}
+if(branding.logoKey&&pendingBrandingLogoKeys.has(branding.logoKey)){void deleteUploadedImage(branding.logoKey);pendingBrandingLogoKeys.delete(branding.logoKey)}
+branding.logoKey=null;$("brandingLogoUploadStatus").textContent="Logo removal will take effect when you save settings.";applyBranding();
+};
+$("chooseServiceLogo").onclick=()=>{if(!apiConnected){toast("The shared database connection is required for R2 uploads.");return}$("serviceLogoFile").click()};
+$("serviceLogoFile").onchange=async e=>{
+const file=e.target.files&&e.target.files[0];e.target.value="";if(!file)return;
+if(file.size<1||file.size>MAX_IMAGE_BYTES){toast("Choose an image no larger than 5 MB.");return}
+if(!["image/png","image/jpeg","image/webp","image/gif"].includes(file.type.toLowerCase())){toast("Use a PNG, JPEG, WebP or GIF image.");return}
+const token=++serviceUploadToken;serviceLogoUploadBusy=true;$("chooseServiceLogo").disabled=true;$("serviceLogoUploadStatus").textContent="Uploading logo to private R2 storage…";
+const objectUrl=URL.createObjectURL(file),previousUrl=serviceLogoPreviewUrl,previousKey=$("serviceLogoKey").value||null;
+renderServiceLogoPreview(objectUrl,$("icon").value||"🔧");
+try{
+const uploaded=await uploadImage(file,"service");
+if(token!==serviceUploadToken||!$("serviceModal").classList.contains("open")){await deleteUploadedImage(uploaded.key);URL.revokeObjectURL(objectUrl);return}
+$("serviceLogoKey").value=uploaded.key;pendingServiceLogoKeys.add(uploaded.key);serviceLogoPreviewUrl=objectUrl;
+if(previousUrl)URL.revokeObjectURL(previousUrl);
+if(previousKey&&pendingServiceLogoKeys.has(previousKey)&&previousKey!==uploaded.key){pendingServiceLogoKeys.delete(previousKey);await deleteUploadedImage(previousKey)}
+$("serviceLogoUploadStatus").textContent="Uploaded to R2. Save the service to attach this logo.";renderServiceLogoPreview(objectUrl,$("icon").value||"🔧");
+}catch(error){
+URL.revokeObjectURL(objectUrl);
+if(token===serviceUploadToken){renderServiceLogoPreview(previousUrl||(previousKey&&apiConnected?assetUrl(previousKey):""),$("icon").value||"🔧");$("serviceLogoUploadStatus").textContent=error.message||"Upload failed.";toast("Service logo upload failed: "+(error.message||"upload failed"))}
+}finally{if(token===serviceUploadToken){serviceLogoUploadBusy=false;$("chooseServiceLogo").disabled=false}}
+};
+$("removeServiceLogo").onclick=()=>{
+if(serviceLogoUploadBusy){toast("Wait for the upload to finish.");return}
+const key=$("serviceLogoKey").value;if(key&&pendingServiceLogoKeys.has(key)){pendingServiceLogoKeys.delete(key);void deleteUploadedImage(key)}
+releaseServiceLogoPreview();$("serviceLogoKey").value="";renderServiceLogoPreview("",$("icon").value||"🔧");
+$("serviceLogoUploadStatus").textContent="Logo removal will take effect when you save the service.";
+};
 $("testD1Connection").onclick=()=>checkD1Connection(true);
+$("refreshR2Connection").onclick=()=>checkR2Connection(true);
 $("refreshPagesDeployment").onclick=()=>checkPagesDeployment(true);
-$("settingsForm").onsubmit=async e=>{e.preventDefault();const nextBranding={name:$("brandingName").value.trim()||"Luxorit",subtitle:$("brandingSubtitle").value.trim(),logo:$("brandingLogo").value.trim()};const nextPreferences={theme:$("themeSetting").value,landingPage:$("landingSetting").value,defaultView:$("defaultViewSetting").value,sidebarCollapsed:$("sidebarCollapsedSetting").checked};try{if(apiConnected)await apiRequest("settings",{method:"PUT",body:JSON.stringify({branding:nextBranding,preferences:nextPreferences})});branding=nextBranding;preferences=nextPreferences;document.documentElement.dataset.theme=preferences.theme;view=preferences.defaultView==="list"?"list":"cards";density=preferences.defaultView==="slim"?"slim":"regular";$("sidebar").classList.toggle("collapsed",preferences.sidebarCollapsed);updateCollapseButton();render();toast(apiConnected?"Settings saved to database":"Settings saved locally only")}catch(error){toast("Could not save settings: "+(error.message||"database error"))}};
-$("resetBranding").onclick=()=>{branding={name:"Luxorit",subtitle:"Pro",logo:""};renderSettings();toast("Branding reset. Save settings to keep it.")};
+$("settingsForm").onsubmit=async e=>{
+e.preventDefault();if(brandingLogoUploadBusy){toast("Wait for the portal logo upload to finish.");return}
+const nextBranding={name:$("brandingName").value.trim()||"Luxorit",subtitle:$("brandingSubtitle").value.trim(),logo:$("brandingLogo").value.trim(),logoKey:branding.logoKey||null};
+const nextPreferences={theme:$("themeSetting").value,landingPage:$("landingSetting").value,defaultView:$("defaultViewSetting").value,sidebarCollapsed:$("sidebarCollapsedSetting").checked};
+try{
+if(apiConnected)await apiRequest("settings",{method:"PUT",body:JSON.stringify({branding:nextBranding,preferences:nextPreferences})});
+branding=nextBranding;persistedBrandingLogoKey=nextBranding.logoKey;preferences=nextPreferences;document.documentElement.dataset.theme=preferences.theme;
+for(const key of [...pendingBrandingLogoKeys]){if(key===persistedBrandingLogoKey)pendingBrandingLogoKeys.delete(key);else{await deleteUploadedImage(key);pendingBrandingLogoKeys.delete(key)}}
+if(brandingLogoPreviewUrl){URL.revokeObjectURL(brandingLogoPreviewUrl);brandingLogoPreviewUrl=null}
+$("brandingLogoUploadStatus").textContent="Logo and settings saved.";
+view=preferences.defaultView==="list"?"list":"cards";density=preferences.defaultView==="slim"?"slim":"regular";
+$("sidebar").classList.toggle("collapsed",preferences.sidebarCollapsed);updateCollapseButton();render();toast(apiConnected?"Settings saved to database":"Settings saved locally only")
+}catch(error){toast("Could not save settings: "+(error.message||"database error"))}
+};
+$("resetBranding").onclick=()=>{branding={name:"Luxorit",subtitle:"Pro",logo:"",logoKey:null};if(brandingLogoPreviewUrl){URL.revokeObjectURL(brandingLogoPreviewUrl);brandingLogoPreviewUrl=null}renderSettings();toast("Branding reset. Save settings to keep it.")};
 $("themeSetting").onchange=()=>{document.documentElement.dataset.theme=$("themeSetting").value};
-load();preferences.theme=document.documentElement.dataset.theme||preferences.theme;page=preferences.landingPage||"home";view=preferences.defaultView==="cards"||preferences.defaultView==="slim"?"cards":"list";density=preferences.defaultView==="slim"?"slim":"regular";$("sidebar").classList.toggle("collapsed",!!preferences.sidebarCollapsed);render();loadRemoteData();checkPagesDeployment(false);</script></body></html>
+load();preferences.theme=document.documentElement.dataset.theme||preferences.theme;page=preferences.landingPage||"home";view=preferences.defaultView==="cards"||preferences.defaultView==="slim"?"cards":"list";density=preferences.defaultView==="slim"?"slim":"regular";$("sidebar").classList.toggle("collapsed",!!preferences.sidebarCollapsed);render();loadRemoteData();checkPagesDeployment(false);checkR2Connection(false);</script></body></html>
