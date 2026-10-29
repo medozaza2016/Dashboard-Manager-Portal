@@ -206,6 +206,23 @@
 .service-order-help{font-size:11px;color:var(--muted);margin:0 0 10px}
 @media(max-width:900px){.service-order-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.service-order-top{grid-template-columns:24px 32px minmax(0,1fr) auto;gap:7px}.service-order-icon{width:32px;height:32px}.service-order-icon img,.service-order-icon .custom-svg{width:27px;height:27px}.service-order-actions{gap:2px}.service-order-actions .icon-action{width:26px;height:26px;min-width:26px}}
 @media(max-width:620px){.service-order-grid{grid-template-columns:minmax(0,1fr)}.service-order-card{padding:12px}}
+
+/* Slim-card mode: compact name-first cards, clickable everywhere. */
+.grid.slim{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.grid.slim .card.slim-card{padding:9px 11px;min-width:0;cursor:pointer;display:grid;grid-template-rows:auto auto;gap:0;align-content:start}
+.grid.slim .card.slim-card .card-top{gap:8px;min-width:0;align-items:center}
+.grid.slim .card.slim-card .service-icon{width:28px;height:28px;flex:0 0 28px}
+.grid.slim .card.slim-card .service-icon img,.grid.slim .card.slim-card .service-icon .icon-fallback{width:25px;height:25px}
+.grid.slim .card.slim-card .service-icon .custom-svg{width:25px;height:25px}
+.grid.slim .card.slim-card .service-title{font-size:12px;line-height:1.35}
+.grid.slim .card.slim-card .slim-card-identity{flex:1;min-width:0}
+.grid.slim .card.slim-card .star{font-size:16px;flex:0 0 auto;padding:0 2px}
+.grid.slim .card.slim-card .slim-card-description{margin:7px 0 1px;padding-top:7px;border-top:1px solid var(--line);min-height:0;line-height:1.45;font-size:10px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.grid.slim .card.slim-card .slim-card-actions{margin:8px 0 0;padding-top:7px;border-top:1px solid var(--line)}
+.grid.slim .card.slim-card .slim-card-actions .manage-actions{display:flex;gap:4px;margin-left:auto}
+.grid.slim .card.slim-card .slim-card-actions .icon-action{height:25px;width:25px;min-width:25px;padding:4px}
+@media(max-width:1150px){.grid.slim{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.grid.slim{grid-template-columns:minmax(0,1fr)}}
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
@@ -285,6 +302,8 @@
           <div class="settings-field"><label for="landingSetting">Default page</label><select id="landingSetting"><option value="home">Home / Favorites</option><option value="all">All Services</option></select></div>
           <div class="settings-field full"><label for="defaultViewSetting">Default service layout</label><select id="defaultViewSetting"><option value="list">Compact list</option><option value="cards">Regular cards</option><option value="slim">Slim cards</option></select></div>
         </div>
+        <label class="settings-check"><input id="showSlimDescriptionsSetting" type="checkbox"><span>Show descriptions in Slim cards</span></label>
+        <p class="settings-help" style="margin-top:6px">When off, Slim cards show just the service name and icon. The card itself opens the service. This applies across Home, Favorites, All Services, and category pages, including filtered results.</p>
         <label class="settings-check"><input id="sidebarCollapsedSetting" type="checkbox"><span>Start with the sidebar collapsed</span></label>
       </article>
       <article class="settings-card">
@@ -355,7 +374,7 @@
 <div class="modal-backdrop" id="serviceModal"><form class="modal" id="serviceForm"><h2 id="modalTitle">Add service</h2><input type="hidden" id="serviceId"><label for="name">Name</label><input id="name" required><label for="url">URL</label><input id="url" type="url" placeholder="https://service.example" required><label for="category">Category</label><select id="category"></select><label for="description">Description</label><input id="description"><label for="icon">Fallback icon for custom services</label><input id="icon" value="🔧"><label>Tags</label><div class="service-tag-picker"><div id="serviceSelectedTags" class="service-selected-tags" aria-live="polite"></div><input id="serviceTagSearch" class="service-tag-search" type="search" placeholder="Search available tags…" aria-label="Search tags"><div id="serviceTagOptions" class="service-tag-options"></div><div class="settings-note">Choose one or more tags. Manage the tag list in Admin → Tags.</div></div><div class="settings-field full"><label for="serviceLogoFile">Service logo</label><div class="logo-upload-row"><div class="service-logo-preview" id="serviceLogoPreview"><span id="serviceLogoFallback">🔧</span><img id="serviceLogoImage" alt="" hidden></div><div class="settings-actions"><button class="secondary" type="button" id="chooseServiceLogo">Browse image</button><button class="secondary" type="button" id="removeServiceLogo" hidden>Remove image</button><input type="file" id="serviceLogoFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden><input type="hidden" id="serviceLogoKey"><span id="serviceLogoUploadStatus" class="settings-note">Optional · PNG, JPEG, WebP or GIF · up to 5 MB</span></div></div></div><div class="modal-actions"><button class="secondary" type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save service</button></div></form></div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.22";
+const APP_VERSION="0.1.23";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -411,7 +430,7 @@ const seed=[
 let services=structuredClone(seed),current="All",view="list",density="regular",page="home",nextId=13;
 let currentProfile=1; // 1=Personal, 2=Work
 let branding={name:"Luxorit",subtitle:"Pro",logo:""};
-let preferences={theme:"dark",landingPage:"home",defaultView:"list",sidebarCollapsed:false};
+let preferences={theme:"dark",landingPage:"home",defaultView:"list",sidebarCollapsed:false,showSlimDescriptions:false};
 let apiConnected=false,apiError="";
 let adminTab="services",adminServiceQuery="";
 let serviceSelectedTags=new Set(),serviceTagQuery="";
@@ -699,7 +718,18 @@ delete:'<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/><pa
 const labels={edit:"Edit",duplicate:"Duplicate",delete:"Delete"};
 return '<button type="button" class="secondary icon-action" data-'+action+'="'+safe(id)+'" title="'+labels[action]+' '+safe(name)+'" aria-label="'+labels[action]+' '+safe(name)+'"><svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">'+paths[action]+'</svg></button>';
 }
-function renderServiceCards(items,manage){if(!items.length)return '<div class="empty">No services match this view. Try another search or category.</div>';return '<div class="grid '+(density==="slim"?"slim":"")+'">'+items.map(s=>'<article class="card" data-open="'+safe(s.id)+'"><div class="card-top"><div class="service-icon">'+serviceIconHtml(s)+'</div><div style="min-width:0"><div class="service-title">'+safe(s.name)+'</div><div class="service-desc" style="margin:2px 0 0;min-height:0">'+safe(s.category)+'</div></div><button class="star" data-fav="'+safe(s.id)+'" title="Toggle favorite" aria-label="Toggle favorite for '+safe(s.name)+'">'+(s.favorite?"★":"☆")+'</button></div><div class="service-desc">'+safe(s.description||"")+'</div><div class="tags">'+(s.tags||[]).map(tagHtml).join("")+'</div><div class="card-actions"><a href="'+safe(s.url)+'" target="_blank" rel="noopener">Open service ↗</a>'+(manage?'<span class="manage-actions">'+serviceActionIcon("edit",s.id,s.name)+serviceActionIcon("duplicate",s.id,s.name)+serviceActionIcon("delete",s.id,s.name)+'</span>':"")+"</div></article>").join("")+"</div>"}
+function renderServiceCards(items,manage){
+if(!items.length)return '<div class="empty">No services match this view. Try another search or category.</div>';
+const slim=density==="slim";
+return '<div class="grid '+(slim?"slim":"")+'">'+items.map(s=>{
+const category=slim?"":'<div class="service-desc" style="margin:2px 0 0;min-height:0">'+safe(s.category)+'</div>';
+const details=slim?(preferences.showSlimDescriptions?'<div class="service-desc slim-card-description">'+safe(s.description||"")+'</div>':""):'<div class="service-desc">'+safe(s.description||"")+'</div><div class="tags">'+(s.tags||[]).map(tagHtml).join("")+'</div>';
+const openLink=slim?"":'<a href="'+safe(s.url)+'" target="_blank" rel="noopener">Open service ↗</a>';
+const actions=manage?'<span class="manage-actions">'+serviceActionIcon("edit",s.id,s.name)+serviceActionIcon("duplicate",s.id,s.name)+serviceActionIcon("delete",s.id,s.name)+'</span>':"";
+const actionRow=slim?(manage?'<div class="card-actions slim-card-actions">'+actions+'</div>':""):'<div class="card-actions">'+openLink+actions+'</div>';
+return '<article class="card '+(slim?"slim-card":"")+'" data-open="'+safe(s.id)+'"><div class="card-top"><div class="service-icon">'+serviceIconHtml(s)+'</div><div class="slim-card-identity" style="min-width:0"><div class="service-title">'+safe(s.name)+'</div>'+category+'</div><button class="star" data-fav="'+safe(s.id)+'" title="Toggle favorite" aria-label="Toggle favorite for '+safe(s.name)+'">'+(s.favorite?"★":"☆")+'</button></div>'+details+actionRow+'</article>';
+}).join("")+'</div>';
+}
 function renderServiceOrderGrid(items){
 if(!items.length)return '<div class="empty">No services match this view. Try another search or category.</div>';
 const query=$("search").value.trim();
@@ -961,7 +991,7 @@ document.querySelectorAll("[data-admin-tab]").forEach(button=>{const active=butt
 if(adminTab==="services")renderAdminServices();if(adminTab==="categories")renderCategoryManager();if(adminTab==="tags")renderTagManager();
 }
 function setAdminTab(tab){if(!["services","categories","tags"].includes(tab))return;adminTab=tab;page="admin";showPage();renderAdminPage();bindRenderedActions()}
-function renderSettings(){$("brandingName").value=branding.name||"Luxorit";$("brandingSubtitle").value=branding.subtitle||"";$("brandingLogo").value=branding.logo||"";$("themeSetting").value=document.documentElement.dataset.theme||"dark";$("landingSetting").value=preferences.landingPage||"home";$("defaultViewSetting").value=preferences.defaultView||"list";$("sidebarCollapsedSetting").checked=!!preferences.sidebarCollapsed;$("settingsVersion").textContent=APP_VERSION;applyBranding();renderD1Status();renderR2Status()}
+function renderSettings(){$("brandingName").value=branding.name||"Luxorit";$("brandingSubtitle").value=branding.subtitle||"";$("brandingLogo").value=branding.logo||"";$("themeSetting").value=document.documentElement.dataset.theme||"dark";$("landingSetting").value=preferences.landingPage||"home";$("defaultViewSetting").value=preferences.defaultView||"list";$("showSlimDescriptionsSetting").checked=!!preferences.showSlimDescriptions;$("sidebarCollapsedSetting").checked=!!preferences.sidebarCollapsed;$("settingsVersion").textContent=APP_VERSION;applyBranding();renderD1Status();renderR2Status()}
 function render(){nav();showPage();if(page==="home")renderHome();else if(page==="settings")renderSettings();else if(page==="admin")renderAdminPage();else renderCatalog();$("versionLabel").textContent="v"+APP_VERSION;applyBranding();bindRenderedActions();persist()}
 function renderServiceLogoPreview(source,fallback="🔧"){
 const image=$("serviceLogoImage"),text=$("serviceLogoFallback");
@@ -1095,7 +1125,7 @@ $("refreshPagesDeployment").onclick=()=>checkPagesDeployment(true);
 $("settingsForm").onsubmit=async e=>{
 e.preventDefault();if(brandingLogoUploadBusy){toast("Wait for the portal logo upload to finish.");return}
 const nextBranding={name:$("brandingName").value.trim()||"Luxorit",subtitle:$("brandingSubtitle").value.trim(),logo:$("brandingLogo").value.trim(),logoKey:branding.logoKey||null};
-const nextPreferences={theme:$("themeSetting").value,landingPage:$("landingSetting").value,defaultView:$("defaultViewSetting").value,sidebarCollapsed:$("sidebarCollapsedSetting").checked};
+const nextPreferences={theme:$("themeSetting").value,landingPage:$("landingSetting").value,defaultView:$("defaultViewSetting").value,sidebarCollapsed:$("sidebarCollapsedSetting").checked,showSlimDescriptions:$("showSlimDescriptionsSetting").checked};
 try{
 if(apiConnected)await apiRequest("settings",{method:"PUT",body:JSON.stringify({branding:nextBranding,preferences:nextPreferences})});
 branding=nextBranding;persistedBrandingLogoKey=nextBranding.logoKey;preferences=nextPreferences;document.documentElement.dataset.theme=preferences.theme;
