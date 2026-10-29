@@ -841,7 +841,7 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.52";
+const APP_VERSION="0.1.53";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -1153,6 +1153,7 @@ function bindProfileSwitcher(){
 
   btn.onclick = async () => {
     currentProfile = currentProfile === 1 ? 2 : 1;
+    persist();
     updateProfileUI();activeTag=null;sidebarTagsExpanded=false;sidebarCategoriesExpanded=false;reorderEnabled=false;
     if (apiConnected) {
       setD1Status("checking","Loading "+(currentProfile===1?"Personal":"Work")+" profile data…",{serviceCount:null,categoryCount:null,tagCount:null});
@@ -1202,9 +1203,9 @@ async function loadRemoteData(){try{
 }}
 const categories=()=>["All",...new Set((apiConnected?categoryRecords.filter(c=>Number(c.serviceCount??c.service_count??0)>0).slice().sort((a,b)=>(Number(a.sortOrder??a.sort_order)||9999)-(Number(b.sortOrder??b.sort_order)||9999)).map(c=>c.name):services.map(s=>s.category)).filter(Boolean))];
 function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2200)}
-function persist(){try{localStorage.setItem("luxorit-portal-v1",JSON.stringify({services,view,density,theme:document.documentElement.dataset.theme,appVersion:APP_VERSION,branding,preferences}))}catch{}}
+function persist(){try{localStorage.setItem("luxorit-portal-v1",JSON.stringify({services,view,density,theme:document.documentElement.dataset.theme,appVersion:APP_VERSION,branding,preferences,currentProfile}))}catch{}}
 function safe(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function load(){try{const d=JSON.parse(localStorage.getItem("luxorit-portal-v1"));if(d){if(Array.isArray(d.services)){services=d.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences};if(d.theme)document.documentElement.dataset.theme=d.theme;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1}if(d.view)view=d.view;if(d.density)density=d.density;if(d.theme)document.documentElement.dataset.theme=d.theme;if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences}}}catch{}}
+function load(){try{const d=JSON.parse(localStorage.getItem("luxorit-portal-v1"));if(d){if(d.currentProfile===1||d.currentProfile===2)currentProfile=d.currentProfile;if(Array.isArray(d.services)){services=d.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences};if(d.theme)document.documentElement.dataset.theme=d.theme;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1}if(d.view)view=d.view;if(d.density)density=d.density;if(d.theme)document.documentElement.dataset.theme=d.theme;if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences}}}catch{}}
 function matchesSearch(s){const q=$("search").value.trim().toLowerCase();return !q||[s.name,s.description,s.category,...(s.tags||[])].join(" ").toLowerCase().includes(q)}
 function filtered(){const globalSearch=!!$("search").value.trim();const items=services.filter(s=>(globalSearch?true:page==="favorites"?s.favorite:page==="category"?s.category===current:page==="tag"?(s.tags||[]).includes(activeTag):true)&&matchesSearch(s));if(page==="all")return items.sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""),undefined,{sensitivity:"base",numeric:true}));return !globalSearch&&page==="category"?items.sort((a,b)=>(Number(a.categorySortOrder)||9999)-(Number(b.categorySortOrder)||9999)||Number(a.id)-Number(b.id)):items}
 function tagHtml(t){return '<span class="tag">'+safe(t)+'</span>'}
@@ -1775,4 +1776,4 @@ $("sidebar").classList.toggle("collapsed",preferences.sidebarCollapsed);updateCo
 $("resetBranding").onclick=()=>{branding={name:"Luxorit",subtitle:"Pro",logo:"",logoKey:null};if(brandingLogoPreviewUrl){URL.revokeObjectURL(brandingLogoPreviewUrl);brandingLogoPreviewUrl=null}renderSettings();toast("Branding reset. Save settings to keep it.")};
 $("themeSetting").onchange=()=>{document.documentElement.dataset.theme=$("themeSetting").value};
 $("serviceImageSizeSetting").oninput=()=>renderServiceImageSizePreview($("serviceImageSizeSetting").value);
-load();preferences.theme=document.documentElement.dataset.theme||preferences.theme;page=["home","favorites","all"].includes(preferences.landingPage)?preferences.landingPage:"home";view=preferences.defaultView==="cards"||preferences.defaultView==="slim"?"cards":"list";density=preferences.defaultView==="slim"?"slim":"regular";$("sidebar").classList.toggle("collapsed",!!preferences.sidebarCollapsed);render();loadRemoteData();refreshTaxonomy(false);checkPagesDeployment(false);checkR2Connection(false);refreshAccessApps(false);</script></body></html>
+load();preferences.theme=document.documentElement.dataset.theme||preferences.theme;updateProfileUI();page=["home","favorites","all"].includes(preferences.landingPage)?preferences.landingPage:"home";view=preferences.defaultView==="cards"||preferences.defaultView==="slim"?"cards":"list";density=preferences.defaultView==="slim"?"slim":"regular";$("sidebar").classList.toggle("collapsed",!!preferences.sidebarCollapsed);render();loadRemoteData();refreshTaxonomy(false);checkPagesDeployment(false);checkR2Connection(false);refreshAccessApps(false);</script></body></html>
