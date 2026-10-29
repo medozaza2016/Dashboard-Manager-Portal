@@ -35,8 +35,10 @@ export async function onRequest({ request, env }) {
 
   if (request.method === "GET") {
     const result = await env.DB.prepare(`
-      SELECT t.id, t.name, COUNT(st.service_id) AS serviceCount
-      FROM tags t LEFT JOIN service_tags st ON st.tag_id = t.id
+      SELECT t.id, t.name, COUNT(s.id) AS serviceCount
+      FROM tags t
+      LEFT JOIN service_tags st ON st.tag_id = t.id
+      LEFT JOIN services s ON s.id = st.service_id AND s.profile_id = t.profile_id
       WHERE t.profile_id = ?
       GROUP BY t.id ORDER BY lower(t.name), t.name
     `).bind(profileId).all();
