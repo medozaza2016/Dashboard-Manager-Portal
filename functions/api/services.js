@@ -153,7 +153,7 @@ export async function onRequest(context) {
       ]);
       const inserted = await env.DB.prepare(
         "INSERT INTO services (name, url, description, icon, logo_key, category_id, is_favorite, sort_order, profile_id, category_sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-      ).bind(...fields, Number(sort?.next_sort || 1), Number(categorySort?.next_sort || 1)).run();
+      ).bind(...fields.slice(0, -1), Number(sort?.next_sort || 1), profileId, Number(categorySort?.next_sort || 1)).run();
       serviceId = Number(inserted.meta?.last_row_id);
     } else {
       if (serviceId == null) return jsonResponse({ error: "The id query parameter is required for updates." }, 400);
