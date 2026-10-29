@@ -574,7 +574,7 @@
         <h2>Appearance & behavior</h2><p class="settings-help">Set the theme and how the portal opens on your next visit.</p>
         <div class="settings-fields">
           <div class="settings-field"><label for="themeSetting">Color theme</label><select id="themeSetting"><option value="dark">Dark · deep green</option><option value="light">Light · deep green</option></select></div>
-          <div class="settings-field"><label for="landingSetting">Default page</label><select id="landingSetting"><option value="home">Home</option><option value="favorites">Favorites</option></select></div>
+          <div class="settings-field"><label for="landingSetting">Default page</label><select id="landingSetting"><option value="home">Home</option><option value="favorites">Favorites</option><option value="all">All services</option></select></div>
           <div class="settings-field full"><label for="defaultViewSetting">Default service layout</label><select id="defaultViewSetting"><option value="list">Compact list</option><option value="cards">Regular cards</option><option value="slim">Slim cards</option></select></div>
           <div class="settings-field full"><label for="serviceImageSizeSetting">Service logo size <span id="serviceImageSizeValue">34 px</span></label><div class="service-image-size-control"><input id="serviceImageSizeSetting" type="range" min="20" max="64" step="2" value="34" aria-label="Service logo size in pixels"><div class="service-logo-preview service-image-size-preview" id="serviceImageSizePreview"><span id="serviceImageSizePreviewFallback">🔧</span><img id="serviceImageSizePreviewImage" alt="" hidden></div></div><p class="settings-help">Adjusts uploaded logos and built-in icons across regular cards, Slim cards, compact rows, and the service editor preview. Original uploaded files remain unchanged.</p></div>
         </div>
@@ -665,7 +665,7 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.44";
+const APP_VERSION="0.1.45";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -1597,4 +1597,4 @@ $("sidebar").classList.toggle("collapsed",preferences.sidebarCollapsed);updateCo
 $("resetBranding").onclick=()=>{branding={name:"Luxorit",subtitle:"Pro",logo:"",logoKey:null};if(brandingLogoPreviewUrl){URL.revokeObjectURL(brandingLogoPreviewUrl);brandingLogoPreviewUrl=null}renderSettings();toast("Branding reset. Save settings to keep it.")};
 $("themeSetting").onchange=()=>{document.documentElement.dataset.theme=$("themeSetting").value};
 $("serviceImageSizeSetting").oninput=()=>renderServiceImageSizePreview($("serviceImageSizeSetting").value);
-load();preferences.theme=document.documentElement.dataset.theme||preferences.theme;page=preferences.landingPage==="all"?"home":(preferences.landingPage||"home");view=preferences.defaultView==="cards"||preferences.defaultView==="slim"?"cards":"list";density=preferences.defaultView==="slim"?"slim":"regular";$("sidebar").classList.toggle("collapsed",!!preferences.sidebarCollapsed);render();loadRemoteData();refreshTaxonomy(false);checkPagesDeployment(false);checkR2Connection(false);refreshAccessApps(false);</script></body></html>
+load();preferences.theme=document.documentElement.dataset.theme||preferences.theme;page=["home","favorites","all"].includes(preferences.landingPage)?preferences.landingPage:"home";view=preferences.defaultView==="cards"||preferences.defaultView==="slim"?"cards":"list";density=preferences.defaultView==="slim"?"slim":"regular";$("sidebar").classList.toggle("collapsed",!!preferences.sidebarCollapsed);render();loadRemoteData();refreshTaxonomy(false);checkPagesDeployment(false);checkR2Connection(false);refreshAccessApps(false);</script></body></html>
