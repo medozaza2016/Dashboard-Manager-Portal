@@ -207,6 +207,10 @@
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
 <div class="group-label">Workspace</div>
+<div style="display:flex;gap:4px;margin:0 12px 12px 12px;">
+  <button class="nav" id="profilePersonal" style="flex:1;justify-content:center;font-size:12px;padding:6px 8px;" data-profile="1">Personal</button>
+  <button class="nav" id="profileWork" style="flex:1;justify-content:center;font-size:12px;padding:6px 8px;" data-profile="2">Work</button>
+</div>
 <button class="nav active" data-page="home" title="Home"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/></svg></span><span>Home</span></button><button class="nav" data-page="all" title="All services"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span>All Services</span></button>
 
 <div class="group-label">Categories</div><div id="categoryNav"></div><div class="bottom">
@@ -406,6 +410,7 @@ const seed=[
 {id:12,name:"TrueNAS",icon:"🗄️",description:"File storage",category:"Infrastructure",tags:["Infrastructure","Storage"],url:"https://truenas.example",favorite:false}
 ];
 let services=structuredClone(seed),current="All",view="list",density="regular",page="home",nextId=13;
+let currentProfile=1; // 1=Personal, 2=Work
 let branding={name:"Luxorit",subtitle:"Pro",logo:""};
 let preferences={theme:"dark",landingPage:"home",defaultView:"list",sidebarCollapsed:false};
 let apiConnected=false,apiError="";
@@ -613,10 +618,71 @@ setD1Status("offline","Connection failed: "+apiError,{serviceCount:null,category
 if(showToast)toast("D1 connection failed: "+apiError);
 }finally{if(button){button.disabled=false;button.textContent="Test connection"}}
 }
-async function apiRequest(path,options={}){const response=await fetch("/api/"+path,{credentials:"same-origin",...options,headers:{"content-type":"application/json",...(options.headers||{})}});const body=await response.json().catch(()=>({}));if(!response.ok)throw new Error(body.error||("API request failed ("+response.status+")"));return body}
+function updateProfileUI(){
+  const p1 = $("profilePersonal");
+  const p2 = $("profileWork");
+  if(!p1 || !p2) return;
+  p1.classList.toggle("active", currentProfile === 1);
+  p2.classList.toggle("active", currentProfile === 2);
+}
+
+function bindProfileSwitcher(){
+  const p1 = $("profilePersonal");
+  const p2 = $("profileWork");
+  if(!p1 || !p2) return;
+
+  p1.onclick = () => {
+    if(currentProfile === 1) return;
+    currentProfile = 1;
+    updateProfileUI();
+    if (apiConnected) loadRemoteData();
+  };
+  p2.onclick = () => {
+    if(currentProfile === 2) return;
+    currentProfile = 2;
+    updateProfileUI();
+    if (apiConnected) loadRemoteData();
+  };
+}
+
+async function apiRequest(path,options={}){
+  const profileEndpoints = ["services","categories","tags","categories-manage"];
+  const needsProfile = profileEndpoints.some(p => path === p || path.startsWith(p + "?") || path.startsWith(p + "&"));
+  const profileParam = (needsProfile && currentProfile) ? `profile=${currentProfile}` : '';
+  const separator = path.includes('?') ? '&' : '?';
+  const fullPath = profileParam ? `${path}${separator}${profileParam}` : path;
+
+  const response=await fetch("/api/"+fullPath,{credentials:"same-origin",...options,headers:{"content-type":"application/json",...(options.headers||{})}});
+  const body=await response.json().catch(()=>({}));
+  if(!response.ok)throw new Error(body.error||("API request failed ("+response.status+")"));
+  return body
+}
 function apiPayload(s){return {name:s.name,url:s.url,description:s.description||"",icon:s.icon||"🔧",logoKey:s.logoKey||null,category:s.category,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}}
 async function remoteSaveService(s,isNew=false){return apiRequest("services"+(!isNew&&s.id!=null?"?id="+encodeURIComponent(s.id):""),{method:isNew?"POST":"PUT",body:JSON.stringify(apiPayload(s))})}
-async function loadRemoteData(){try{const [remoteServices,remoteSettings,remoteCategories]=await Promise.all([apiRequest("services"),apiRequest("settings"),apiRequest("categories")]);if(!Array.isArray(remoteServices)||!Array.isArray(remoteCategories))throw new Error("Unexpected response from the database API");categoryRecords=remoteCategories;services=remoteServices.map(s=>({...s,id:Number(s.id),favorite:!!s.favorite,tags:Array.isArray(s.tags)?s.tags:[]}));nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;branding={...branding,...(remoteSettings.branding||{})};persistedBrandingLogoKey=branding.logoKey||null;preferences={...preferences,...(remoteSettings.preferences||{})};document.documentElement.dataset.theme=preferences.theme||"dark";apiConnected=true;apiError="";setD1Status("connected","Connection verified. Catalog and portal settings are reachable in shared D1.",{serviceCount:services.length,categoryCount:remoteCategories.length,tagCount:countTagsInUse(services)});render();toast("Connected to shared D1 database")}catch(error){apiConnected=false;apiError=error.message||"Database API unavailable";setD1Status("offline","Connection failed: "+apiError,{serviceCount:null,categoryCount:null,tagCount:null});render();toast("Database unavailable, using browser-local data")}}
+async function loadRemoteData(){try{
+  const remoteServices = await apiRequest("services");
+  const remoteSettings = await apiRequest("settings");
+  const remoteCategories = await apiRequest("categories");
+  if(!Array.isArray(remoteServices))throw new Error("Services endpoint did not return an array.");
+  if(!Array.isArray(remoteCategories))throw new Error("Categories endpoint did not return an array.");
+  if(!remoteSettings || typeof remoteSettings !== "object")throw new Error("Settings endpoint did not return an object.");
+  categoryRecords=remoteCategories;
+  services=remoteServices.map(s=>({...s,id:Number(s.id),favorite:!!s.favorite,tags:Array.isArray(s.tags)?s.tags:[]}));
+  nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;
+  branding={...branding,...(remoteSettings.branding||{})};
+  persistedBrandingLogoKey=branding.logoKey||null;
+  preferences={...preferences,...(remoteSettings.preferences||{})};
+  document.documentElement.dataset.theme=preferences.theme|| "dark";
+  apiConnected=true;apiError="";
+  setD1Status("connected","Connection verified. Catalog and portal settings are reachable in shared D1.",{serviceCount:services.length,categoryCount:remoteCategories.length,tagCount:countTagsInUse(services)});
+  render();
+  toast("Connected to shared D1 database")
+}catch(error){
+  apiConnected=false;apiError=error.message||"Database API unavailable";
+  setD1Status("offline","Connection failed: "+apiError,{serviceCount:null,categoryCount:null,tagCount:null});
+  render();
+  toast("Database unavailable, using browser-local data")
+}}
 const categories=()=>["All",...new Set((apiConnected?categoryRecords.slice().sort((a,b)=>(Number(a.sortOrder??a.sort_order)||9999)-(Number(b.sortOrder??b.sort_order)||9999)).map(c=>c.name):services.map(s=>s.category)).filter(Boolean))];
 function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2200)}
 function persist(){try{localStorage.setItem("luxorit-portal-v1",JSON.stringify({services,view,density,theme:document.documentElement.dataset.theme,appVersion:APP_VERSION,branding,preferences}))}catch{}}
@@ -968,6 +1034,9 @@ $("tagFilter").oninput=()=>renderTagManager();
 $("serviceTagSearch").oninput=()=>{serviceTagQuery=$("serviceTagSearch").value;renderServiceTagPicker()};
 for(const id of ["newCategoryName","newTagName"]){$(id).addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$(id==="newCategoryName"?"addCategoryButton":"addTagButton").click()}})}
 $("goAll").onclick=()=>navigatePage("all");$("homeFavoritesMore").onclick=()=>navigatePage("favorites");
+updateProfileUI();
+bindProfileSwitcher();
+loadRemoteData();
 $("export").onclick=async()=>{try{let backup;if(apiConnected){backup=await apiRequest("backup")}else{backup={schemaVersion:1,exportedAt:new Date().toISOString(),source:"browser-local",version:APP_VERSION,services,categories:[...new Map(services.map(s=>[s.category,{name:s.category,icon:"grid"}])).values()],branding,preferences,theme:document.documentElement.dataset.theme}}const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:"application/json"}));a.download="dashboard-manager-portal-backup-"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast(apiConnected?"Shared D1 backup exported":"Browser-only backup exported, D1 is not connected")}catch(error){toast("Backup export failed: "+(error.message||"database error"))}};
 $("import").onclick=()=>$("importFile").click();$("importFile").onchange=async e=>{try{const file=e.target.files&&e.target.files[0];if(!file)return;const d=JSON.parse(await file.text());if(!d||!Array.isArray(d.services))throw Error("Backup must contain a services array");if(d.services.length>200)throw Error("Backups can contain at most 200 services");if(apiConnected){const proceed=confirm("Restore this backup to the shared D1 database? This will replace the current services, categories, tags, branding, and preferences. Export a backup first if you need to keep the current data.");if(!proceed)return;const result=await apiRequest("backup",{method:"POST",body:JSON.stringify(d)});await loadRemoteData();page="all";current="All";view="list";render();toast("D1 restored: "+result.serviceCount+" services, "+result.categoryCount+" categories")}else{const proceed=confirm("The shared database is not connected. Import this backup into this browser only? It will not update D1.");if(!proceed)return;services=d.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences};if(d.theme)document.documentElement.dataset.theme=d.theme;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;page="all";current="All";view="list";render();toast("Backup imported into this browser only")}}catch(error){toast("Could not restore backup: "+(error.message||"invalid JSON"))}finally{e.target.value=""}};
 $("help").onclick=()=>toast("Dashboard Manager Portal. Version "+APP_VERSION+". Catalog changes save to shared D1 when connected.");

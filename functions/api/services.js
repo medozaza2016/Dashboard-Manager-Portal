@@ -61,12 +61,28 @@ export async function onRequest(context) {
   const id = idParam == null ? null : Number(idParam);
   if (idParam != null && (!Number.isSafeInteger(id) || id < 1)) return jsonResponse({ error: "Invalid service id." }, 400);
 
+  const profileIdParam = searchParams.get("profile");
+  const profileId = profileIdParam ? Number(profileIdParam) : null;
+  if (profileIdParam != null && (!Number.isSafeInteger(profileId) || profileId < 1 || profileId > 2)) {
+    return jsonResponse({ error: "Invalid profile. Use profile=1 (Personal) or profile=2 (Work)." }, 400);
+  }
+
   if (request.method === "GET") {
     if (id != null) {
-      const service = await getService(env.DB, id);
-      return service ? jsonResponse(service) : jsonResponse({ error: "Service not found." }, 404);
+      const where = profileId ? " AND s.profile_id = ?" : "";
+      const params = profileId ? [id, profileId] : [id];
+      const row = await env.DB.prepare(`${SERVICE_SELECT} WHERE s.id = ?${where} GROUP BY s.id`).bind(...params).first();
+      return row ? jsonResponse(normalize(row)) : jsonResponse({ error: "Service not found." }, 404);
     }
-    const result = await env.DB.prepare(`${SERVICE_SELECT} GROUP BY s.id ORDER BY s.sort_order, s.id`).all();
+
+    let query = SERVICE_SELECT;
+    const params = [];
+    if (profileId) {
+      query += " WHERE s.profile_id = ?";
+      params.push(profileId);
+    }
+    query += " GROUP BY s.id ORDER BY s.sort_order, s.id";
+    const result = await env.DB.prepare(query).bind(...params).all();
     return jsonResponse((result.results || []).map(normalize));
   }
 
@@ -102,8 +118,8 @@ export async function onRequest(context) {
     if (validationError) return jsonResponse({ error: validationError }, 400);
 
     const categoryName = payload.category.trim();
-    await env.DB.prepare("INSERT OR IGNORE INTO categories (name, sort_order, icon) VALUES (?, 999, 'grid')").bind(categoryName).run();
-    const category = await env.DB.prepare("SELECT id FROM categories WHERE name = ?").bind(categoryName).first();
+    await env.DB.prepare("INSERT OR IGNORE INTO categories (name, sort_order, icon, profile_id) VALUES (?, 999, 'grid', ?)").bind(categoryName, profileId || 1).run();
+    const category = await env.DB.prepare("SELECT id FROM categories WHERE name = ? AND profile_id = ?").bind(categoryName, profileId || 1).first();
     if (!category) return jsonResponse({ error: "Could not resolve service category." }, 500);
 
     const fields = [
@@ -114,22 +130,23 @@ export async function onRequest(context) {
       payload.logoKey || null,
       category.id,
       payload.favorite ? 1 : 0,
+      profileId || 1,
     ];
 
     let serviceId = id;
     if (request.method === "POST") {
-      const sort = await env.DB.prepare("SELECT COALESCE(MAX(sort_order), 0) + 1 AS next_sort FROM services").first();
+      const sort = await env.DB.prepare("SELECT COALESCE(MAX(sort_order), 0) + 1 AS next_sort FROM services WHERE profile_id = ?").bind(profileId || 1).first();
       const inserted = await env.DB.prepare(
-        "INSERT INTO services (name, url, description, icon, logo_key, category_id, is_favorite, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO services (name, url, description, icon, logo_key, category_id, is_favorite, sort_order, profile_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
       ).bind(...fields, Number(sort?.next_sort || 1)).run();
       serviceId = Number(inserted.meta?.last_row_id);
     } else {
       if (serviceId == null) return jsonResponse({ error: "The id query parameter is required for updates." }, 400);
-      const existing = await env.DB.prepare("SELECT id, logo_key FROM services WHERE id = ?").bind(serviceId).first();
+      const existing = await env.DB.prepare("SELECT id, logo_key FROM services WHERE id = ? AND profile_id = ?").bind(serviceId, profileId || 1).first();
       if (!existing) return jsonResponse({ error: "Service not found." }, 404);
       await env.DB.prepare(
-        "UPDATE services SET name = ?, url = ?, description = ?, icon = ?, logo_key = ?, category_id = ?, is_favorite = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
-      ).bind(...fields, serviceId).run();
+        "UPDATE services SET name = ?, url = ?, description = ?, icon = ?, logo_key = ?, category_id = ?, is_favorite = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND profile_id = ?"
+      ).bind(...fields.slice(0, -1), serviceId, profileId || 1).run();
       if (existing.logo_key && existing.logo_key !== (payload.logoKey || null)) await deleteAssetIfUnreferenced(env, existing.logo_key);
     }
 
