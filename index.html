@@ -336,13 +336,21 @@
 .taxonomy-list.category-manager-grid .category-manager-item{cursor:grab}
 .taxonomy-list.category-manager-grid .taxonomy-overview-row .category-drag-handle{cursor:grab}
 .taxonomy-overview-copy small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Sidebar category/tag section controls and compact behavior */
+.sidebar-section-toggle{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;border:0;background:transparent;color:var(--muted);cursor:pointer;text-align:left;font:inherit;font-size:10px;letter-spacing:1.2px;padding:12px 12px 7px;margin:0}
+.sidebar-section-toggle:hover{color:var(--text)}
+.sidebar-section-chevron{font-size:13px;letter-spacing:0;transition:transform .15s}
+.sidebar.collapsed .sidebar-section-chevron{display:none}
+.sidebar.collapsed .tag-more-toggle{display:none}
+#categorySectionContent[hidden],#tagSectionContent[hidden]{display:none}
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
 <div class="group-label">Workspace</div>
 <button class="nav active" data-page="home" title="Home"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/></svg></span><span>Home</span></button>
 
-<div class="group-label">Categories</div><div id="categoryNav"></div><div class="group-label tag-nav-heading">Tags</div><div id="tagNav"></div><button type="button" class="nav tag-more-toggle" id="showMoreTags" hidden>Show more tags</button><div class="bottom">
+<button type="button" class="group-label sidebar-section-toggle" id="toggleCategoriesSection" aria-expanded="true"><span>Categories</span><span class="sidebar-section-chevron" aria-hidden="true">⌄</span></button><div id="categorySectionContent"><div id="categoryNav"></div><button type="button" class="nav tag-more-toggle" id="showMoreCategories" hidden>Show all categories</button></div><button type="button" class="group-label sidebar-section-toggle tag-nav-heading" id="toggleTagsSection" aria-expanded="true"><span>Tags</span><span class="sidebar-section-chevron" aria-hidden="true">⌄</span></button><div id="tagSectionContent"><div id="tagNav"></div><button type="button" class="nav tag-more-toggle" id="showMoreTags" hidden>Show more tags</button></div><div class="bottom">
 <button class="nav" data-page="admin" title="Administration"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Admin</span></button><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.21</div></div></aside>
 <main class="main"><header class="topbar"><button class="iconbtn" id="collapse" title="Collapse sidebar" aria-label="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="m14 7-5 5 5 5"/></svg></button><div class="search"><span class="search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="search" placeholder="Search applications, tools, or tags..." aria-label="Search applications"></div><div class="top-actions"><button class="iconbtn" id="theme" title="Toggle theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg></button><button class="iconbtn help" id="help" title="About" aria-label="About"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button><button class="nav" id="profileToggle" title="Switch profile" style="font-size:11px;padding:4px 10px;border-radius:8px;min-width:auto;">Personal</button></div></header>
 <div class="content">
@@ -483,7 +491,7 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.32";
+const APP_VERSION="0.1.33";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -537,9 +545,9 @@ const seed=[
 {id:12,name:"TrueNAS",icon:"🗄️",description:"File storage",category:"Infrastructure",tags:["Infrastructure","Storage"],url:"https://truenas.example",favorite:false}
 ];
 let services=structuredClone(seed),current="All",view="list",density="regular",page="home",nextId=13,reorderEnabled=false;
-let currentProfile=1; // 1=Personal, 2=Work
+let currentProfile=1,sidebarCategoriesExpanded=false; // 1=Personal, 2=Work
 let branding={name:"Luxorit",subtitle:"Pro",logo:""};
-let preferences={theme:"dark",landingPage:"home",defaultView:"list",sidebarCollapsed:false,showSlimDescriptions:false};
+let preferences={theme:"dark",landingPage:"home",defaultView:"list",sidebarCollapsed:false,sidebarCategoriesCollapsed:false,sidebarTagsCollapsed:false,showSlimDescriptions:false};
 let apiConnected=false,apiError="";
 let adminTab="categories",adminServiceQuery="";
 let serviceSelectedTags=new Set(),serviceTagQuery="";
@@ -758,7 +766,7 @@ function bindProfileSwitcher(){
 
   btn.onclick = async () => {
     currentProfile = currentProfile === 1 ? 2 : 1;
-    updateProfileUI();activeTag=null;sidebarTagsExpanded=false;reorderEnabled=false;
+    updateProfileUI();activeTag=null;sidebarTagsExpanded=false;sidebarCategoriesExpanded=false;reorderEnabled=false;
     if (apiConnected) {
       setD1Status("checking","Loading "+(currentProfile===1?"Personal":"Work")+" profile data…",{serviceCount:null,categoryCount:null,tagCount:null});
       await loadRemoteData();await refreshTaxonomy(false);render();
@@ -808,23 +816,38 @@ const categories=()=>["All",...new Set((apiConnected?categoryRecords.slice().sor
 function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2200)}
 function persist(){try{localStorage.setItem("luxorit-portal-v1",JSON.stringify({services,view,density,theme:document.documentElement.dataset.theme,appVersion:APP_VERSION,branding,preferences}))}catch{}}
 function safe(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function load(){try{const d=JSON.parse(localStorage.getItem("luxorit-portal-v1"));if(d){if(Array.isArray(d.services)){services=d.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences};if(d.theme)document.documentElement.dataset.theme=d.theme;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1}if(d.appVersion===APP_VERSION){view=d.view||view;density=d.density||density}else{view="list";density="regular"}if(d.theme)document.documentElement.dataset.theme=d.theme;if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences}}}catch{}}
+function load(){try{const d=JSON.parse(localStorage.getItem("luxorit-portal-v1"));if(d){if(Array.isArray(d.services)){services=d.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences};if(d.theme)document.documentElement.dataset.theme=d.theme;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1}if(d.view)view=d.view;if(d.density)density=d.density;if(d.theme)document.documentElement.dataset.theme=d.theme;if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences}}}catch{}}
 function matchesSearch(s){const q=$("search").value.trim().toLowerCase();return !q||[s.name,s.description,s.category,...(s.tags||[])].join(" ").toLowerCase().includes(q)}
 function filtered(){const items=services.filter(s=>(page==="favorites"?s.favorite:page==="category"?s.category===current:page==="tag"?(s.tags||[]).includes(activeTag):true)&&matchesSearch(s));return page==="category"?items.sort((a,b)=>(Number(a.categorySortOrder)||9999)-(Number(b.categorySortOrder)||9999)||Number(a.id)-Number(b.id)):items}
 function tagHtml(t){return '<span class="tag">'+safe(t)+'</span>'}
 function updateActiveNavigation(){document.querySelectorAll(".nav[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".nav[data-cat]").forEach(b=>b.classList.toggle("active",page==="category"&&b.dataset.cat===current));document.querySelectorAll(".nav[data-tag-nav]").forEach(b=>b.classList.toggle("active",page==="tag"&&b.dataset.tagNav===activeTag))}
 function nav(){
-const host=$("categoryNav");
-host.innerHTML=categories().filter(c=>c!=="All").map(c=>'<button class="nav" data-cat="'+safe(c)+'" title="'+safe(c)+'"><span class="ico">'+categorySvg(c)+'</span><span>'+safe(c)+'</span><span class="count">'+services.filter(item=>item.category===c).length+'</span></button>').join("");
-host.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>navigateCategory(b.dataset.cat));
-const tagsHost=$("tagNav"),more=$("showMoreTags");
+const host=$("categoryNav"),moreCategories=$("showMoreCategories");
+const allCategories=categories().filter(category=>category!=="All");
+const emptyCategories=allCategories.filter(category=>!services.some(item=>item.category===category));
+const visibleCategories=sidebarCategoriesExpanded?allCategories:allCategories.filter(category=>services.some(item=>item.category===category));
+host.innerHTML=visibleCategories.map(category=>'<button class="nav" data-cat="'+safe(category)+'" title="'+safe(category)+'"><span class="ico">'+categorySvg(category)+'</span><span>'+safe(category)+'</span><span class="count">'+services.filter(item=>item.category===category).length+'</span></button>').join("");
+host.querySelectorAll("[data-cat]").forEach(button=>button.onclick=()=>navigateCategory(button.dataset.cat));
+moreCategories.hidden=emptyCategories.length===0;
+moreCategories.textContent=sidebarCategoriesExpanded?"Show fewer categories":"Show all categories ("+emptyCategories.length+" empty)";
+moreCategories.onclick=()=>{sidebarCategoriesExpanded=!sidebarCategoriesExpanded;nav()};
+const tagsHost=$("tagNav"),moreTags=$("showMoreTags");
 const sortedTags=tagRecords.slice().sort((a,b)=>(Number(b.serviceCount)||0)-(Number(a.serviceCount)||0)||a.name.localeCompare(b.name));
 const visibleTags=sidebarTagsExpanded?sortedTags:sortedTags.slice(0,5);
 tagsHost.innerHTML=visibleTags.map(tag=>'<button class="nav tag-filter-nav" data-tag-nav="'+safe(tag.name)+'" title="Filter by tag: '+safe(tag.name)+'"><span class="tag-nav-mark" aria-hidden="true">#</span><span class="tag-sidebar-name">'+safe(tag.name)+'</span><span class="count">'+Number(tag.serviceCount||0)+'</span></button>').join("");
-tagsHost.querySelectorAll("[data-tag-nav]").forEach(b=>b.onclick=()=>navigateTag(b.dataset.tagNav));
-more.hidden=sortedTags.length<=5;
-more.textContent=sidebarTagsExpanded?"Show fewer tags":"Show all tags ("+sortedTags.length+")";
-more.onclick=()=>{sidebarTagsExpanded=!sidebarTagsExpanded;nav()};
+tagsHost.querySelectorAll("[data-tag-nav]").forEach(button=>button.onclick=()=>navigateTag(button.dataset.tagNav));
+moreTags.hidden=sortedTags.length<=5;
+moreTags.textContent=sidebarTagsExpanded?"Show fewer tags":"Show all tags ("+sortedTags.length+")";
+moreTags.onclick=()=>{sidebarTagsExpanded=!sidebarTagsExpanded;nav()};
+const categoriesCollapsed=!!preferences.sidebarCategoriesCollapsed,tagsCollapsed=!!preferences.sidebarTagsCollapsed;
+$("categorySectionContent").hidden=categoriesCollapsed;
+$("tagSectionContent").hidden=tagsCollapsed;
+$("toggleCategoriesSection").setAttribute("aria-expanded",categoriesCollapsed?"false":"true");
+$("toggleCategoriesSection").querySelector(".sidebar-section-chevron").textContent=categoriesCollapsed?"›":"⌄";
+$("toggleCategoriesSection").title=categoriesCollapsed?"Expand categories":"Collapse categories";
+$("toggleTagsSection").setAttribute("aria-expanded",tagsCollapsed?"false":"true");
+$("toggleTagsSection").querySelector(".sidebar-section-chevron").textContent=tagsCollapsed?"›":"⌄";
+$("toggleTagsSection").title=tagsCollapsed?"Expand tags":"Collapse tags";
 updateActiveNavigation()
 }
 function showPage(){["homePage","catalogPage","adminPage","settingsPage"].forEach(id=>$(id).hidden=true);const target=page==="home"?"homePage":page==="settings"?"settingsPage":page==="admin"?"adminPage":"catalogPage";$(target).hidden=false;updateActiveNavigation()}
@@ -1199,20 +1222,23 @@ $("serviceLogoUploadStatus").textContent="Optional · PNG, JPEG, WebP or GIF · 
 
 $("serviceForm").onsubmit=async e=>{
 e.preventDefault();if(serviceLogoUploadBusy){toast("Wait for the image upload to finish.");return}
+const wasOnCategoryPage=page==="category",originalCategory=current,wasEditMode=reorderEnabled;
 const id=$("serviceId").value;
 let item={id:id?Number(id):nextId++,name:$("name").value.trim(),url:$("url").value.trim(),category:$("category").value,description:$("description").value.trim(),icon:$("icon").value.trim()||"🔧",logoKey:$("serviceLogoKey").value||null,tags:[...serviceSelectedTags],favorite:services.find(s=>s.id==id)?.favorite||false};
 try{
 if(apiConnected)item=await remoteSaveService(item,!id);
 if(id)services=services.map(s=>s.id==id?item:s);else{if(!apiConnected)nextId=Math.max(nextId,Number(item.id)+1);services.unshift(item)}
 if(item.logoKey)pendingServiceLogoKeys.delete(item.logoKey);
-closeServiceModal();if(page==="category")current=item.category;else{page="home";current="All"}render();toast(apiConnected?(id?"Service saved to database":"Service added to database"):(id?"Service saved locally only":"Service added locally only"))
+closeServiceModal();if(wasOnCategoryPage){page="category";current=originalCategory;reorderEnabled=wasEditMode}else{page="home";current="All"}render();toast(apiConnected?(id?"Service saved to database":"Service added to database"):(id?"Service saved locally only":"Service added locally only"))
 }catch(error){toast("Could not save service: "+(error.message||"database error"))}
 };
-$("cancel").onclick=()=>closeServiceModal();$("serviceModal").onclick=e=>{if(e.target===$("serviceModal"))closeServiceModal()};$("add").onclick=()=>{if(page==="category"&&reorderEnabled)openModal(null,current)};$("search").oninput=()=>{if(reorderEnabled&&$("search").value.trim())reorderEnabled=false;render()};
+$("cancel").onclick=()=>closeServiceModal();$("add").onclick=()=>{if(page==="category"&&reorderEnabled)openModal(null,current)};$("search").oninput=()=>{if(reorderEnabled&&$("search").value.trim())reorderEnabled=false;render()};
 $("reorderToggle").onclick=()=>{if(page!=="category")return;if(!reorderEnabled&&$("search").value.trim()){toast("Clear the global search before entering Edit mode.");return}reorderEnabled=!reorderEnabled;render();toast(reorderEnabled?"Edit mode enabled for "+current:"Edit mode finished")};
 $("cardsBtn").onclick=()=>{view="cards";render()};$("listBtn").onclick=()=>{view="list";render()};$("regularBtn").onclick=()=>{density="regular";view="cards";render()};$("slimBtn").onclick=()=>{density="slim";view="cards";render()};
 function updateCollapseButton(){const collapsed=$("sidebar").classList.contains("collapsed");$("collapse").title=collapsed?"Expand sidebar":"Collapse sidebar";$("collapse").setAttribute("aria-label",collapsed?"Expand sidebar":"Collapse sidebar");$("collapse").innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="'+(collapsed?"m10 7 5 5-5 5":"m14 7-5 5 5 5")+'"/></svg>'}
 $("collapse").onclick=()=>{$("sidebar").classList.toggle("collapsed");updateCollapseButton()};updateCollapseButton();
+$("toggleCategoriesSection").onclick=()=>{preferences.sidebarCategoriesCollapsed=!preferences.sidebarCategoriesCollapsed;nav();persist()};
+$("toggleTagsSection").onclick=()=>{preferences.sidebarTagsCollapsed=!preferences.sidebarTagsCollapsed;nav();persist()};
 $("theme").onclick=()=>{document.documentElement.dataset.theme=document.documentElement.dataset.theme==="dark"?"light":"dark";preferences.theme=document.documentElement.dataset.theme;render()};
 document.querySelectorAll(".nav[data-page]").forEach(b=>b.onclick=()=>navigatePage(b.dataset.page));
 $("refreshTaxonomy").onclick=()=>refreshTaxonomy(true);
