@@ -638,7 +638,7 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.40";
+const APP_VERSION="0.1.41";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -1022,9 +1022,9 @@ $("toggleTagsSection").title=tagsCollapsed?"Expand tags":"Collapse tags";
 updateActiveNavigation()
 }
 function showPage(){["homePage","catalogPage","adminPage","settingsPage"].forEach(id=>$(id).hidden=true);const target=page==="home"?"homePage":page==="settings"?"settingsPage":page==="admin"?"adminPage":"catalogPage";$(target).hidden=false;updateActiveNavigation()}
-function navigatePage(target){if(page==="settings"&&target!=="settings")discardUncommittedBrandingLogo();page=target;activeTag=null;if(target==="favorites")current="Favorites";else if(target==="home"||target==="all")current="All";if(target==="admin")adminTab="categories";reorderEnabled=false;render()}
-function navigateCategory(category){if(page==="settings")discardUncommittedBrandingLogo();page="category";current=category;activeTag=null;reorderEnabled=false;render()}
-function navigateTag(tag){if(page==="settings")discardUncommittedBrandingLogo();page="tag";activeTag=tag;current="All";reorderEnabled=false;render()}
+function navigatePage(target){if(page==="settings"&&target!=="settings")discardUncommittedBrandingLogo();$("search").value="";page=target;activeTag=null;if(target==="favorites")current="Favorites";else if(target==="home"||target==="all")current="All";if(target==="admin")adminTab="categories";reorderEnabled=false;render()}
+function navigateCategory(category){if(page==="settings")discardUncommittedBrandingLogo();$("search").value="";page="category";current=category;activeTag=null;reorderEnabled=false;render()}
+function navigateTag(tag){if(page==="settings")discardUncommittedBrandingLogo();$("search").value="";page="tag";activeTag=tag;current="All";reorderEnabled=false;render()}
 function statCard(label,value,note){return '<article class="stat-card"><div class="stat-label">'+label+'</div><div class="stat-number">'+value+'</div><div class="stat-note">'+note+'</div></article>'}
 function serviceActionIcon(action,id,name){
 const paths={
