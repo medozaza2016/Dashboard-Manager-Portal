@@ -471,6 +471,7 @@
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
 <div class="group-label">Workspace</div>
 <button class="nav active" data-page="home" title="Home"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/></svg></span><span>Home</span></button>
+<button class="nav" data-page="all" title="Show all services across categories and tags"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span>All Services</span><span class="count" id="allServicesCount">0</span></button>
 
 <button type="button" class="group-label sidebar-section-toggle" id="toggleCategoriesSection" aria-expanded="true"><span>Categories</span><span class="sidebar-section-chevron" aria-hidden="true">⌄</span></button><div id="categorySectionContent"><div id="categoryNav"></div><button type="button" class="nav tag-more-toggle" id="showMoreCategories" hidden>Show all categories</button></div><button type="button" class="group-label sidebar-section-toggle tag-nav-heading" id="toggleTagsSection" aria-expanded="true"><span>Tags</span><span class="sidebar-section-chevron" aria-hidden="true">⌄</span></button><div id="tagSectionContent"><div id="tagNav"></div><button type="button" class="nav tag-more-toggle" id="showMoreTags" hidden>Show more tags</button></div><div class="bottom">
 <button class="nav" data-page="admin" title="Administration"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Admin</span></button><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.21</div></div></aside>
@@ -638,7 +639,7 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.42";
+const APP_VERSION="0.1.43";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -1006,6 +1007,7 @@ function filtered(){const globalSearch=!!$("search").value.trim();const items=se
 function tagHtml(t){return '<span class="tag">'+safe(t)+'</span>'}
 function updateActiveNavigation(){document.querySelectorAll(".nav[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".nav[data-cat]").forEach(b=>b.classList.toggle("active",page==="category"&&b.dataset.cat===current));document.querySelectorAll(".nav[data-tag-nav]").forEach(b=>b.classList.toggle("active",page==="tag"&&b.dataset.tagNav===activeTag))}
 function nav(){
+const allServicesCount=$("allServicesCount");if(allServicesCount)allServicesCount.textContent=String(services.length);
 const host=$("categoryNav"),moreCategories=$("showMoreCategories");
 const allCategories=categories().filter(category=>category!=="All");
 const emptyCategories=allCategories.filter(category=>!services.some(item=>item.category===category));
