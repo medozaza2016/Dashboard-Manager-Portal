@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Dashboard Manager Portal</title>
+<link id="portalFavicon" rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23101614'/%3E%3Cpath d='M32 7 53 19v26L32 57 11 45V19Z' fill='none' stroke='%233ECF8E' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M25 24 18 32l7 8m14-16 7 8-7 8M29 40l6-16' fill='none' stroke='%233ECF8E' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <style>
 :root{color-scheme:dark;--bg:#0B0F0E;--panel:#101614;--panel2:#151C19;--elevated:#1B2420;--hover:#202B25;--text:#F8FAFC;--body:#CBD5E1;--muted:#94A3B8;--subtle:#64748B;--line:#26332C;--green:#3ECF8E;--green-hover:#5BE3A5;--deep-green:#24A875;--dark-green:#16794B;--green2:#193328;--tag:#1B2420;--pale-green:#D9FBE8;--charcoal:#1E293B;--github-filter:brightness(0) invert(1)}
 [data-theme=light]{color-scheme:light;--bg:#F7F7F4;--panel:#FFFFFF;--panel2:#F1F1EC;--elevated:#FFFFFF;--hover:#F1F1EC;--text:#15191E;--body:#3D4C5E;--muted:#5A626D;--subtle:#8B9197;--line:#E4E4DE;--green:#17845B;--green-hover:#116F4D;--deep-green:#17845B;--dark-green:#116F4D;--green2:#EAF4F0;--tag:#F1F1EC;--pale-green:#EAF4F0;--charcoal:#1E293B;--github-filter:brightness(0)}
@@ -137,7 +138,7 @@
 @media(max-width:700px){.settings-grid{grid-template-columns:1fr}.settings-card.wide{grid-column:auto}.settings-fields{grid-template-columns:1fr}.settings-field.full{grid-column:auto}.access-sync-app-list{grid-template-columns:1fr}}
 @media(max-width:550px){.integration-grid{grid-template-columns:1fr}.integration-card.deployment-card{grid-column:auto}}
 
-/* v0.1.19 admin layout refinements */
+/* v0.1.20 admin layout refinements */
 .taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-height:62vh;overflow:auto;padding:2px 3px 2px 0;align-content:start;overscroll-behavior:contain}
 #adminCategoriesPanel .taxonomy-create-row{grid-template-columns:minmax(0,1fr) minmax(175px,220px) auto;align-items:end}
 .category-create-name,.category-create-icon{display:block;min-width:0}.category-create-name>span,.category-create-icon>span,.category-field>span{display:block;font-size:10px;color:var(--muted);margin:0 0 5px 2px}
@@ -162,6 +163,17 @@
 .taxonomy-order-help{font-size:11px;color:var(--muted);margin:4px 0 10px}
 @media(max-width:1150px){.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#adminCategoriesPanel .taxonomy-create-row{grid-template-columns:minmax(0,1fr) 200px auto}}
 @media(max-width:700px){.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{grid-template-columns:minmax(0,1fr)}#adminCategoriesPanel .taxonomy-create-row{grid-template-columns:minmax(0,1fr) 140px auto}}
+
+/* Branding/settings layouts should fit the usable viewport beside the sidebar. */
+.settings-grid,.settings-card,.settings-fields,.settings-field,.settings-actions{min-width:0}
+.settings-card .settings-help{overflow-wrap:anywhere}
+#brandingLogoUploadStatus,#brandingFaviconStatus{overflow-wrap:anywhere}
+@media(max-width:900px){
+  .settings-grid{grid-template-columns:minmax(0,1fr)}
+  .settings-grid>.settings-card,.settings-card.wide{grid-column:1/-1}
+  .settings-fields{grid-template-columns:minmax(0,1fr)}
+  .settings-field.full{grid-column:auto}
+}
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
@@ -169,7 +181,7 @@
 <button class="nav active" data-page="home" title="Home"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/></svg></span><span>Home</span></button><button class="nav" data-page="all" title="All services"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span>All Services</span></button>
 
 <div class="group-label">Categories</div><div id="categoryNav"></div><div class="bottom">
-<button class="nav" data-page="admin" title="Administration"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Admin</span></button><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.19</div></div></aside>
+<button class="nav" data-page="admin" title="Administration"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Admin</span></button><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.20</div></div></aside>
 <main class="main"><header class="topbar"><button class="iconbtn" id="collapse" title="Collapse sidebar" aria-label="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="m14 7-5 5 5 5"/></svg></button><div class="search"><span class="search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="search" placeholder="Search applications, tools, or tags..." aria-label="Search applications"></div><div class="top-actions"><button class="iconbtn" id="theme" title="Toggle theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg></button><button class="iconbtn help" id="help" title="About" aria-label="About"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button><div class="avatar">JD</div></div></header>
 <div class="content">
 <section id="homePage">
@@ -225,12 +237,12 @@
   <form id="settingsForm">
     <div class="settings-grid">
       <article class="settings-card wide">
-        <h2>Portal branding</h2><p class="settings-help">Control the name and mark shown at the top of the left sidebar. Changes are saved to the shared database when connected. Browser-only fallback is used when the database API is unavailable.</p>
+        <h2>Portal branding</h2><p class="settings-help">Control the portal name, sidebar logo, and browser-tab favicon. The uploaded logo is used as the favicon too. Changes are saved to the shared database when connected; browser-only fallback is used when the database API is unavailable.</p>
         <div class="settings-fields">
           <div class="settings-field"><label for="brandingName">Portal name</label><input id="brandingName" maxlength="42" required value="Luxorit" placeholder="Luxorit"></div>
           <div class="settings-field"><label for="brandingSubtitle">Subtitle</label><input id="brandingSubtitle" maxlength="32" value="Pro" placeholder="Pro"></div>
           <div class="settings-field"><label for="brandingLogo">Logo mark (optional)</label><input id="brandingLogo" maxlength="4" value="" placeholder="Letter or emoji"></div>
-          <div class="settings-field full"><label for="brandingLogoFile">Upload portal logo</label><div class="settings-actions"><button class="secondary" type="button" id="chooseBrandingLogo">Browse image</button><button class="secondary" type="button" id="removeBrandingLogo" hidden>Remove image</button><input type="file" id="brandingLogoFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden><span id="brandingLogoUploadStatus" class="settings-note">PNG, JPEG, WebP or GIF · up to 5 MB · stored privately in R2</span></div></div>
+          <div class="settings-field full"><label for="brandingLogoFile">Upload portal logo</label><div class="settings-actions"><button class="secondary" type="button" id="chooseBrandingLogo">Browse image</button><button class="secondary" type="button" id="removeBrandingLogo" hidden>Remove image</button><input type="file" id="brandingLogoFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden><span id="brandingLogoUploadStatus" class="settings-note">PNG, JPEG, WebP or GIF · up to 5 MB · stored privately in R2</span><span id="brandingFaviconStatus" class="settings-note" role="status" aria-live="polite">Browser tab icon uses the uploaded logo when saved.</span></div></div>
           <div class="settings-field"><label>Logo preview</label><div class="settings-actions"><div class="logo" id="settingsLogoPreview" style="width:38px;height:38px;border-radius:11px"><img id="settingsLogoImage" class="brand-logo-image" alt="" hidden><span id="settingsLogoText" class="brand-logo-text" hidden></span><svg id="settingsLogoGraphic" viewBox="0 0 24 24" style="width:25px;height:25px"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span id="settingsBrandPreview" class="settings-version">Luxorit Pro</span></div></div>
         </div>
       </article>
@@ -301,7 +313,7 @@
         </div>
       </article>
       <article class="settings-card wide">
-        <h2>About this portal</h2><div class="settings-version">Version <span id="settingsVersion">0.1.19</span></div><div class="settings-note">Cloudflare Pages · Authenticated Pages Functions · Shared Cloudflare D1 storage · Cloudflare Access</div>
+        <h2>About this portal</h2><div class="settings-version">Version <span id="settingsVersion">0.1.20</span></div><div class="settings-note">Cloudflare Pages · Authenticated Pages Functions · Shared Cloudflare D1 storage · Cloudflare Access</div>
       </article>
     </div>
     <div class="settings-actions" style="justify-content:flex-end;margin-top:16px"><button class="secondary" type="button" id="resetBranding">Reset branding</button><button class="primary" type="submit">Save settings</button></div>
@@ -311,7 +323,7 @@
 <div class="modal-backdrop" id="serviceModal"><form class="modal" id="serviceForm"><h2 id="modalTitle">Add service</h2><input type="hidden" id="serviceId"><label for="name">Name</label><input id="name" required><label for="url">URL</label><input id="url" type="url" placeholder="https://service.example" required><label for="category">Category</label><select id="category"></select><label for="description">Description</label><input id="description"><label for="icon">Fallback icon for custom services</label><input id="icon" value="🔧"><label>Tags</label><div class="service-tag-picker"><div id="serviceSelectedTags" class="service-selected-tags" aria-live="polite"></div><input id="serviceTagSearch" class="service-tag-search" type="search" placeholder="Search available tags…" aria-label="Search tags"><div id="serviceTagOptions" class="service-tag-options"></div><div class="settings-note">Choose one or more tags. Manage the tag list in Admin → Tags.</div></div><div class="settings-field full"><label for="serviceLogoFile">Service logo</label><div class="logo-upload-row"><div class="service-logo-preview" id="serviceLogoPreview"><span id="serviceLogoFallback">🔧</span><img id="serviceLogoImage" alt="" hidden></div><div class="settings-actions"><button class="secondary" type="button" id="chooseServiceLogo">Browse image</button><button class="secondary" type="button" id="removeServiceLogo" hidden>Remove image</button><input type="file" id="serviceLogoFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden><input type="hidden" id="serviceLogoKey"><span id="serviceLogoUploadStatus" class="settings-note">Optional · PNG, JPEG, WebP or GIF · up to 5 MB</span></div></div></div><div class="modal-actions"><button class="secondary" type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save service</button></div></form></div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.19";
+const APP_VERSION="0.1.20";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -611,10 +623,25 @@ document.querySelectorAll("[data-duplicate]").forEach(b=>b.onclick=async e=>{e.s
 document.querySelectorAll("[data-open]").forEach(el=>el.onclick=e=>{if(e.target.closest("a,button"))return;const s=services.find(item=>String(item.id)===String(el.dataset.open));if(s)window.open(s.url,"_blank","noopener")});
 document.querySelectorAll("[data-category-open]").forEach(b=>b.onclick=()=>navigateCategory(b.dataset.categoryOpen))
 }
+const DEFAULT_PORTAL_FAVICON="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23101614'/%3E%3Cpath d='M32 7 53 19v26L32 57 11 45V19Z' fill='none' stroke='%233ECF8E' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M25 24 18 32l7 8m14-16 7 8-7 8M29 40l6-16' fill='none' stroke='%233ECF8E' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E";
+function updatePortalFavicon(source){
+let link=$("portalFavicon");
+if(!link){link=document.createElement("link");link.id="portalFavicon";link.rel="icon";document.head.appendChild(link)}
+let href=DEFAULT_PORTAL_FAVICON;
+if(source){
+ href=source;
+ if(!source.startsWith("blob:")&&source.startsWith("/api/assets?key="))href=source+"&favicon="+encodeURIComponent(branding.logoKey||"portal");
+}
+link.type=href.startsWith("data:image/svg+xml")?"image/svg+xml":"";
+if(link.href!==new URL(href,location.href).href)link.href=href;
+const status=$("brandingFaviconStatus");
+if(status)status.textContent=source?"Browser tab icon: using the portal logo.":"Browser tab icon: using the default portal mark.";
+}
 function applyBranding(){
 const name=branding.name||"Luxorit",subtitle=branding.subtitle||"",mark=branding.logo||"",logoKey=branding.logoKey||"";
 $("brandName").textContent=name;$("brandSubtitle").textContent=subtitle;$("brandSubtitle").hidden=!subtitle;document.title=name+(subtitle?" "+subtitle:"")+" Portal";
 const source=brandingLogoPreviewUrl||(logoKey&&apiConnected?assetUrl(logoKey):"");
+updatePortalFavicon(source);
 const sidebarImage=$("brandLogoImage");sidebarImage.hidden=!source;if(source)sidebarImage.src=source;else sidebarImage.removeAttribute("src");
 $("brandLogoText").textContent=mark;$("brandLogoText").hidden=!!source||!mark;$("brandLogoGraphic").hidden=!!source||!!mark;
 sidebarImage.onerror=()=>{sidebarImage.hidden=true;$("brandLogoText").hidden=!mark;$("brandLogoGraphic").hidden=!!mark};
@@ -890,6 +917,7 @@ if(apiConnected)await apiRequest("settings",{method:"PUT",body:JSON.stringify({b
 branding=nextBranding;persistedBrandingLogoKey=nextBranding.logoKey;preferences=nextPreferences;document.documentElement.dataset.theme=preferences.theme;
 for(const key of [...pendingBrandingLogoKeys]){if(key===persistedBrandingLogoKey)pendingBrandingLogoKeys.delete(key);else{await deleteUploadedImage(key);pendingBrandingLogoKeys.delete(key)}}
 if(brandingLogoPreviewUrl){URL.revokeObjectURL(brandingLogoPreviewUrl);brandingLogoPreviewUrl=null}
+applyBranding();
 $("brandingLogoUploadStatus").textContent="Logo and settings saved.";
 view=preferences.defaultView==="list"?"list":"cards";density=preferences.defaultView==="slim"?"slim":"regular";
 $("sidebar").classList.toggle("collapsed",preferences.sidebarCollapsed);updateCollapseButton();render();toast(apiConnected?"Settings saved to database":"Settings saved locally only")
