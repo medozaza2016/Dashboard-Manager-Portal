@@ -1,7 +1,8 @@
 import { requireCloudflareAccess, jsonResponse } from "../lib/access.js";
+import { isAllowedAssetKey } from "../lib/assets.js";
 
 const DEFAULTS = {
-  branding: { name: "Luxorit", subtitle: "Pro", logo: "" },
+  branding: { name: "Luxorit", subtitle: "Pro", logo: "", logoKey: null },
   preferences: { theme: "dark", landingPage: "home", defaultView: "list", sidebarCollapsed: false },
 };
 const MAX_SERVICES = 200;
@@ -23,6 +24,7 @@ function cleanBranding(value = {}) {
     name: typeof value.name === "string" ? value.name.trim().slice(0, 42) || "Luxorit" : "Luxorit",
     subtitle: typeof value.subtitle === "string" ? value.subtitle.trim().slice(0, 32) : "",
     logo: typeof value.logo === "string" ? value.logo.trim().slice(0, 4) : "",
+    logoKey: isAllowedAssetKey(value.logoKey, "branding") ? value.logoKey : null,
   };
 }
 
@@ -77,6 +79,7 @@ function validateAndNormalize(payload) {
     if (!category || category.length > 60) return { error: `Service "${name}" needs a category of at most 60 characters.` };
     if (raw.description != null && String(raw.description).length > 500) return { error: `Description for "${name}" exceeds 500 characters.` };
     if (raw.icon != null && String(raw.icon).length > 20) return { error: `Icon for "${name}" exceeds 20 characters.` };
+    if (raw.logoKey != null && raw.logoKey !== "" && !isAllowedAssetKey(raw.logoKey, "service")) return { error: `Logo reference for "${name}" is invalid.` };
     if (raw.tags != null && (!Array.isArray(raw.tags) || raw.tags.length > 20 || raw.tags.some((tag) => typeof tag !== "string" || tag.trim().length > 40))) {
       return { error: `Tags for "${name}" must be up to 20 strings of at most 40 characters each.` };
     }
@@ -100,6 +103,7 @@ function validateAndNormalize(payload) {
       url: urlText,
       description: String(raw.description || "").trim(),
       icon: String(raw.icon || "🔧").trim(),
+      logoKey: isAllowedAssetKey(raw.logoKey, "service") ? raw.logoKey : null,
       category,
       favorite: Boolean(raw.favorite),
       sort_order: Number.isSafeInteger(Number(raw.sort_order)) ? Number(raw.sort_order) : services.length + 1,
@@ -126,7 +130,7 @@ function validateAndNormalize(payload) {
 async function exportBackup(db) {
   const [servicesResult, categoriesResult, branding, preferences] = await Promise.all([
     db.prepare(`
-      SELECT s.id, s.name, s.url, s.description, s.icon, s.is_favorite AS favorite,
+      SELECT s.id, s.name, s.url, s.description, s.icon, s.logo_key AS logoKey, s.is_favorite AS favorite,
              s.sort_order, c.name AS category,
              COALESCE(GROUP_CONCAT(t.name, char(31)), '') AS tag_list
       FROM services s
@@ -170,8 +174,8 @@ async function restoreBackup(db, backup) {
   for (const service of backup.services) {
     const category = backup.categories.find((item) => item.name === service.category);
     statements.push(db.prepare(
-      "INSERT INTO services (id, name, url, description, icon, category_id, is_favorite, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
-    ).bind(service.id, service.name, service.url, service.description, service.icon, category.id, service.favorite ? 1 : 0, service.sort_order));
+      "INSERT INTO services (id, name, url, description, icon, logo_key, category_id, is_favorite, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    ).bind(service.id, service.name, service.url, service.description, service.icon, service.logoKey, category.id, service.favorite ? 1 : 0, service.sort_order));
   }
   for (const service of backup.services) {
     for (const tag of service.tags) {
