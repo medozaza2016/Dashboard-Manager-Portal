@@ -344,6 +344,14 @@
 .sidebar.collapsed .sidebar-section-chevron{display:none}
 .sidebar.collapsed .tag-more-toggle{display:none}
 #categorySectionContent[hidden],#tagSectionContent[hidden]{display:none}
+
+/* Inline create controls in the Add/Edit Service form */
+.service-inline-create{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}
+.service-inline-create select{min-width:0}
+.service-create-inline-button{white-space:nowrap;font-size:11px;padding:9px 10px;border-radius:9px}
+.service-tag-create-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px}
+.service-tag-create-row .settings-note{margin:0}
+@media(max-width:480px){.service-inline-create{grid-template-columns:minmax(0,1fr)}.service-inline-create .service-create-inline-button{justify-self:start}.service-tag-create-row{align-items:flex-start;flex-wrap:wrap}}
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
@@ -473,7 +481,7 @@
   </form>
 </section>
 </div></main></div>
-<div class="modal-backdrop" id="serviceModal"><form class="modal" id="serviceForm"><h2 id="modalTitle">Add service</h2><input type="hidden" id="serviceId"><label for="name">Name</label><input id="name" required><label for="url">URL</label><input id="url" type="url" placeholder="https://service.example" required><label for="category">Category</label><select id="category"></select><label for="description">Description</label><input id="description"><label for="icon">Fallback icon for custom services</label><input id="icon" value="🔧"><label>Tags</label><div class="service-tag-picker"><div id="serviceSelectedTags" class="service-selected-tags" aria-live="polite"></div><input id="serviceTagSearch" class="service-tag-search" type="search" placeholder="Search available tags…" aria-label="Search tags"><div id="serviceTagOptions" class="service-tag-options"></div><div class="settings-note">Choose one or more tags. Manage the tag list in Admin → Tags.</div></div><div class="settings-field full"><label for="serviceLogoFile">Service logo</label><div class="logo-upload-row"><div class="service-logo-preview" id="serviceLogoPreview"><span id="serviceLogoFallback">🔧</span><img id="serviceLogoImage" alt="" hidden></div><div class="settings-actions"><button class="secondary" type="button" id="chooseServiceLogo">Browse image</button><button class="secondary" type="button" id="removeServiceLogo" hidden>Remove image</button><input type="file" id="serviceLogoFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden><input type="hidden" id="serviceLogoKey"><span id="serviceLogoUploadStatus" class="settings-note">Optional · PNG, JPEG, WebP or GIF · up to 5 MB</span></div></div></div><div class="modal-actions"><button class="secondary" type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save service</button></div></form></div>
+<div class="modal-backdrop" id="serviceModal"><form class="modal" id="serviceForm"><h2 id="modalTitle">Add service</h2><input type="hidden" id="serviceId"><label for="name">Name</label><input id="name" required><label for="url">URL</label><input id="url" type="url" placeholder="https://service.example" required><label for="category">Category</label><div class="service-inline-create"><select id="category"></select><button class="secondary service-create-inline-button" type="button" id="addCategoryFromService">＋ New category</button></div><label for="description">Description</label><input id="description"><label for="icon">Fallback icon for custom services</label><input id="icon" value="🔧"><label>Tags</label><div class="service-tag-picker"><div id="serviceSelectedTags" class="service-selected-tags" aria-live="polite"></div><input id="serviceTagSearch" class="service-tag-search" type="search" placeholder="Search available tags…" aria-label="Search tags"><div id="serviceTagOptions" class="service-tag-options"></div><div class="service-tag-create-row"><span class="settings-note">Choose one or more tags.</span><button class="secondary service-create-inline-button" type="button" id="addTagFromService">＋ New tag</button></div></div><div class="settings-field full"><label for="serviceLogoFile">Service logo</label><div class="logo-upload-row"><div class="service-logo-preview" id="serviceLogoPreview"><span id="serviceLogoFallback">🔧</span><img id="serviceLogoImage" alt="" hidden></div><div class="settings-actions"><button class="secondary" type="button" id="chooseServiceLogo">Browse image</button><button class="secondary" type="button" id="removeServiceLogo" hidden>Remove image</button><input type="file" id="serviceLogoFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden><input type="hidden" id="serviceLogoKey"><span id="serviceLogoUploadStatus" class="settings-note">Optional · PNG, JPEG, WebP or GIF · up to 5 MB</span></div></div></div><div class="modal-actions"><button class="secondary" type="button" id="cancel">Cancel</button><button class="primary" type="submit">Save service</button></div></form></div>
 <div id="taxonomyModalBackdrop" class="app-modal-backdrop" hidden aria-hidden="true">
   <form id="taxonomyModalForm" class="app-form-dialog" role="dialog" aria-modal="true" aria-labelledby="taxonomyModalTitle">
     <div class="app-dialog-kicker">ADMINISTRATION</div><h2 id="taxonomyModalTitle">Edit item</h2>
@@ -491,7 +499,7 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.33";
+const APP_VERSION="0.1.34";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -551,7 +559,7 @@ let preferences={theme:"dark",landingPage:"home",defaultView:"list",sidebarColla
 let apiConnected=false,apiError="";
 let adminTab="categories",adminServiceQuery="";
 let serviceSelectedTags=new Set(),serviceTagQuery="";
-let categoryRecords=[],taxonomyCategories=[],tagRecords=[],taxonomyLoaded=false,taxonomyBusy=false,taxonomyModalType=null,taxonomyModalId=null,taxonomyModalOriginalName="",confirmResolver=null,sidebarTagsExpanded=false,activeTag=null;
+let categoryRecords=[],taxonomyCategories=[],tagRecords=[],taxonomyLoaded=false,taxonomyBusy=false,taxonomyModalType=null,taxonomyModalId=null,taxonomyModalOriginalName="",taxonomyReturnToService=false,confirmResolver=null,sidebarTagsExpanded=false,activeTag=null;
 let persistedBrandingLogoKey=null,brandingLogoPreviewUrl=null,brandingLogoUploadToken=0,brandingLogoUploadBusy=false;
 let pendingBrandingLogoKeys=new Set();
 let serviceLogoPreviewUrl=null,serviceUploadToken=0,serviceLogoUploadBusy=false;
@@ -1025,13 +1033,13 @@ function taxonomyMessage(id,message,isError=false){const el=$(id);if(!el)return;
 function closeTaxonomyModal(){
  $("taxonomyModalBackdrop").hidden=true;
  $("taxonomyModalBackdrop").setAttribute("aria-hidden","true");
- taxonomyModalType=null;taxonomyModalId=null;taxonomyModalOriginalName="";
+ taxonomyModalType=null;taxonomyModalId=null;taxonomyModalOriginalName="";taxonomyReturnToService=false;
 }
-function openTaxonomyModal(type,id=null){
+function openTaxonomyModal(type,id=null,options={}){
  if(!apiConnected){toast("Connect to the shared database first.");return}
  const isCategory=type==="category",isNew=id==null;
  const record=isCategory?taxonomyCategories.find(item=>Number(item.id)===Number(id)):tagRecords.find(item=>Number(item.id)===Number(id));
- taxonomyModalType=type;taxonomyModalId=isNew?null:Number(id);taxonomyModalOriginalName=record?.name||"";
+ taxonomyModalType=type;taxonomyModalId=isNew?null:Number(id);taxonomyModalOriginalName=record?.name||"";taxonomyReturnToService=!!options.returnToService;
  $("taxonomyModalTitle").textContent=(isNew?"Add ":"Edit ")+(isCategory?"category":"tag");
  $("taxonomyModalHelp").textContent=isCategory?"Category names appear in the sidebar. Empty categories can be retained as placeholders.":"Tags can be assigned to services and used as sidebar filters.";
  if(isCategory){
@@ -1062,7 +1070,7 @@ function confirmInApp({title="Confirm action",message="",confirmLabel="Continue"
 async function saveTaxonomyModal(event){
  event?.preventDefault();
  if(!taxonomyModalType)return;
- const type=taxonomyModalType,id=taxonomyModalId,isNew=id==null,isCategory=type==="category";
+ const type=taxonomyModalType,id=taxonomyModalId,isNew=id==null,isCategory=type==="category",returnToService=taxonomyReturnToService;
  const name=$("taxonomyName").value.trim();
  if(!name){$("taxonomyModalMessage").textContent="Enter a name.";return}
  const payload={name};if(isCategory)payload.icon=$("taxonomyIcon").value;
@@ -1074,6 +1082,10 @@ async function saveTaxonomyModal(event){
   if(isCategory&&page==="category"&&current===taxonomyModalOriginalName)current=name;
   if(type==="tag"&&activeTag===taxonomyModalOriginalName)activeTag=name;
   closeTaxonomyModal();await loadRemoteData();await refreshTaxonomy(false);
+  if(returnToService&&isNew&&$("serviceModal")?.classList.contains("open")){
+   if(isCategory){$("category").value=name;}
+   else{serviceSelectedTags.add(name);$("serviceTagSearch").value="";serviceTagQuery="";renderServiceTagPicker();}
+  }
   toast((isNew?"Added ":"Saved ")+(isCategory?"category":"tag"));
  }catch(error){
   $("taxonomyModalMessage").textContent=error.message||"Could not save changes.";
@@ -1173,7 +1185,13 @@ finally{taxonomyBusy=false}
 nav();renderCategoryManager();renderTagManager();
 const accessCategory=$("accessSyncCategory");
 if(accessCategory){const current=accessCategory.value;const names=[...new Set(taxonomyCategories.map(c=>c.name))].sort((a,b)=>a.localeCompare(b));accessCategory.replaceChildren(...names.map(name=>{const option=document.createElement("option");option.value=name;option.textContent=name;return option}));accessCategory.value=names.includes(current)?current:(names.includes("Infrastructure")?"Infrastructure":names[0]||"")}
-if($("serviceModal")?.classList.contains("open"))renderServiceTagPicker();
+if($("serviceModal")?.classList.contains("open")){
+ const categorySelect=$("category"),selectedCategory=categorySelect.value;
+ const names=categories().filter(name=>name!=="All");
+ categorySelect.replaceChildren(...names.map(name=>{const option=document.createElement("option");option.value=name;option.textContent=name;return option}));
+ categorySelect.value=names.includes(selectedCategory)?selectedCategory:(names[0]||"");
+ renderServiceTagPicker();
+}
 if(page==="admin")renderAdminPage();
 if(showToast)toast(taxonomyLoaded?"Categories and tags refreshed":"Could not load categories and tags");
 }
@@ -1245,6 +1263,8 @@ $("refreshTaxonomy").onclick=()=>refreshTaxonomy(true);
 $("addCategoryButton").onclick=()=>openTaxonomyModal("category");
 $("addTagButton").onclick=()=>openTaxonomyModal("tag");
 $("taxonomyModalForm").onsubmit=saveTaxonomyModal;
+$("addCategoryFromService").onclick=()=>openTaxonomyModal("category",null,{returnToService:true});
+$("addTagFromService").onclick=()=>openTaxonomyModal("tag",null,{returnToService:true});
 $("taxonomyModalCancel").onclick=closeTaxonomyModal;
 $("taxonomyModalBackdrop").addEventListener("click",event=>{if(event.target===$("taxonomyModalBackdrop"))closeTaxonomyModal()});
 $("appConfirmCancel").onclick=()=>closeAppConfirm(false);
