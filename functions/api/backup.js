@@ -3,7 +3,7 @@ import { deleteAssetIfUnreferenced, isAllowedAssetKey } from "../lib/assets.js";
 
 const DEFAULTS = {
   branding: { name: "Luxorit", subtitle: "Pro", logo: "", logoKey: null },
-  preferences: { theme: "dark", landingPage: "home", defaultView: "list", sidebarCollapsed: false },
+  preferences: { theme: "dark", landingPage: "home", defaultView: "list", sidebarCollapsed: false, showSlimDescriptions: false },
 };
 const MAX_SERVICES = 200;
 const MAX_TAGS = 300;
@@ -34,6 +34,7 @@ function cleanPreferences(value = {}, legacyTheme) {
     landingPage: ["home", "all"].includes(value.landingPage) ? value.landingPage : "home",
     defaultView: ["list", "cards", "slim"].includes(value.defaultView) ? value.defaultView : "list",
     sidebarCollapsed: Boolean(value.sidebarCollapsed),
+    showSlimDescriptions: Boolean(value.showSlimDescriptions),
   };
 }
 
