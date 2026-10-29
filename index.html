@@ -256,7 +256,7 @@ function renderPagesDeployment(){
 const data=pagesDeployment.data||{};
 const badge=$("pagesApiStatusBadge");if(!badge)return;
 badge.className="integration-status "+(pagesDeployment.state==="connected"?"status-connected":pagesDeployment.state==="offline"?"status-offline":"status-checking");
-badge.textContent=pagesDeployment.state==="connected"?"Connected":"Unavailable";
+badge.textContent=pagesDeployment.state==="connected"?"Connected":pagesDeployment.state==="offline"?"Unavailable":"Checking…";
 $("pagesApiStatusMessage").textContent=pagesDeployment.state==="connected"?"Authenticated deployment metadata loaded.":(data.error||"Could not load deployment metadata.");
 addSafeExternalLink("pagesDeploymentUrl",data.deploymentUrl,data.deploymentUrl||"",data.deploymentUrl?"":"Current deployment URL was not exposed by this runtime.");
 addSafeExternalLink("pagesProjectUrl",data.projectUrl,data.projectUrl||"https://dashboard-manager-portal.pages.dev","Project URL unavailable");
