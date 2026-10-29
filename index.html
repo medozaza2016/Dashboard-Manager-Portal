@@ -841,7 +841,7 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.54";
+const APP_VERSION="0.1.55";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -909,6 +909,7 @@ const seed=[
 ];
 let services=structuredClone(seed),current="All",view="list",density="regular",page="home",nextId=13,reorderEnabled=false,catalogControlsExpanded=false;
 let currentProfile=1,sidebarCategoriesExpanded=false; // 1=Personal, 2=Work
+let profileLoadToken=0,taxonomyLoadToken=0,dataProfileId=1;
 let branding={name:"Luxorit",subtitle:"Pro",logo:""};
 let preferences={theme:"dark",landingPage:"home",defaultView:"list",sidebarCollapsed:false,sidebarCategoriesCollapsed:false,sidebarTagsCollapsed:false,showSlimDescriptions:false,serviceImageSize:34};
 function normalizeServiceImageSize(value){
@@ -1148,27 +1149,33 @@ function updateProfileUI(){
 }
 
 function bindProfileSwitcher(){
-  const btn = $("profileToggle");
-  if(!btn) return;
-
-  btn.onclick = async () => {
-    currentProfile = currentProfile === 1 ? 2 : 1;
-    persist();
-    updateProfileUI();activeTag=null;sidebarTagsExpanded=false;sidebarCategoriesExpanded=false;reorderEnabled=false;
-    if (apiConnected) {
-      setD1Status("checking","Loading "+(currentProfile===1?"Personal":"Work")+" profile data…",{serviceCount:null,categoryCount:null,tagCount:null});
-      await loadRemoteData();await refreshTaxonomy(false);render();
-    }
+  const btn=$("profileToggle");if(!btn)return;
+  btn.onclick=async()=>{
+    const previousProfile=currentProfile;
+    saveProfileCache(previousProfile);
+    currentProfile=previousProfile===1?2:1;
+    // Invalidate requests from the previous profile before changing visible state.
+    profileLoadToken++;taxonomyLoadToken++;
+    updateProfileUI();$("search").value="";
+    activeTag=null;sidebarTagsExpanded=false;sidebarCategoriesExpanded=false;sidebarTagsExpanded=false;reorderEnabled=false;
+    current="All";page=preferences.landingPage==="favorites"?"favorites":preferences.landingPage==="all"?"all":"home";
+    restoreProfileCache(currentProfile);
+    persist();render();
+    setD1Status("checking","Loading "+(currentProfile===1?"Personal":"Work")+" profile data…",{serviceCount:null,categoryCount:null,tagCount:null});
+    const targetProfile=currentProfile;
+    await loadRemoteData(targetProfile);
+    if(targetProfile!==currentProfile)return;
+    await refreshTaxonomy(false,targetProfile);
+    if(targetProfile===currentProfile)render();
   };
 }
 
-async function apiRequest(path,options={}){
+async function apiRequest(path,options={},profileOverride=currentProfile){
   const profileEndpoints = ["services","categories","tags","categories-manage"];
   const needsProfile = profileEndpoints.some(p => path === p || path.startsWith(p + "?") || path.startsWith(p + "&"));
-  const profileParam = (needsProfile && currentProfile) ? `profile=${currentProfile}` : '';
+  const profileParam = needsProfile ? `profile=${profileOverride}` : '';
   const separator = path.includes('?') ? '&' : '?';
   const fullPath = profileParam ? `${path}${separator}${profileParam}` : path;
-
   const response=await fetch("/api/"+fullPath,{credentials:"same-origin",...options,headers:{"content-type":"application/json",...(options.headers||{})}});
   const body=await response.json().catch(()=>({}));
   if(!response.ok)throw new Error(body.error||("API request failed ("+response.status+")"));
@@ -1176,36 +1183,70 @@ async function apiRequest(path,options={}){
 }
 function apiPayload(s){return {name:s.name,url:s.url,description:s.description||"",icon:s.icon||"🔧",logoKey:s.logoKey||null,category:s.category,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}}
 async function remoteSaveService(s,isNew=false){return apiRequest("services"+(!isNew&&s.id!=null?"?id="+encodeURIComponent(s.id):""),{method:isNew?"POST":"PUT",body:JSON.stringify(apiPayload(s))})}
-async function loadRemoteData(){try{
-  const remoteServices = await apiRequest("services");
-  const remoteSettings = await apiRequest("settings");
-  const remoteCategories = await apiRequest("categories");
+async function loadRemoteData(profileId=currentProfile){
+ const requestToken=++profileLoadToken;
+ try{
+  const [remoteServices,remoteSettings,remoteCategories]=await Promise.all([
+   apiRequest("services",{},profileId),apiRequest("settings",{},profileId),apiRequest("categories",{},profileId)
+  ]);
+  if(profileId!==currentProfile||requestToken!==profileLoadToken)return false;
   if(!Array.isArray(remoteServices))throw new Error("Services endpoint did not return an array.");
   if(!Array.isArray(remoteCategories))throw new Error("Categories endpoint did not return an array.");
-  if(!remoteSettings || typeof remoteSettings !== "object")throw new Error("Settings endpoint did not return an object.");
-  categoryRecords=remoteCategories;
+  if(!remoteSettings||typeof remoteSettings!=="object")throw new Error("Settings endpoint did not return an object.");
   services=remoteServices.map(s=>({...s,id:Number(s.id),favorite:!!s.favorite,tags:Array.isArray(s.tags)?s.tags:[]}));
-  nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;
-  branding={...branding,...(remoteSettings.branding||{})};
-  persistedBrandingLogoKey=branding.logoKey||null;
+  categoryRecords=remoteCategories;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;
+  branding={...branding,...(remoteSettings.branding||{})};persistedBrandingLogoKey=branding.logoKey||null;
   preferences={...preferences,...(remoteSettings.preferences||{})};
   view=preferences.defaultView==="list"?"list":"cards";density=preferences.defaultView==="slim"?"slim":"regular";
-  document.documentElement.dataset.theme=preferences.theme|| "dark";
-  apiConnected=true;apiError="";
+  document.documentElement.dataset.theme=preferences.theme||"dark";
+  dataProfileId=profileId;apiConnected=true;apiError="";
   setD1Status("connected","Connection verified. Catalog and portal settings are reachable in shared D1.",{serviceCount:services.length,categoryCount:remoteCategories.length,tagCount:countTagsInUse(services)});
-  render();
-  toast("Connected to shared D1 database")
-}catch(error){
+  saveProfileCache(profileId);render();return true;
+ }catch(error){
+  if(profileId!==currentProfile||requestToken!==profileLoadToken)return false;
   apiConnected=false;apiError=error.message||"Database API unavailable";
+  if(dataProfileId!==profileId)restoreProfileCache(profileId);
+  if(dataProfileId!==profileId)clearProfileData(profileId);
   setD1Status("offline","Connection failed: "+apiError,{serviceCount:null,categoryCount:null,tagCount:null});
-  render();
-  toast("Database unavailable, using browser-local data")
-}}
+  render();toast("Database unavailable, showing only this profile's saved data");return false;
+ }
+}
 const categories=()=>["All",...new Set((apiConnected?categoryRecords.filter(c=>Number(c.serviceCount??c.service_count??0)>0).slice().sort((a,b)=>(Number(a.sortOrder??a.sort_order)||9999)-(Number(b.sortOrder??b.sort_order)||9999)).map(c=>c.name):services.map(s=>s.category)).filter(Boolean))];
 function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2200)}
-function persist(){try{localStorage.setItem("luxorit-portal-v1",JSON.stringify({services,view,density,theme:document.documentElement.dataset.theme,appVersion:APP_VERSION,branding,preferences,currentProfile}))}catch{}}
+function profileCacheKey(profileId){return "luxorit-profile-cache-v1-"+profileId}
+function saveProfileCache(profileId=currentProfile){
+ if(dataProfileId!==profileId)return;
+ try{localStorage.setItem(profileCacheKey(profileId),JSON.stringify({profileId,services,categoryRecords,taxonomyCategories,tagRecords,nextId}))}catch{}
+}
+function clearProfileData(profileId){
+ services=[];categoryRecords=[];taxonomyCategories=[];tagRecords=[];taxonomyLoaded=false;nextId=1;dataProfileId=profileId;
+}
+function restoreProfileCache(profileId){
+ try{
+  const cached=JSON.parse(localStorage.getItem(profileCacheKey(profileId)));
+  if(cached&&cached.profileId===profileId&&Array.isArray(cached.services)){
+   services=cached.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));
+   categoryRecords=Array.isArray(cached.categoryRecords)?cached.categoryRecords:[];
+   taxonomyCategories=Array.isArray(cached.taxonomyCategories)?cached.taxonomyCategories:[];
+   tagRecords=Array.isArray(cached.tagRecords)?cached.tagRecords:[];
+   taxonomyLoaded=Array.isArray(cached.taxonomyCategories)&&Array.isArray(cached.tagRecords);
+   nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;dataProfileId=profileId;return true;
+  }
+ }catch{}
+ clearProfileData(profileId);return false;
+}
+function persist(){try{if(dataProfileId===currentProfile)saveProfileCache(currentProfile);localStorage.setItem("luxorit-portal-v1",JSON.stringify({view,density,theme:document.documentElement.dataset.theme,appVersion:APP_VERSION,branding,preferences,currentProfile}))}catch{}}
 function safe(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function load(){try{const d=JSON.parse(localStorage.getItem("luxorit-portal-v1"));if(d){if(d.currentProfile===1||d.currentProfile===2)currentProfile=d.currentProfile;if(Array.isArray(d.services)){services=d.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences};if(d.theme)document.documentElement.dataset.theme=d.theme;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1}if(d.view)view=d.view;if(d.density)density=d.density;if(d.theme)document.documentElement.dataset.theme=d.theme;if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences}}}catch{}}
+function load(){
+ let d=null;try{d=JSON.parse(localStorage.getItem("luxorit-portal-v1"))}catch{}
+ if(d){
+  if(d.currentProfile===1||d.currentProfile===2)currentProfile=d.currentProfile;
+  if(d.view)view=d.view;if(d.density)density=d.density;if(d.theme)document.documentElement.dataset.theme=d.theme;
+  if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences};
+  // The former shared services cache had no reliable profile owner, so never reuse it across profiles.
+  restoreProfileCache(currentProfile);
+ }else dataProfileId=currentProfile;
+}
 function matchesSearch(s){const q=$("search").value.trim().toLowerCase();return !q||[s.name,s.description,s.category,...(s.tags||[])].join(" ").toLowerCase().includes(q)}
 function filtered(){const globalSearch=!!$("search").value.trim();const items=services.filter(s=>(globalSearch?true:page==="favorites"?s.favorite:page==="category"?s.category===current:page==="tag"?(s.tags||[]).includes(activeTag):true)&&matchesSearch(s));if(page==="all")return items.sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""),undefined,{sensitivity:"base",numeric:true}));return !globalSearch&&page==="category"?items.sort((a,b)=>(Number(a.categorySortOrder)||9999)-(Number(b.categorySortOrder)||9999)||Number(a.id)-Number(b.id)):items}
 function tagHtml(t){return '<span class="tag">'+safe(t)+'</span>'}
@@ -1571,16 +1612,17 @@ host.querySelectorAll("[data-tag-delete]").forEach(button=>button.onclick=async(
  }catch(error){taxonomyMessage("tagManagerMessage",error.message||"Could not delete tag.",true);button.disabled=false}
 });
 }
-async function refreshTaxonomy(showToast=true){
-if(taxonomyBusy)return;taxonomyBusy=true;
+async function refreshTaxonomy(showToast=true,profileId=currentProfile){
+const requestToken=++taxonomyLoadToken;taxonomyBusy=true;
 taxonomyMessage("categoryManagerMessage","Loading categories…");taxonomyMessage("tagManagerMessage","Loading tags…");
 try{
-const [categoriesResult,tagsResult]=await Promise.all([apiRequest("categories-manage"),apiRequest("tags")]);
+const [categoriesResult,tagsResult]=await Promise.all([apiRequest("categories-manage",{},profileId),apiRequest("tags",{},profileId)]);
+if(profileId!==currentProfile||requestToken!==taxonomyLoadToken)return false;
 if(!Array.isArray(categoriesResult)||!Array.isArray(tagsResult))throw new Error("Unexpected category or tag response.");
-taxonomyCategories=categoriesResult;categoryRecords=categoriesResult;tagRecords=tagsResult;taxonomyLoaded=true;
+taxonomyCategories=categoriesResult;categoryRecords=categoriesResult;tagRecords=tagsResult;taxonomyLoaded=true;dataProfileId=profileId;saveProfileCache(profileId);
 taxonomyMessage("categoryManagerMessage",taxonomyCategories.length+" categories, including empty sidebar placeholders.");taxonomyMessage("tagManagerMessage",tagRecords.length+" tags available across the catalog.");
-}catch(error){taxonomyMessage("categoryManagerMessage",error.message||"Could not load categories.",true);taxonomyMessage("tagManagerMessage",error.message||"Could not load tags.",true);taxonomyLoaded=false}
-finally{taxonomyBusy=false}
+}catch(error){if(profileId!==currentProfile||requestToken!==taxonomyLoadToken)return false;taxonomyMessage("categoryManagerMessage",error.message||"Could not load categories.",true);taxonomyMessage("tagManagerMessage",error.message||"Could not load tags.",true);taxonomyLoaded=false}
+finally{if(requestToken===taxonomyLoadToken)taxonomyBusy=false}
 nav();renderCategoryManager();renderTagManager();
 const accessCategory=$("accessSyncCategory");
 if(accessCategory){const current=accessCategory.value;const names=[...new Set(taxonomyCategories.map(c=>c.name))].sort((a,b)=>a.localeCompare(b));accessCategory.replaceChildren(...names.map(name=>{const option=document.createElement("option");option.value=name;option.textContent=name;return option}));accessCategory.value=names.includes(current)?current:(names.includes("Infrastructure")?"Infrastructure":names[0]||"")}
