@@ -466,6 +466,30 @@
 .tag-chip-mark{display:inline-grid;place-items:center;min-width:15px;height:15px;border-radius:5px;background:var(--panel2);color:var(--green);font-size:11px;font-weight:800;line-height:1}
 .catalog-controls-panel-inner>.chips .chip.active .tag-chip-mark{background:rgba(62,207,142,.14);color:var(--deep-green)}
 [data-theme=dark] .catalog-controls-panel-inner>.chips .chip.active .tag-chip-mark{color:var(--green)}
+
+/* v0.1.44 place Filters & display in the catalog header */
+.catalog-pagehead{display:flex;align-items:flex-start;justify-content:space-between;gap:22px}
+.catalog-heading-copy{min-width:0;flex:1 1 auto}
+.catalog-head-actions{display:flex;align-items:flex-start;justify-content:flex-end;gap:10px;flex:0 0 auto;margin-left:auto}
+.catalog-head-actions .catalog-controls-toggle{align-self:flex-start;width:auto;min-width:245px;margin:0}
+.catalog-head-actions #add{white-space:nowrap}
+.catalog-toolbar{margin-top:0}
+@media(max-width:850px){
+ .catalog-pagehead{gap:14px}
+ .catalog-head-actions{gap:8px}
+ .catalog-head-actions .catalog-controls-toggle{min-width:220px}
+}
+@media(max-width:620px){
+ .catalog-pagehead{display:flex;flex-direction:column;align-items:stretch;gap:12px}
+ .catalog-head-actions{width:100%;justify-content:space-between;align-items:center;margin-left:0}
+ .catalog-head-actions .catalog-controls-toggle{min-width:0;flex:1 1 auto}
+ .catalog-head-actions #add{flex:0 0 auto;margin-top:0}
+}
+@media(max-width:420px){
+ .catalog-head-actions{align-items:stretch;flex-direction:column}
+ .catalog-head-actions .catalog-controls-toggle{width:100%}
+ .catalog-head-actions #add{align-self:flex-start}
+}
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
@@ -482,13 +506,15 @@
   <div class="section-title"><h2>Favorites</h2><button class="secondary" id="homeFavoritesMore">View all favorites</button></div>
   <div id="homeFavoriteCards"></div>
 </section>
-<section id="catalogPage" hidden><div class="pagehead"><div><div class="eyebrow" id="catalogEyebrow">SERVICE CATALOG</div><h1 id="heading">Browse by category</h1><p id="catalogDescription">Open a category to browse and manage its services.</p></div><button class="primary" id="add">＋ Add Service</button></div>
-<div class="toolbar catalog-toolbar">
+<section id="catalogPage" hidden><div class="pagehead catalog-pagehead"><div class="catalog-heading-copy"><div class="eyebrow" id="catalogEyebrow">SERVICE CATALOG</div><h1 id="heading">Browse by category</h1><p id="catalogDescription">Open a category to browse and manage its services.</p></div><div class="catalog-head-actions">
   <button type="button" class="catalog-controls-toggle" id="catalogControlsToggle" aria-expanded="false" aria-controls="catalogControlsPanel">
     <span class="catalog-controls-toggle-icon" aria-hidden="true"><svg viewBox="0 0 20 20" focusable="false"><path d="M3 5h14M5.5 10h9M8 15h4"/><circle cx="7" cy="5" r="1.5"/><circle cx="12.5" cy="10" r="1.5"/></svg></span>
     <span class="catalog-controls-toggle-copy"><strong>Filters &amp; display</strong><small id="catalogControlsSummary">All services · Compact list</small></span>
     <svg class="catalog-controls-chevron" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m5 7.5 5 5 5-5"/></svg>
   </button>
+  <button class="primary" id="add">＋ Add Service</button>
+</div></div>
+<div class="toolbar catalog-toolbar">
   <div class="catalog-controls-panel" id="catalogControlsPanel" aria-hidden="true">
     <div class="catalog-controls-clip">
       <div class="catalog-controls-panel-inner">
@@ -639,7 +665,7 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.43";
+const APP_VERSION="0.1.44";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
