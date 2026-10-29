@@ -21,11 +21,17 @@ export async function onRequest({ request, env }) {
 
   const { searchParams } = new URL(request.url);
   const profileIdParam = searchParams.get("profile");
-  const profileId = profileIdParam ? Number(profileIdParam) : 1;
+  const profileId = profileIdParam == null ? 1 : Number(profileIdParam);
 
   if (!Number.isSafeInteger(profileId) || profileId < 1 || profileId > 2) {
     return jsonResponse({ error: "Invalid profile. Use profile=1 (Personal) or profile=2 (Work)." }, 400);
   }
+
+  // Parse the tag ID once so update and delete requests have a validated ID.
+  // The missing declaration previously caused a ReferenceError and an HTTP 500.
+  const idParam = searchParams.get("id");
+  const id = idParam == null ? null : validId(idParam);
+  if (idParam != null && id == null) return jsonResponse({ error: "Invalid tag id." }, 400);
 
   if (request.method === "GET") {
     const result = await env.DB.prepare(`
