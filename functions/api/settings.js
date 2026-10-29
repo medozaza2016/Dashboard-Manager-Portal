@@ -3,7 +3,7 @@ import { deleteAssetIfUnreferenced, isAllowedAssetKey } from "../lib/assets.js";
 
 const DEFAULTS = {
   branding: { name: "Luxorit", subtitle: "Pro", logo: "", logoKey: null },
-  preferences: { theme: "dark", landingPage: "home", defaultView: "list", sidebarCollapsed: false },
+  preferences: { theme: "dark", landingPage: "home", defaultView: "list", sidebarCollapsed: false, showSlimDescriptions: false },
 };
 
 async function readSetting(db, key, fallback) {
@@ -43,6 +43,7 @@ export async function onRequest({ request, env }) {
       landingPage: ["home", "all"].includes(preferences.landingPage) ? preferences.landingPage : "home",
       defaultView: ["list", "cards", "slim"].includes(preferences.defaultView) ? preferences.defaultView : "list",
       sidebarCollapsed: Boolean(preferences.sidebarCollapsed),
+      showSlimDescriptions: Boolean(preferences.showSlimDescriptions),
     };
 
     const previousBranding = await readSetting(env.DB, "branding", DEFAULTS.branding);
