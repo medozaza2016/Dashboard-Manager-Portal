@@ -573,7 +573,7 @@
   .service-desc{overflow-wrap:anywhere}
 }
 
-/* v0.1.50 service editor viewport and tag picker layout */
+/* v0.1.51 service editor viewport and tag picker layout */
 #serviceModal.modal-backdrop{
   align-items:flex-start;
   justify-content:center;
@@ -671,7 +671,7 @@
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
 <div class="group-label">Workspace</div>
 <button class="nav active" data-page="home" title="Home"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/></svg></span><span>Home</span></button>
-<button class="nav" data-page="all" title="Show all services across categories and tags"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span>All Services</span><span class="count" id="allServicesCount">0</span></button>
+
 
 <button type="button" class="group-label sidebar-section-toggle" id="toggleCategoriesSection" aria-expanded="true"><span>Categories</span><span class="sidebar-section-chevron" aria-hidden="true">⌄</span></button><div id="categorySectionContent"><div id="categoryNav"></div><button type="button" class="nav tag-more-toggle" id="showMoreCategories" hidden>Show all categories</button></div><button type="button" class="group-label sidebar-section-toggle tag-nav-heading" id="toggleTagsSection" aria-expanded="true"><span>Tags</span><span class="sidebar-section-chevron" aria-hidden="true">⌄</span></button><div id="tagSectionContent"><div id="tagNav"></div><button type="button" class="nav tag-more-toggle" id="showMoreTags" hidden>Show more tags</button></div><div class="bottom">
 <button class="nav" data-page="admin" title="Administration"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Admin</span></button><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.21</div></div></aside>
@@ -841,7 +841,7 @@
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.50";
+const APP_VERSION="0.1.51";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -1188,6 +1188,7 @@ async function loadRemoteData(){try{
   branding={...branding,...(remoteSettings.branding||{})};
   persistedBrandingLogoKey=branding.logoKey||null;
   preferences={...preferences,...(remoteSettings.preferences||{})};
+  view=preferences.defaultView==="list"?"list":"cards";density=preferences.defaultView==="slim"?"slim":"regular";
   document.documentElement.dataset.theme=preferences.theme|| "dark";
   apiConnected=true;apiError="";
   setD1Status("connected","Connection verified. Catalog and portal settings are reachable in shared D1.",{serviceCount:services.length,categoryCount:remoteCategories.length,tagCount:countTagsInUse(services)});
@@ -1239,7 +1240,7 @@ $("toggleTagsSection").title=tagsCollapsed?"Expand tags":"Collapse tags";
 updateActiveNavigation()
 }
 function showPage(){["homePage","catalogPage","adminPage","settingsPage"].forEach(id=>$(id).hidden=true);const target=page==="home"?"homePage":page==="settings"?"settingsPage":page==="admin"?"adminPage":"catalogPage";$(target).hidden=false;updateActiveNavigation()}
-function navigatePage(target){if(page==="settings"&&target!=="settings")discardUncommittedBrandingLogo();$("search").value="";page=target;activeTag=null;if(target==="favorites")current="Favorites";else if(target==="home"||target==="all")current="All";if(target==="admin")adminTab="categories";reorderEnabled=false;render()}
+function navigatePage(target){if(page==="settings"&&target!=="settings")discardUncommittedBrandingLogo();$("search").value="";if(target==="all")target="home";page=target;activeTag=null;if(target==="favorites")current="Favorites";else if(target==="home")current="All";if(target==="admin")adminTab="categories";reorderEnabled=false;render()}
 function navigateCategory(category){if(page==="settings")discardUncommittedBrandingLogo();$("search").value="";page="category";current=category;activeTag=null;reorderEnabled=false;render()}
 function navigateTag(tag){if(page==="settings")discardUncommittedBrandingLogo();$("search").value="";page="tag";activeTag=tag;current="All";reorderEnabled=false;render()}
 function statCard(label,value,note){return '<article class="stat-card"><div class="stat-label">'+label+'</div><div class="stat-number">'+value+'</div><div class="stat-note">'+note+'</div></article>'}
@@ -1278,15 +1279,15 @@ function renderHome(){const favorites=services.filter(s=>s.favorite&&matchesSear
 function renderCatalog(){
 const queryActive=!!$("search").value.trim();
 const items=filtered(),isCategory=page==="category",isFavorites=page==="favorites",isTag=page==="tag",isAll=page==="all";
-$("catalogEyebrow").textContent=queryActive?"GLOBAL SEARCH / ALL SERVICES":isFavorites?"WORKSPACE / FAVORITES":isTag?"TAG FILTER / CATALOG":isAll?"SERVICE CATALOG / ALL":"SERVICE CATEGORY / MANAGEMENT";
-$("heading").textContent=queryActive?"Search Results":isFavorites?"Favorites":isTag?"Tag: "+activeTag:isAll?"All Services":current+" Services";
-$("catalogDescription").textContent=queryActive?"Search matches from all services in this profile.":isFavorites?"Your favorites use the layout selected in Settings.":isTag?'Services tagged "'+activeTag+'". Select Edit mode to edit, duplicate, or delete these services.':isAll?"Showing all services in this profile. Select a category to manage its services.":"Browse services in "+current+". Select Edit mode to add, edit, duplicate, delete, or reorder services in this category.";
-$("add").hidden=!((isCategory||isAll)&&reorderEnabled&&!queryActive);
+$("catalogEyebrow").textContent=queryActive?"SEARCH RESULTS":isFavorites?"WORKSPACE / FAVORITES":isTag?"TAG FILTER / CATALOG":"SERVICE CATEGORY / MANAGEMENT";
+$("heading").textContent=queryActive?"Search Results":isFavorites?"Favorites":isTag?"Tag: "+activeTag:current+" Services";
+$("catalogDescription").textContent=queryActive?"Search results across this profile. Open a category to manage services.":isFavorites?"Your favorites use the layout selected in Settings.":isTag?'Services tagged "'+activeTag+'". Open a category to manage services.':"Browse services in "+current+". Use Edit mode to add, edit, duplicate, delete, or reorder services in this category.";
+$("add").hidden=!(isCategory&&reorderEnabled&&!queryActive);
 $("add").textContent="＋ Add service";
 const tagFilters=tagRecords.filter(tag=>Number(tag.serviceCount??tag.service_count??0)>0).slice().sort((a,b)=>(Number(b.serviceCount??b.service_count)||0)-(Number(a.serviceCount??a.service_count)||0)||a.name.localeCompare(b.name));
-const filterOptions=[{label:"All",value:"All",type:"all"},{label:"Favorites",value:"Favorites",type:"favorites"},...tagFilters.map(tag=>({label:tag.name,value:"tag:"+tag.name,type:"tag"}))];
+const filterOptions=[{label:"Favorites",value:"Favorites",type:"favorites"},...tagFilters.map(tag=>({label:tag.name,value:"tag:"+tag.name,type:"tag"}))];
 $("chips").innerHTML=filterOptions.map(option=>{
-const active=queryActive?option.type==="all":option.type==="all"?isAll:option.type==="favorites"?isFavorites:(isTag&&activeTag===option.label);
+const active=!queryActive&&(option.type==="favorites"?isFavorites:(isTag&&activeTag===option.label));
 return '<button class="chip '+(active?"active":"")+'" data-chip="'+safe(option.value)+'"'+(option.type==="tag"?' aria-label="Filter by tag '+safe(option.label)+'"':"")+'>'+(option.type==="tag"?'<span class="tag-chip-mark" aria-hidden="true">#</span>':"")+safe(option.label)+'</button>';
 }).join("");
 const filterSummary=queryActive?"Global search":isFavorites?"Favorites":isTag?"# "+activeTag:"All tags";
@@ -1299,8 +1300,7 @@ controlsToggle.setAttribute("aria-expanded",catalogControlsExpanded?"true":"fals
 controlsToggle.classList.toggle("active",catalogControlsExpanded);
 $("chips").querySelectorAll("[data-chip]").forEach(b=>b.onclick=()=>{
 const value=b.dataset.chip;
-if(value==="All"){$("search").value="";navigatePage("all")}
-else if(value==="Favorites"){$("search").value="";navigatePage("favorites")}
+if(value==="Favorites"){$("search").value="";navigatePage("favorites")}
 else if(value.startsWith("tag:")){$("search").value="";navigateTag(value.slice(4))}
 });
 $("regularBtn").classList.toggle("active",density==="regular");
@@ -1315,12 +1315,12 @@ const densityControl=$("regularBtn").parentElement;
 densityControl.style.display=view==="cards"?"flex":"none";
 $("cardArea").style.display=view==="cards"?"block":"none";
 $("listArea").style.display=view==="list"?"block":"none";
-$("reorderControl").hidden=!(isCategory||isAll||isTag);
+$("reorderControl").hidden=!isCategory;
 $("reorderToggle").classList.toggle("active",reorderEnabled);
 $("reorderToggle").setAttribute("aria-pressed",reorderEnabled?"true":"false");
 $("reorderToggle").innerHTML='<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M12.8 3.2 16.8 7.2M3 17l4-.9 9.8-9.8a2.1 2.1 0 0 0-3-3L4 13.1 3 17Z"/><path d="M10.5 4.5 14.5 8.5"/></svg><span>'+(reorderEnabled?"Done editing":"Edit mode")+'</span>';
-$("reorderToggle").title=page==="tag"?"Edit, duplicate, or delete services tagged "+activeTag:page==="all"?"Edit, duplicate, or delete any service in this profile":"Edit services in "+current+"; add, edit, duplicate, delete, or drag to reorder";
-const canManageServices=(isCategory||isAll||isTag)&&reorderEnabled;
+$("reorderToggle").title="Edit services in "+current+"; add, edit, duplicate, delete, or drag to reorder";
+const canManageServices=isCategory&&reorderEnabled&&!queryActive;
 $("cardArea").innerHTML=view==="cards"?renderServiceCards(items,canManageServices):"";
 $("listArea").innerHTML=view==="list"?renderServiceTable(items,canManageServices,isCategory&&reorderEnabled):"";
 $("listArea").classList.toggle("service-order-host",isCategory&&reorderEnabled&&view==="list");
@@ -1638,25 +1638,26 @@ $("serviceLogoUploadStatus").textContent="Optional · PNG, JPEG, WebP or GIF · 
 
 $("serviceForm").onsubmit=async e=>{
 e.preventDefault();if(serviceLogoUploadBusy){toast("Wait for the image upload to finish.");return}
-const originalPage=page,wasOnManagePage=page==="category"||page==="all"||page==="tag",originalCategory=current,originalTag=activeTag,wasEditMode=reorderEnabled;
+const originalPage=page,wasOnManagePage=page==="category"&&reorderEnabled,originalCategory=current,wasEditMode=reorderEnabled;
 const id=$("serviceId").value;
 let item={id:id?Number(id):nextId++,name:$("name").value.trim(),url:$("url").value.trim(),category:$("category").value,description:$("description").value.trim(),icon:$("icon").value.trim()||"🔧",logoKey:$("serviceLogoKey").value||null,tags:[...serviceSelectedTags],favorite:services.find(s=>s.id==id)?.favorite||false};
 try{
 if(apiConnected)item=await remoteSaveService(item,!id);
 if(id)services=services.map(s=>s.id==id?item:s);else{if(!apiConnected)nextId=Math.max(nextId,Number(item.id)+1);services.unshift(item)}
 if(item.logoKey)pendingServiceLogoKeys.delete(item.logoKey);
-closeServiceModal();if(wasOnManagePage){page=originalPage;if(originalPage==="category")current=originalCategory;if(originalPage==="tag")activeTag=originalTag;reorderEnabled=wasEditMode}else{page="home";current="All";reorderEnabled=false}render();toast(apiConnected?(id?"Service saved to database":"Service added to database"):(id?"Service saved locally only":"Service added locally only"))
+closeServiceModal();if(wasOnManagePage){page="category";current=originalCategory;reorderEnabled=wasEditMode}else{page="home";current="All";reorderEnabled=false}render();toast(apiConnected?(id?"Service saved to database":"Service added to database"):(id?"Service saved locally only":"Service added locally only"))
 }catch(error){toast("Could not save service: "+(error.message||"database error"))}
 };
-$("cancel").onclick=()=>closeServiceModal();$("add").onclick=()=>{if(page==="category"&&reorderEnabled)openModal(null,current);else if(page==="all"&&reorderEnabled)openModal(null)};$("search").oninput=()=>{
+$("cancel").onclick=()=>closeServiceModal();$("add").onclick=()=>{if(page==="category"&&reorderEnabled)openModal(null,current)};$("search").oninput=()=>{
  const query=$("search").value.trim();
  if(query&&page==="home"){
   page="all";current="All";activeTag=null;reorderEnabled=false;catalogControlsExpanded=false;
  }
+ if(!query&&page==="all"){page="home";current="All";activeTag=null;reorderEnabled=false}
  if(reorderEnabled&&query)reorderEnabled=false;
  render();
 };
-$("reorderToggle").onclick=()=>{if(page!=="category"&&page!=="all"&&page!=="tag")return;if(!reorderEnabled&&$("search").value.trim()){toast("Clear the global search before entering Edit mode.");return}reorderEnabled=!reorderEnabled;render();toast(reorderEnabled?(page==="all"?"Edit mode enabled for all services":page==="tag"?"Edit mode enabled for tag: "+activeTag:"Edit mode enabled for "+current):"Edit mode finished")};
+$("reorderToggle").onclick=()=>{if(page!=="category")return;if(!reorderEnabled&&$("search").value.trim()){toast("Clear the global search before entering Edit mode.");return}reorderEnabled=!reorderEnabled;render();toast(reorderEnabled?(page==="all"?"Edit mode enabled for all services":page==="tag"?"Edit mode enabled for tag: "+activeTag:"Edit mode enabled for "+current):"Edit mode finished")};
 $("catalogControlsToggle").onclick=()=>{
  catalogControlsExpanded=!catalogControlsExpanded;
  const panel=$("catalogControlsPanel"),button=$("catalogControlsToggle");
