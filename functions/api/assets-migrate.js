@@ -153,7 +153,7 @@ export async function onRequest({ request, env }) {
 
   const token = crypto.randomUUID();
   await env.DB.prepare(
-    "INSERT INTO portal_settings (setting_key, setting_value, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP) ON CONFLICT(setting_key) DO UPDATE SET setting_value = excluded.setting_value, updated_at = CURRENT_TIMESTAMP WHERE portal_settings.setting_value != 'running' AND portal_settings.setting_value != 'completed'"
+    "INSERT INTO portal_settings (setting_key, setting_value, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP) ON CONFLICT(setting_key) DO UPDATE SET setting_value = excluded.setting_value, updated_at = CURRENT_TIMESTAMP WHERE portal_settings.setting_value NOT LIKE 'running:%' AND portal_settings.setting_value != 'completed'"
   ).bind(MIGRATION_SETTING, "running:" + token).run();
   const lease = await readMigrationState(env.DB);
   if (lease !== "running:" + token) {
