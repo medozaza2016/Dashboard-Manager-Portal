@@ -1753,7 +1753,7 @@ $("serviceLogoUploadStatus").textContent="Optional · PNG, JPEG, WebP or GIF · 
 }
 
 $("serviceForm").onsubmit=async e=>{
-e.preventDefault();if(serviceLogoUploadBusy){toast("Wait for the image operation to finish.");return}
+e.preventDefault();if(serviceLogoUploadBusy){toast("Wait for the image operation to finish.");return}serviceLogoUploadBusy=true;
 const originalPage=page,wasOnManagePage=(page==="category"||page==="tag")&&reorderEnabled,originalCategory=current,originalTag=activeTag,wasEditMode=reorderEnabled;
 let id=$("serviceId").value;
 const existing=services.find(s=>String(s.id)===String(id));
