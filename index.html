@@ -230,6 +230,11 @@
 .service-dot-icon img,.service-dot-icon .custom-svg,.service-dot-icon .icon-fallback{display:block;width:29px;height:29px;object-fit:contain}
 .service-dot-icon .icon-fallback{display:grid;place-items:center;font-size:22px}
 .service-dot-label{width:100%;min-width:0;color:var(--body);font-size:10px;font-weight:600;line-height:1.3;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.service-card-category{display:flex;align-items:center;gap:5px;min-width:0;margin:4px 0 0;line-height:1.3}
+.service-card-category-prefix{flex:0 0 auto;color:var(--muted);font-size:9px;font-weight:750;letter-spacing:.55px;text-transform:uppercase}
+.service-card-category-value{min-width:0;color:var(--green);font-size:11px;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.service-dot-category{max-width:100%;display:block;color:var(--green);font-size:8px;line-height:1.3;font-weight:650;overflow-wrap:anywhere}
+.service-dot-category span{color:var(--muted);font-size:7px;font-weight:750;letter-spacing:.4px;text-transform:uppercase}
 .service-dot-favorite{position:absolute;top:4px;right:6px;z-index:1;width:22px;height:22px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--panel);color:#E8B84A;font-size:13px;line-height:1;cursor:pointer}
 .service-dot-actions{display:flex;justify-content:center;gap:3px;margin-top:1px}
 .service-dot-actions .icon-action{width:24px;height:24px;min-width:24px;padding:4px}
@@ -1334,9 +1339,9 @@ return '<button type="button" class="secondary icon-action" data-'+action+'="'+s
 }
 function renderServiceCards(items,manage){
 if(!items.length)return '<div class="empty">No services match this view. Try another search or category.</div>';
-const slim=density==="slim",orderable=!!manage&&page==="category"&&!$("search").value.trim();
+const queryActive=!!$("search").value.trim(),slim=density==="slim",orderable=!!manage&&page==="category"&&!queryActive;
 return '<div class="grid '+(slim?"slim":"")+'">'+items.map(s=>{
-const category=slim?"":'<div class="service-desc" style="margin:2px 0 0;min-height:0">'+safe(s.category)+'</div>';
+const category=queryActive?'<div class="service-card-category"><span class="service-card-category-prefix">Category</span><span class="service-card-category-value">'+safe(s.category)+'</span></div>':slim?"":'<div class="service-desc" style="margin:2px 0 0;min-height:0">'+safe(s.category)+'</div>';
 const details=slim?(preferences.showSlimDescriptions?'<div class="service-desc slim-card-description">'+safe(s.description||"")+'</div>':""):'<div class="service-desc">'+safe(s.description||"")+'</div><div class="tags">'+(s.tags||[]).map(tagHtml).join("")+'</div>';
 const actions=manage?'<span class="manage-actions">'+serviceActionIcon("edit",s.id,s.name)+serviceActionIcon("duplicate",s.id,s.name)+serviceActionIcon("delete",s.id,s.name)+'</span>':"";
 const actionRow=manage?'<div class="card-actions '+(slim?"slim-card-actions":"")+'">'+actions+'</div>':"";
@@ -1346,9 +1351,11 @@ return '<article class="card '+(slim?"slim-card ":"")+(orderable?"orderable-card
 }
 function renderServiceDots(items,manage=false){
 if(!items.length)return '<div class="empty">No services match this view. Try another search or category.</div>';
+const queryActive=!!$("search").value.trim();
 return '<div class="service-dot-grid">'+items.map(s=>{
 const actions=manage?'<div class="service-dot-actions">'+serviceActionIcon("edit",s.id,s.name)+serviceActionIcon("duplicate",s.id,s.name)+serviceActionIcon("delete",s.id,s.name)+'</div>':"";
-return '<article class="service-dot-card" data-open="'+safe(s.id)+'" tabindex="0" aria-label="Open service '+safe(s.name)+'" title="Open '+safe(s.name)+'"><button type="button" class="service-dot-favorite" data-fav="'+safe(s.id)+'" title="'+(s.favorite?"Remove from":"Add to")+' favorites" aria-label="'+(s.favorite?"Remove from":"Add to")+' favorites: '+safe(s.name)+'">'+(s.favorite?"★":"☆")+'</button><div class="service-dot-icon">'+serviceIconHtml(s)+'</div><span class="service-dot-label">'+safe(s.name)+'</span>'+actions+'</article>';
+const category=queryActive?'<span class="service-dot-category"><span>Category</span> '+safe(s.category)+'</span>':"";
+return '<article class="service-dot-card" data-open="'+safe(s.id)+'" tabindex="0" aria-label="Open service '+safe(s.name)+'" title="Open '+safe(s.name)+'"><button type="button" class="service-dot-favorite" data-fav="'+safe(s.id)+'" title="'+(s.favorite?"Remove from":"Add to")+' favorites" aria-label="'+(s.favorite?"Remove from":"Add to")+' favorites: '+safe(s.name)+'">'+(s.favorite?"★":"☆")+'</button><div class="service-dot-icon">'+serviceIconHtml(s)+'</div><span class="service-dot-label">'+safe(s.name)+'</span>'+category+actions+'</article>';
 }).join("")+'</div>';
 }
 function renderServiceTable(items,manage,orderable=false){
