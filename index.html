@@ -24,10 +24,10 @@
 .nav.active .ico{background:var(--nav-tone);color:#102019;box-shadow:0 3px 10px color-mix(in srgb,var(--nav-tone) 22%,transparent)}
 .nav .count{margin-left:auto;min-width:28px;text-align:center;background:var(--nav-wash);color:var(--nav-tone);font-size:10px;font-weight:750;line-height:1;padding:5px 8px;border-radius:999px;font-variant-numeric:tabular-nums}
 .nav.active .count{background:var(--nav-wash);color:var(--nav-tone)}
-.nav[data-page="home"]{--nav-tone:#F0B45A;--nav-wash:rgba(240,180,90,.14)}
+
 .nav[data-page="all"]{--nav-tone:#8b83ff;--nav-wash:rgba(139,131,255,.14)}
-.nav[data-page="favorites"]{--nav-tone:#f6bd3b;--nav-wash:rgba(246,189,59,.14)}
-.nav[data-page="favorites"] .ico svg path{fill:currentColor}
+.nav[data-page="favorites"]{--nav-tone:#F0B45A;--nav-wash:rgba(240,180,90,.14)}
+
 .nav[data-cat="My Projects"]{--nav-tone:#a879ff;--nav-wash:rgba(168,121,255,.14)}
 .nav[data-cat="Cloudflare"]{--nav-tone:#ff914d;--nav-wash:rgba(255,145,77,.14)}
 .nav[data-cat="Infrastructure"]{--nav-tone:#50aaff;--nav-wash:rgba(80,170,255,.14)}
@@ -1291,20 +1291,15 @@ a:focus-visible{
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
 <div class="group-label">Workspace</div>
-<button class="nav active" data-page="home" title="Home"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/></svg></span><span>Home</span></button>
+<button class="nav" data-page="favorites" title="Home"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/></svg></span><span>Home</span><span class="count" id="favoritesCount">0</span></button>
 <button class="nav" data-page="all" title="All services"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/></svg></span><span>All services</span><span class="count" id="allServicesCount">0</span></button>
-<button class="nav" data-page="favorites" title="Favorites"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3Z"/></svg></span><span>Favorites</span><span class="count" id="favoritesCount">0</span></button>
 
 
 <button type="button" class="group-label sidebar-section-toggle" id="toggleCategoriesSection" aria-expanded="true"><span>Categories</span><span class="sidebar-section-chevron" aria-hidden="true">⌄</span></button><div id="categorySectionContent"><div id="categoryNav"></div><button type="button" class="nav tag-more-toggle" id="showMoreCategories" hidden>Show all categories</button></div><button type="button" class="group-label sidebar-section-toggle tag-nav-heading" id="toggleTagsSection" aria-expanded="true"><span>Tags</span><span class="sidebar-section-chevron" aria-hidden="true">⌄</span></button><div id="tagSectionContent"><div id="tagNav"></div><button type="button" class="nav tag-more-toggle" id="showMoreTags" hidden>Show more tags</button></div><div class="bottom">
 <button class="nav" data-page="admin" title="Administration"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m8.5 12 2.3 2.3 4.8-5"/></svg></span><span>Admin</span></button><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.68</div></div></aside>
 <main class="main"><header class="topbar"><button class="iconbtn" id="collapse" title="Collapse sidebar" aria-label="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="m14 7-5 5 5 5"/></svg></button><div class="search"><span class="search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="search" placeholder="Search all services across this profile..." aria-label="Search all services"></div><div class="top-actions"><button class="iconbtn" id="theme" title="Toggle theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg></button><button class="iconbtn help" id="help" title="About" aria-label="About"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button><button class="nav" id="profileToggle" title="Switch profile" style="font-size:11px;padding:4px 10px;border-radius:8px;min-width:auto;">Personal</button></div></header>
 <div class="content">
-<section id="homePage">
-  <div class="pagehead"><div><div class="eyebrow">WORKSPACE / OVERVIEW</div><h1>Welcome back</h1><p>Your favorite services, all in one place.</p></div></div>
-  <div class="section-title"><h2>Favorites</h2></div>
-  <div id="homeFavoriteCards"></div>
-</section>
+
 <section id="catalogPage" hidden><div class="pagehead catalog-pagehead"><div class="catalog-heading-copy"><div class="eyebrow" id="catalogEyebrow">SERVICE CATALOG</div><h1 id="heading">Browse by category</h1><p id="catalogDescription">Open a category to browse and manage its services.</p></div><div class="catalog-head-actions">
   <button type="button" class="catalog-controls-toggle" id="catalogControlsToggle" aria-expanded="false" aria-controls="catalogControlsPanel">
     <span class="catalog-controls-toggle-icon" aria-hidden="true"><svg viewBox="0 0 20 20" focusable="false"><path d="M3 5h14M5.5 10h9M8 15h4"/><circle cx="7" cy="5" r="1.5"/><circle cx="12.5" cy="10" r="1.5"/></svg></span>
@@ -1373,7 +1368,7 @@ a:focus-visible{
         <h2>Appearance & behavior</h2><p class="settings-help">Set the theme and how the portal opens on your next visit.</p>
         <div class="settings-fields">
           <div class="settings-field"><label for="themeSetting">Color theme</label><select id="themeSetting"><option value="dark">Dark · deep green</option><option value="light">Light · deep green</option></select></div>
-          <div class="settings-field"><label for="landingSetting">Default page</label><select id="landingSetting"><option value="home">Home</option><option value="favorites">Favorites</option><option value="all">All services</option></select></div>
+          <div class="settings-field"><label for="landingSetting">Default page</label><select id="landingSetting"><option value="favorites">Home</option><option value="all">All services</option></select></div>
           <div class="settings-field full"><label for="defaultViewSetting">Default service layout</label><select id="defaultViewSetting"><option value="list">Compact list</option><option value="cards">Regular cards</option><option value="slim">Slim cards</option><option value="dots">Dot mode</option></select></div>
           <div class="settings-field full"><label for="serviceImageSizeSetting">Service logo size <span id="serviceImageSizeValue">34 px</span></label><div class="service-image-size-control"><input id="serviceImageSizeSetting" type="range" min="20" max="64" step="2" value="34" aria-label="Service logo size in pixels"><div class="service-logo-preview service-image-size-preview" id="serviceImageSizePreview"><span id="serviceImageSizePreviewFallback">🔧</span><img id="serviceImageSizePreviewImage" alt="" hidden></div></div><p class="settings-help">Adjusts uploaded logos and built-in icons across regular cards, Slim cards, compact rows, and the service editor preview. Original uploaded files remain unchanged.</p></div>
         </div>
@@ -1464,7 +1459,7 @@ a:focus-visible{
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.68";
+const APP_VERSION="0.1.69";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -1568,11 +1563,11 @@ const seed=[
 {id:11,name:"Proxmox",icon:"🖥️",description:"Virtualization platform",category:"Infrastructure",tags:["Infrastructure","VMs"],url:"https://proxmox.example",favorite:true},
 {id:12,name:"TrueNAS",icon:"🗄️",description:"File storage",category:"Infrastructure",tags:["Infrastructure","Storage"],url:"https://truenas.example",favorite:false}
 ];
-let services=structuredClone(seed),favoritesOrder=[],current="All",view="list",density="regular",page="home",nextId=13,reorderEnabled=false,catalogControlsExpanded=false;
+let services=structuredClone(seed),favoritesOrder=[],current="All",view="list",density="regular",page="favorites",nextId=13,reorderEnabled=false,catalogControlsExpanded=false;
 let currentProfile=1,sidebarCategoriesExpanded=false,localViewPreference=false,searchReturnPage=null; // 1=Personal, 2=Work
 let profileLoadToken=0,taxonomyLoadToken=0,dataProfileId=1;
 let branding={name:"Luxorit",subtitle:"Pro",logo:""};
-let preferences={theme:"dark",landingPage:"home",defaultView:"list",sidebarCollapsed:false,sidebarCategoriesCollapsed:false,sidebarTagsCollapsed:false,showCardDescriptions:false,showSlimDescriptions:false,serviceImageSize:34};
+let preferences={theme:"dark",landingPage:"favorites",defaultView:"list",sidebarCollapsed:false,sidebarCategoriesCollapsed:false,sidebarTagsCollapsed:false,showCardDescriptions:false,showSlimDescriptions:false,serviceImageSize:34};
 function normalizeServiceImageSize(value){
  const size=Number(value);
  return value==null||!Number.isFinite(size)?34:Math.min(64,Math.max(20,Math.round(size/2)*2));
@@ -1822,7 +1817,7 @@ function bindProfileSwitcher(){
     if($("categoryFilter"))$("categoryFilter").value="";
     if($("tagFilter"))$("tagFilter").value="";
     activeTag=null;sidebarTagsExpanded=false;sidebarCategoriesExpanded=false;reorderEnabled=false;
-    current="All";page=preferences.landingPage==="favorites"?"favorites":preferences.landingPage==="all"?"all":"home";searchReturnPage=null;
+    current="All";page=preferences.landingPage==="all"?"all":"favorites";searchReturnPage=null;
     restoreProfileCache(currentProfile);
     persist();render();
     setD1Status("checking","Loading "+(currentProfile===1?"Personal":"Work")+" profile data…",{serviceCount:null,categoryCount:null,tagCount:null});
@@ -1882,7 +1877,7 @@ async function loadRemoteData(profileId=currentProfile){
   services=remoteServices.map(s=>({...s,id:Number(s.id),favorite:!!s.favorite,tags:Array.isArray(s.tags)?s.tags:[]}));favoritesOrder=remoteFavoriteOrder.order.map(Number).filter(Number.isSafeInteger);
   categoryRecords=remoteCategories;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;
   branding={...branding,...(remoteSettings.branding||{})};persistedBrandingLogoKey=branding.logoKey||null;
-  const remotePreferences=remoteSettings.preferences||{};preferences={...preferences,...remotePreferences,showCardDescriptions:typeof remotePreferences.showCardDescriptions==="boolean"?remotePreferences.showCardDescriptions:typeof remotePreferences.showSlimDescriptions==="boolean"?remotePreferences.showSlimDescriptions:!!preferences.showCardDescriptions};
+  const remotePreferences=remoteSettings.preferences||{};preferences={...preferences,...remotePreferences,showCardDescriptions:typeof remotePreferences.showCardDescriptions==="boolean"?remotePreferences.showCardDescriptions:typeof remotePreferences.showSlimDescriptions==="boolean"?remotePreferences.showSlimDescriptions:!!preferences.showCardDescriptions};preferences.landingPage=preferences.landingPage==="all"?"all":"favorites";
    if(!localViewPreference){view=preferences.defaultView==="list"?"list":preferences.defaultView==="dots"?"dots":"cards";density=preferences.defaultView==="slim"?"slim":"regular"}
   document.documentElement.dataset.theme=preferences.theme||"dark";
   dataProfileId=profileId;apiConnected=true;apiError="";
@@ -1928,7 +1923,7 @@ function load(){
  if(d){
   if(d.currentProfile===1||d.currentProfile===2)currentProfile=d.currentProfile;
   if(["list","cards","dots"].includes(d.view)){view=d.view;localViewPreference=true}if(d.density)density=d.density;if(d.theme)document.documentElement.dataset.theme=d.theme;
-  if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences,showCardDescriptions:typeof d.preferences.showCardDescriptions==="boolean"?d.preferences.showCardDescriptions:typeof d.preferences.showSlimDescriptions==="boolean"?d.preferences.showSlimDescriptions:false};
+  if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences,showCardDescriptions:typeof d.preferences.showCardDescriptions==="boolean"?d.preferences.showCardDescriptions:typeof d.preferences.showSlimDescriptions==="boolean"?d.preferences.showSlimDescriptions:false};preferences.landingPage=preferences.landingPage==="all"?"all":"favorites";
   // The former shared services cache had no reliable profile owner, so never reuse it across profiles.
   restoreProfileCache(currentProfile);
  }else dataProfileId=currentProfile;
@@ -1967,7 +1962,7 @@ $("toggleTagsSection").querySelector(".sidebar-section-chevron").textContent=tag
 $("toggleTagsSection").title=tagsCollapsed?"Expand tags":"Collapse tags";
 updateActiveNavigation()
 }
-function showPage(){["homePage","catalogPage","adminPage","settingsPage"].forEach(id=>$(id).hidden=true);const target=page==="home"?"homePage":page==="settings"?"settingsPage":page==="admin"?"adminPage":"catalogPage";$(target).hidden=false;updateActiveNavigation()}
+function showPage(){["catalogPage","adminPage","settingsPage"].forEach(id=>$(id).hidden=true);const target=page==="settings"?"settingsPage":page==="admin"?"adminPage":"catalogPage";$(target).hidden=false;updateActiveNavigation()}
 function navigatePage(target){if(page==="settings"&&target!=="settings")discardUncommittedBrandingLogo();$("search").value="";searchReturnPage=null;page=target;activeTag=null;if(target==="favorites")current="Favorites";else if(target==="home"||target==="all")current="All";if(target==="admin")adminTab="categories";reorderEnabled=false;render()}
 function navigateCategory(category){if(page==="settings")discardUncommittedBrandingLogo();$("search").value="";searchReturnPage=null;page="category";current=category;activeTag=null;reorderEnabled=false;render()}
 function navigateTag(tag){if(page==="settings")discardUncommittedBrandingLogo();$("search").value="";searchReturnPage=null;page="tag";activeTag=tag;current="All";reorderEnabled=false;render()}
@@ -2014,22 +2009,21 @@ const action=manage?serviceActionIcon("edit",s.id,s.name)+serviceActionIcon("dup
 return '<tr '+(canDrag?'data-order-id="'+safe(s.id)+'" class="orderable-card"':'')+'><td><span class="table-service-icon">'+serviceIconHtml(s)+'</span>'+handle+safe(s.name)+'</td><td>'+safe(s.category)+'</td><td>'+(s.tags||[]).map(tagHtml).join("")+'</td><td><a href="'+safe(s.url)+'" target="_blank" rel="noopener">Open ↗</a></td><td class="action-cell"><div class="action-group">'+action+'</div></td></tr>';
 }).join("")+'</tbody></table>';
 }
-function renderHome(){const favorites=services.filter(s=>s.favorite&&matchesSearch(s)),host=$("homeFavoriteCards");host.classList.toggle("home-favorites-list",view==="list");host.innerHTML=view==="cards"?renderServiceCards(favorites,false):view==="dots"?renderServiceDots(favorites):renderServiceTable(favorites,false)}
 function renderCatalog(){
 const queryActive=!!$("search").value.trim();
 const items=filtered(),isCategory=page==="category",isFavorites=page==="favorites",isTag=page==="tag",isAll=page==="all";
-$("catalogEyebrow").textContent=queryActive?"SEARCH RESULTS":isFavorites?"WORKSPACE / FAVORITES":isAll?"WORKSPACE / ALL SERVICES":isTag?"TAG FILTER / CATALOG":"SERVICE CATEGORY / MANAGEMENT";
-$("heading").textContent=queryActive?"Search Results":isFavorites?"Favorites":isAll?"All services":isTag?"Tag: "+activeTag:current+" Services";
-$("catalogDescription").textContent=queryActive?"Search results across this profile.":isFavorites?"Your favorites use the selected layout.":isAll?"Browse every service in this profile.":isTag?'Services tagged "'+activeTag+'". Use Edit mode to edit, duplicate, or delete matching services.':"Browse services in "+current+". Use Edit mode to add, edit, duplicate, delete, or reorder services in this category.";
+$("catalogEyebrow").textContent=queryActive?"SEARCH RESULTS":isFavorites?"WORKSPACE / HOME":isAll?"WORKSPACE / ALL SERVICES":isTag?"TAG FILTER / CATALOG":"SERVICE CATEGORY / MANAGEMENT";
+$("heading").textContent=queryActive?"Search Results":isFavorites?"Welcome back":isAll?"All services":isTag?"Tag: "+activeTag:current+" Services";
+$("catalogDescription").textContent=queryActive?"Search results across this profile.":isFavorites?"Your favorite services, all in one place.":isAll?"Browse every service in this profile.":isTag?'Services tagged "'+activeTag+'". Use Edit mode to edit, duplicate, or delete matching services.':"Browse services in "+current+". Use Edit mode to add, edit, duplicate, delete, or reorder services in this category.";
 $("add").hidden=!(isCategory&&reorderEnabled&&!queryActive);
 $("add").textContent="＋ Add service";
 const tagFilters=tagRecords.filter(tag=>Number(tag.serviceCount??tag.service_count??0)>0).slice().sort((a,b)=>(Number(b.serviceCount??b.service_count)||0)-(Number(a.serviceCount??a.service_count)||0)||a.name.localeCompare(b.name));
-const filterOptions=[{label:"Favorites",value:"Favorites",type:"favorites"},...tagFilters.map(tag=>({label:tag.name,value:"tag:"+tag.name,type:"tag"}))];
+const filterOptions=[...(isFavorites?[]:[{label:"Favorites",value:"Favorites",type:"favorites"}]),...tagFilters.map(tag=>({label:tag.name,value:"tag:"+tag.name,type:"tag"}))];
 $("chips").innerHTML=filterOptions.map(option=>{
 const active=!queryActive&&(option.type==="favorites"?isFavorites:(isTag&&activeTag===option.label));
 return '<button class="chip '+(active?"active":"")+'" data-chip="'+safe(option.value)+'"'+(option.type==="tag"?' aria-label="Filter by tag '+safe(option.label)+'"':"")+'>'+(option.type==="tag"?'<span class="tag-chip-mark" aria-hidden="true">#</span>':"")+safe(option.label)+'</button>';
 }).join("");
-const filterSummary=queryActive?"Global search":isFavorites?"Favorites":isTag?"# "+activeTag:"All tags";
+const filterSummary=queryActive?"Global search":isFavorites?"Home":isTag?"# "+activeTag:"All tags";
 const layoutSummary=view==="list"?"Compact list":view==="dots"?"Dot mode":density==="slim"?"Slim cards":"Regular cards";
 $("catalogControlsSummary").textContent=filterSummary+" · "+layoutSummary;
 const controlsPanel=$("catalogControlsPanel"),controlsToggle=$("catalogControlsToggle");
@@ -2353,8 +2347,8 @@ document.querySelectorAll("[data-admin-tab]").forEach(button=>{const active=butt
 if(adminTab==="categories")renderCategoryManager();if(adminTab==="tags")renderTagManager();
 }
 function setAdminTab(tab){if(!["categories","tags"].includes(tab))return;adminTab=tab;page="admin";showPage();renderAdminPage();bindRenderedActions();void refreshTaxonomy(false,currentProfile)}
-function renderSettings(){$("brandingName").value=branding.name||"Luxorit";$("brandingSubtitle").value=branding.subtitle||"";$("brandingLogo").value=branding.logo||"";$("themeSetting").value=document.documentElement.dataset.theme||"dark";$("landingSetting").value=preferences.landingPage||"home";$("defaultViewSetting").value=preferences.defaultView||"list";$("serviceImageSizeSetting").value=normalizeServiceImageSize(preferences.serviceImageSize);renderServiceImageSizePreview(preferences.serviceImageSize);$("showCardDescriptionsSetting").checked=!!preferences.showCardDescriptions;$("sidebarCollapsedSetting").checked=!!preferences.sidebarCollapsed;$("settingsVersion").textContent=APP_VERSION;applyBranding();renderD1Status();renderR2Status()}
-function render(){applyServiceImageSize(preferences.serviceImageSize);nav();showPage();if(page==="home")renderHome();else if(page==="settings")renderSettings();else if(page==="admin")renderAdminPage();else renderCatalog();$("versionLabel").textContent="v"+APP_VERSION;applyBranding();bindRenderedActions();persist()}
+function renderSettings(){$("brandingName").value=branding.name||"Luxorit";$("brandingSubtitle").value=branding.subtitle||"";$("brandingLogo").value=branding.logo||"";$("themeSetting").value=document.documentElement.dataset.theme||"dark";$("landingSetting").value=preferences.landingPage==="all"?"all":"favorites";$("defaultViewSetting").value=preferences.defaultView||"list";$("serviceImageSizeSetting").value=normalizeServiceImageSize(preferences.serviceImageSize);renderServiceImageSizePreview(preferences.serviceImageSize);$("showCardDescriptionsSetting").checked=!!preferences.showCardDescriptions;$("sidebarCollapsedSetting").checked=!!preferences.sidebarCollapsed;$("settingsVersion").textContent=APP_VERSION;applyBranding();renderD1Status();renderR2Status()}
+function render(){applyServiceImageSize(preferences.serviceImageSize);nav();showPage();if(page==="settings")renderSettings();else if(page==="admin")renderAdminPage();else renderCatalog();$("versionLabel").textContent="v"+APP_VERSION;applyBranding();bindRenderedActions();persist()}
 function renderServiceLogoPreview(source,fallback="🔧"){
 const image=$("serviceLogoImage"),text=$("serviceLogoFallback");
 if(source){image.src=source;image.hidden=false;text.hidden=true;image.onerror=()=>{image.hidden=true;text.hidden=false}}
@@ -2425,7 +2419,7 @@ if(apiConnected){
   else{services.unshift(item);nextId=Math.max(nextId,Number(item.id)+1)}
 }
 closeServiceModal();
-if(wasOnManagePage){if(originalPage==="tag"){page="tag";activeTag=originalTag;current="All"}else{page="category";current=originalCategory}reorderEnabled=wasEditMode}else{page="home";current="All";reorderEnabled=false}
+if(wasOnManagePage){if(originalPage==="tag"){page="tag";activeTag=originalTag;current="All"}else{page="category";current=originalCategory}reorderEnabled=wasEditMode}else{page="favorites";current="All";reorderEnabled=false}
 render();toast(apiConnected?(selectedFile?"Service and image saved to database":id?"Service saved to database":"Service added to database"):(id?"Service saved locally only":"Service added locally only"));
 }catch(error){
  if(newUploadedKey)await deleteUploadedImage(newUploadedKey);
@@ -2434,15 +2428,7 @@ render();toast(apiConnected?(selectedFile?"Service and image saved to database":
  toast((id?"Service details saved, but image update failed: ":"Could not save service: ")+(error.message||"database error"));
 }
 };
-$("cancel").onclick=()=>closeServiceModal();$("add").onclick=()=>{if(page==="category"&&reorderEnabled)openModal(null,current)};$("search").oninput=()=>{
- const query=$("search").value.trim();
- if(query&&page==="home"){
-  searchReturnPage="home";page="all";current="All";activeTag=null;reorderEnabled=false;catalogControlsExpanded=false;
- }
-if(!query&&page==="all"&&searchReturnPage==="home"){page="home";searchReturnPage=null;current="All";activeTag=null;reorderEnabled=false}
- if(reorderEnabled&&query)reorderEnabled=false;
- render();
-};
+$("cancel").onclick=()=>closeServiceModal();$("add").onclick=()=>{if(page==="category"&&reorderEnabled)openModal(null,current)};$("search").oninput=()=>{if(reorderEnabled&&$("search").value.trim())reorderEnabled=false;render()};
 $("reorderToggle").onclick=()=>{if(page!=="category"&&page!=="tag"&&page!=="favorites")return;if(!reorderEnabled&&$("search").value.trim()){toast("Clear the global search before reordering.");return}reorderEnabled=!reorderEnabled;render();toast(reorderEnabled?(page==="favorites"?"Drag favorite services to change their order":page==="tag"?"Edit mode enabled for tag: "+activeTag:"Edit mode enabled for "+current):(page==="favorites"?"Favorites reordering finished":"Edit mode finished"))};
 $("catalogControlsToggle").onclick=()=>{
  catalogControlsExpanded=!catalogControlsExpanded;
@@ -2482,7 +2468,7 @@ updateProfileUI();
 bindProfileSwitcher();
 loadRemoteData();
 $("export").onclick=async()=>{try{let backup;if(apiConnected){backup=await apiRequest("backup")}else{backup={schemaVersion:1,exportedAt:new Date().toISOString(),source:"browser-local",version:APP_VERSION,services,categories:[...new Map(services.map(s=>[s.category,{name:s.category,icon:"grid"}])).values()],branding,preferences,theme:document.documentElement.dataset.theme}}const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:"application/json"}));a.download="dashboard-manager-portal-backup-"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast(apiConnected?"Shared D1 backup exported":"Browser-only backup exported, D1 is not connected")}catch(error){toast("Backup export failed: "+(error.message||"database error"))}};
-$("import").onclick=()=>$("importFile").click();$("importFile").onchange=async e=>{try{const file=e.target.files&&e.target.files[0];if(!file)return;const d=JSON.parse(await file.text());if(!d||!Array.isArray(d.services))throw Error("Backup must contain a services array");if(d.services.length>200)throw Error("Backups can contain at most 200 services");if(apiConnected){const proceed=await confirmInApp({title:"Restore shared database backup?",message:"This will replace the current services, categories, tags, branding, and preferences in the shared database. Export a backup first if you need to keep the current data.",confirmLabel:"Restore database"});if(!proceed)return;const result=await apiRequest("backup",{method:"POST",body:JSON.stringify(d)});await loadRemoteData();page="home";current="All";render();toast("D1 restored: "+result.serviceCount+" services, "+result.categoryCount+" categories")}else{const proceed=await confirmInApp({title:"Import browser-only backup?",message:"The shared database is not connected. This imports the backup into this browser only and will not update D1.",confirmLabel:"Import backup"});if(!proceed)return;services=d.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences,showCardDescriptions:typeof d.preferences.showCardDescriptions==="boolean"?d.preferences.showCardDescriptions:typeof d.preferences.showSlimDescriptions==="boolean"?d.preferences.showSlimDescriptions:false};if(d.theme)document.documentElement.dataset.theme=d.theme;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;page="home";current="All";render();toast("Backup imported into this browser only")}}catch(error){toast("Could not restore backup: "+(error.message||"invalid JSON"))}finally{e.target.value=""}};
+$("import").onclick=()=>$("importFile").click();$("importFile").onchange=async e=>{try{const file=e.target.files&&e.target.files[0];if(!file)return;const d=JSON.parse(await file.text());if(!d||!Array.isArray(d.services))throw Error("Backup must contain a services array");if(d.services.length>200)throw Error("Backups can contain at most 200 services");if(apiConnected){const proceed=await confirmInApp({title:"Restore shared database backup?",message:"This will replace the current services, categories, tags, branding, and preferences in the shared database. Export a backup first if you need to keep the current data.",confirmLabel:"Restore database"});if(!proceed)return;const result=await apiRequest("backup",{method:"POST",body:JSON.stringify(d)});await loadRemoteData();page="favorites";current="All";render();toast("D1 restored: "+result.serviceCount+" services, "+result.categoryCount+" categories")}else{const proceed=await confirmInApp({title:"Import browser-only backup?",message:"The shared database is not connected. This imports the backup into this browser only and will not update D1.",confirmLabel:"Import backup"});if(!proceed)return;services=d.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences,showCardDescriptions:typeof d.preferences.showCardDescriptions==="boolean"?d.preferences.showCardDescriptions:typeof d.preferences.showSlimDescriptions==="boolean"?d.preferences.showSlimDescriptions:false};preferences.landingPage=preferences.landingPage==="all"?"all":"favorites";if(d.theme)document.documentElement.dataset.theme=d.theme;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;page="favorites";current="All";render();toast("Backup imported into this browser only")}}catch(error){toast("Could not restore backup: "+(error.message||"invalid JSON"))}finally{e.target.value=""}};
 $("help").onclick=()=>toast("Dashboard Manager Portal. Version "+APP_VERSION+". Catalog changes save to shared D1 when connected.");
 $("brandingName").addEventListener("input",()=>{$("settingsBrandPreview").textContent=($("brandingName").value||"Luxorit")+(($("brandingSubtitle").value)?" "+$("brandingSubtitle").value:"")});
 $("brandingSubtitle").addEventListener("input",()=>{$("settingsBrandPreview").textContent=($("brandingName").value||"Luxorit")+(($("brandingSubtitle").value)?" "+$("brandingSubtitle").value:"")});
@@ -2551,4 +2537,4 @@ $("sidebar").classList.toggle("collapsed",preferences.sidebarCollapsed);updateCo
 $("resetBranding").onclick=()=>{branding={name:"Luxorit",subtitle:"Pro",logo:"",logoKey:null};if(brandingLogoPreviewUrl){URL.revokeObjectURL(brandingLogoPreviewUrl);brandingLogoPreviewUrl=null}renderSettings();toast("Branding reset. Save settings to keep it.")};
 $("themeSetting").onchange=()=>{document.documentElement.dataset.theme=$("themeSetting").value};
 $("serviceImageSizeSetting").oninput=()=>renderServiceImageSizePreview($("serviceImageSizeSetting").value);
-load();preferences.theme=document.documentElement.dataset.theme||preferences.theme;updateProfileUI();page=["home","favorites","all"].includes(preferences.landingPage)?preferences.landingPage:"home";view=preferences.defaultView==="cards"||preferences.defaultView==="slim"?"cards":"list";density=preferences.defaultView==="slim"?"slim":"regular";$("sidebar").classList.toggle("collapsed",!!preferences.sidebarCollapsed);render();loadRemoteData();refreshTaxonomy(false);checkPagesDeployment(false);checkR2Connection(false);refreshAccessApps(false);</script></body></html>
+load();preferences.theme=document.documentElement.dataset.theme||preferences.theme;updateProfileUI();preferences.landingPage=preferences.landingPage==="all"?"all":"favorites";page=preferences.landingPage;view=preferences.defaultView==="cards"||preferences.defaultView==="slim"?"cards":"list";density=preferences.defaultView==="slim"?"slim":"regular";$("sidebar").classList.toggle("collapsed",!!preferences.sidebarCollapsed);render();loadRemoteData();refreshTaxonomy(false);checkPagesDeployment(false);checkR2Connection(false);refreshAccessApps(false);</script></body></html>
