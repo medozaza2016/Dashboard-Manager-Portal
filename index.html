@@ -1282,6 +1282,11 @@ a:focus-visible{
   color:#1B2028!important;
 }
 
+.service-dot-card.orderable-card{cursor:grab}
+.service-dot-card.orderable-card.dragging{opacity:.4}
+.service-dot-card.orderable-card.drag-over{outline:2px solid var(--green);outline-offset:-2px}
+.service-dot-drag-handle{position:absolute;top:5px;left:5px;z-index:2;width:22px;height:22px;min-width:22px;flex:0 0 22px;border-radius:6px;font-size:14px;opacity:.9}
+.service-dot-drag-handle:active{cursor:grabbing}
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
@@ -1292,7 +1297,7 @@ a:focus-visible{
 
 
 <button type="button" class="group-label sidebar-section-toggle" id="toggleCategoriesSection" aria-expanded="true"><span>Categories</span><span class="sidebar-section-chevron" aria-hidden="true">⌄</span></button><div id="categorySectionContent"><div id="categoryNav"></div><button type="button" class="nav tag-more-toggle" id="showMoreCategories" hidden>Show all categories</button></div><button type="button" class="group-label sidebar-section-toggle tag-nav-heading" id="toggleTagsSection" aria-expanded="true"><span>Tags</span><span class="sidebar-section-chevron" aria-hidden="true">⌄</span></button><div id="tagSectionContent"><div id="tagNav"></div><button type="button" class="nav tag-more-toggle" id="showMoreTags" hidden>Show more tags</button></div><div class="bottom">
-<button class="nav" data-page="admin" title="Administration"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m8.5 12 2.3 2.3 4.8-5"/></svg></span><span>Admin</span></button><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.67</div></div></aside>
+<button class="nav" data-page="admin" title="Administration"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m8.5 12 2.3 2.3 4.8-5"/></svg></span><span>Admin</span></button><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.68</div></div></aside>
 <main class="main"><header class="topbar"><button class="iconbtn" id="collapse" title="Collapse sidebar" aria-label="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="m14 7-5 5 5 5"/></svg></button><div class="search"><span class="search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="search" placeholder="Search all services across this profile..." aria-label="Search all services"></div><div class="top-actions"><button class="iconbtn" id="theme" title="Toggle theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg></button><button class="iconbtn help" id="help" title="About" aria-label="About"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button><button class="nav" id="profileToggle" title="Switch profile" style="font-size:11px;padding:4px 10px;border-radius:8px;min-width:auto;">Personal</button></div></header>
 <div class="content">
 <section id="homePage">
@@ -1459,7 +1464,7 @@ a:focus-visible{
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.67";
+const APP_VERSION="0.1.68";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -1563,7 +1568,7 @@ const seed=[
 {id:11,name:"Proxmox",icon:"🖥️",description:"Virtualization platform",category:"Infrastructure",tags:["Infrastructure","VMs"],url:"https://proxmox.example",favorite:true},
 {id:12,name:"TrueNAS",icon:"🗄️",description:"File storage",category:"Infrastructure",tags:["Infrastructure","Storage"],url:"https://truenas.example",favorite:false}
 ];
-let services=structuredClone(seed),current="All",view="list",density="regular",page="home",nextId=13,reorderEnabled=false,catalogControlsExpanded=false;
+let services=structuredClone(seed),favoritesOrder=[],current="All",view="list",density="regular",page="home",nextId=13,reorderEnabled=false,catalogControlsExpanded=false;
 let currentProfile=1,sidebarCategoriesExpanded=false,localViewPreference=false,searchReturnPage=null; // 1=Personal, 2=Work
 let profileLoadToken=0,taxonomyLoadToken=0,dataProfileId=1;
 let branding={name:"Luxorit",subtitle:"Pro",logo:""};
@@ -1830,7 +1835,7 @@ function bindProfileSwitcher(){
 }
 
 async function apiRequest(path,options={},profileOverride=currentProfile){
-  const profileEndpoints = ["services","categories","tags","categories-manage"];
+  const profileEndpoints = ["services","categories","tags","categories-manage","favorites-order"];
   const needsProfile = profileEndpoints.some(p => path === p || path.startsWith(p + "?") || path.startsWith(p + "&"));
   const profileParam = needsProfile ? `profile=${profileOverride}` : '';
   const separator = path.includes('?') ? '&' : '?';
@@ -1867,14 +1872,14 @@ async function runServiceAssetMigration(){
 async function loadRemoteData(profileId=currentProfile){
  const requestToken=++profileLoadToken;
  try{
-  const [remoteServices,remoteSettings,remoteCategories]=await Promise.all([
-   apiRequest("services",{},profileId),apiRequest("settings",{},profileId),apiRequest("categories",{},profileId)
+  const [remoteServices,remoteSettings,remoteCategories,remoteFavoriteOrder]=await Promise.all([
+   apiRequest("services",{},profileId),apiRequest("settings",{},profileId),apiRequest("categories",{},profileId),apiRequest("favorites-order",{},profileId)
   ]);
   if(profileId!==currentProfile||requestToken!==profileLoadToken)return false;
   if(!Array.isArray(remoteServices))throw new Error("Services endpoint did not return an array.");
   if(!Array.isArray(remoteCategories))throw new Error("Categories endpoint did not return an array.");
-  if(!remoteSettings||typeof remoteSettings!=="object")throw new Error("Settings endpoint did not return an object.");
-  services=remoteServices.map(s=>({...s,id:Number(s.id),favorite:!!s.favorite,tags:Array.isArray(s.tags)?s.tags:[]}));
+  if(!remoteSettings||typeof remoteSettings!=="object")throw new Error("Settings endpoint did not return an object.");if(!remoteFavoriteOrder||!Array.isArray(remoteFavoriteOrder.order))throw new Error("Favorites order endpoint did not return an ordered list.");
+  services=remoteServices.map(s=>({...s,id:Number(s.id),favorite:!!s.favorite,tags:Array.isArray(s.tags)?s.tags:[]}));favoritesOrder=remoteFavoriteOrder.order.map(Number).filter(Number.isSafeInteger);
   categoryRecords=remoteCategories;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;
   branding={...branding,...(remoteSettings.branding||{})};persistedBrandingLogoKey=branding.logoKey||null;
   const remotePreferences=remoteSettings.preferences||{};preferences={...preferences,...remotePreferences,showCardDescriptions:typeof remotePreferences.showCardDescriptions==="boolean"?remotePreferences.showCardDescriptions:typeof remotePreferences.showSlimDescriptions==="boolean"?remotePreferences.showSlimDescriptions:!!preferences.showCardDescriptions};
@@ -1897,16 +1902,16 @@ function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";
 function profileCacheKey(profileId){return "luxorit-profile-cache-v1-"+profileId}
 function saveProfileCache(profileId=currentProfile){
  if(dataProfileId!==profileId)return;
- try{localStorage.setItem(profileCacheKey(profileId),JSON.stringify({profileId,services,categoryRecords,taxonomyCategories,tagRecords,nextId}))}catch{}
+ try{localStorage.setItem(profileCacheKey(profileId),JSON.stringify({profileId,services,favoritesOrder,categoryRecords,taxonomyCategories,tagRecords,nextId}))}catch{}
 }
 function clearProfileData(profileId){
- services=[];categoryRecords=[];taxonomyCategories=[];tagRecords=[];taxonomyLoaded=false;nextId=1;dataProfileId=profileId;
+ services=[];favoritesOrder=[];categoryRecords=[];taxonomyCategories=[];tagRecords=[];taxonomyLoaded=false;nextId=1;dataProfileId=profileId;
 }
 function restoreProfileCache(profileId){
  try{
   const cached=JSON.parse(localStorage.getItem(profileCacheKey(profileId)));
   if(cached&&cached.profileId===profileId&&Array.isArray(cached.services)){
-   services=cached.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));
+   services=cached.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));favoritesOrder=Array.isArray(cached.favoritesOrder)?cached.favoritesOrder.map(Number).filter(Number.isSafeInteger):[];
    categoryRecords=Array.isArray(cached.categoryRecords)?cached.categoryRecords:[];
    taxonomyCategories=Array.isArray(cached.taxonomyCategories)?cached.taxonomyCategories:[];
    tagRecords=Array.isArray(cached.tagRecords)?cached.tagRecords:[];
@@ -1929,7 +1934,7 @@ function load(){
  }else dataProfileId=currentProfile;
 }
 function matchesSearch(s){const q=$("search").value.trim().toLowerCase();return !q||[s.name,s.description,s.category,...(s.tags||[])].join(" ").toLowerCase().includes(q)}
-function filtered(){const globalSearch=!!$("search").value.trim();const items=services.filter(s=>(globalSearch?true:page==="favorites"?s.favorite:page==="category"?s.category===current:page==="tag"?(s.tags||[]).includes(activeTag):true)&&matchesSearch(s));if(page==="all")return items.sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""),undefined,{sensitivity:"base",numeric:true}));return !globalSearch&&page==="category"?items.sort((a,b)=>(Number(a.categorySortOrder)||9999)-(Number(b.categorySortOrder)||9999)||Number(a.id)-Number(b.id)):items}
+function orderedFavoriteItems(items=services.filter(s=>s.favorite)){const rank=new Map((favoritesOrder||[]).map((id,index)=>[Number(id),index]));return items.slice().sort((a,b)=>{const ai=rank.has(Number(a.id))?rank.get(Number(a.id)):Number.MAX_SAFE_INTEGER,bi=rank.has(Number(b.id))?rank.get(Number(b.id)):Number.MAX_SAFE_INTEGER;return ai-bi||Number(a.sort_order??a.id)-Number(b.sort_order??b.id)||Number(a.id)-Number(b.id)})}function filtered(){const globalSearch=!!$("search").value.trim();const items=services.filter(s=>(globalSearch?true:page==="favorites"?s.favorite:page==="category"?s.category===current:page==="tag"?(s.tags||[]).includes(activeTag):true)&&matchesSearch(s));if(page==="all")return items.sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""),undefined,{sensitivity:"base",numeric:true}));if(page==="favorites")return orderedFavoriteItems(items);return !globalSearch&&page==="category"?items.sort((a,b)=>(Number(a.categorySortOrder)||9999)-(Number(b.categorySortOrder)||9999)||Number(a.id)-Number(b.id)):items}
 function tagHtml(t){return '<span class="tag">'+safe(t)+'</span>'}
 function updateActiveNavigation(){document.querySelectorAll(".nav[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));document.querySelectorAll(".nav[data-cat]").forEach(b=>b.classList.toggle("active",page==="category"&&b.dataset.cat===current));document.querySelectorAll(".nav[data-tag-nav]").forEach(b=>b.classList.toggle("active",page==="tag"&&b.dataset.tagNav===activeTag))}
 function nav(){
@@ -1976,9 +1981,9 @@ delete:'<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="m19 6-1 14H6L5 6"/><pa
 const labels={edit:"Edit",duplicate:"Duplicate",delete:"Delete"};
 return '<button type="button" class="secondary icon-action" data-'+action+'="'+safe(id)+'" title="'+labels[action]+' '+safe(name)+'" aria-label="'+labels[action]+' '+safe(name)+'"><svg class="action-icon" viewBox="0 0 24 24" aria-hidden="true">'+paths[action]+'</svg></button>';
 }
-function renderServiceCards(items,manage){
+function renderServiceCards(items,manage,allowReorder=false){
 if(!items.length)return '<div class="empty">No services match this view. Try another search or category.</div>';
-const queryActive=!!$("search").value.trim(),slim=density==="slim",orderable=!!manage&&page==="category"&&!queryActive;
+const queryActive=!!$("search").value.trim(),slim=density==="slim",orderable=!queryActive&&(!!allowReorder||!!manage&&page==="category");
 return '<div class="grid '+(slim?"slim":"")+'">'+items.map(s=>{
 const category=queryActive?'<div class="service-card-category"><span class="service-card-category-prefix">Category</span><span class="service-card-category-value">'+safe(s.category)+'</span></div>':slim?"":'<div class="service-desc" style="margin:2px 0 0;min-height:0">'+safe(s.category)+'</div>';
 const description=preferences.showCardDescriptions&&s.description?'<div class="service-desc '+(slim?"slim-card-description":"")+'">'+safe(s.description)+'</div>':"";
@@ -1989,21 +1994,22 @@ const dragHandle=orderable?'<button type="button" class="service-card-drag-handl
 return '<article class="card '+(slim?"slim-card ":"")+(orderable?"orderable-card":"")+'" data-order-id="'+safe(s.id)+'" data-open="'+safe(s.id)+'"><div class="card-top">'+dragHandle+'<div class="service-icon">'+serviceIconHtml(s)+'</div><div class="slim-card-identity" style="min-width:0"><div class="service-title">'+safe(s.name)+'</div>'+category+'</div><button class="star" data-fav="'+safe(s.id)+'" title="Toggle favorite" aria-label="Toggle favorite for '+safe(s.name)+'">'+(s.favorite?"★":"☆")+'</button></div>'+details+actionRow+'</article>';
 }).join("")+'</div>';
 }
-function renderServiceDots(items,manage=false){
+function renderServiceDots(items,manage=false,allowReorder=false){
 if(!items.length)return '<div class="empty">No services match this view. Try another search or category.</div>';
-const queryActive=!!$("search").value.trim();
+const queryActive=!!$("search").value.trim(),orderable=!!allowReorder&&!queryActive;
 return '<div class="service-dot-grid">'+items.map(s=>{
 const actions=manage?'<div class="service-dot-actions">'+serviceActionIcon("edit",s.id,s.name)+serviceActionIcon("duplicate",s.id,s.name)+serviceActionIcon("delete",s.id,s.name)+'</div>':"";
 const category=queryActive?'<span class="service-dot-category"><span>Category</span> '+safe(s.category)+'</span>':"";
 const description=preferences.showCardDescriptions&&s.description?'<span class="service-dot-description">'+safe(s.description)+'</span>':"";
-return '<article class="service-dot-card" data-open="'+safe(s.id)+'" tabindex="0" aria-label="Open service '+safe(s.name)+'" title="Open '+safe(s.name)+'"><button type="button" class="service-dot-favorite" data-fav="'+safe(s.id)+'" title="'+(s.favorite?"Remove from":"Add to")+' favorites" aria-label="'+(s.favorite?"Remove from":"Add to")+' favorites: '+safe(s.name)+'">'+(s.favorite?"★":"☆")+'</button><div class="service-dot-icon">'+serviceIconHtml(s)+'</div><span class="service-dot-label">'+safe(s.name)+'</span>'+category+description+actions+'</article>';
+const dragHandle=orderable?'<button type="button" class="service-card-drag-handle service-dot-drag-handle" data-order-drag="'+safe(s.id)+'" draggable="true" title="Drag to reorder favorites" aria-label="Drag to reorder '+safe(s.name)+'">⠿</button>':"";
+return '<article class="service-dot-card '+(orderable?"orderable-card":"")+'" data-order-id="'+safe(s.id)+'" data-open="'+safe(s.id)+'" tabindex="0" aria-label="Open service '+safe(s.name)+'" title="Open '+safe(s.name)+'">'+dragHandle+'<button type="button" class="service-dot-favorite" data-fav="'+safe(s.id)+'" title="'+(s.favorite?"Remove from":"Add to")+' favorites" aria-label="'+(s.favorite?"Remove from":"Add to")+' favorites: '+safe(s.name)+'">'+(s.favorite?"★":"☆")+'</button><div class="service-dot-icon">'+serviceIconHtml(s)+'</div><span class="service-dot-label">'+safe(s.name)+'</span>'+category+description+actions+'</article>';
 }).join("")+'</div>';
 }
 function renderServiceTable(items,manage,orderable=false){
 if(!items.length)return '<div class="empty">No services in this view. Choose a category from the sidebar.</div>';
-const canDrag=!!orderable&&!$("search").value.trim()&&page==="category"&&!!manage;
+const canDrag=!!orderable&&!$("search").value.trim()&&((page==="category"&&!!manage)||(page==="favorites"&&reorderEnabled));
 return '<table><thead><tr><th>Service</th><th>Category</th><th>Tags</th><th>URL</th><th>Actions</th></tr></thead><tbody>'+items.map(s=>{
-const handle=canDrag?'<button type="button" class="service-card-drag-handle table-drag-handle" data-order-drag="'+safe(s.id)+'" draggable="true" title="Drag to reorder within '+safe(current)+'" aria-label="Drag to reorder '+safe(s.name)+'">⠿</button>':"";
+const handle=canDrag?'<button type="button" class="service-card-drag-handle table-drag-handle" data-order-drag="'+safe(s.id)+'" draggable="true" title="Drag to reorder '+(page==="favorites"?"favorites":"within "+safe(current))+'" aria-label="Drag to reorder '+safe(s.name)+'">⠿</button>':"";
 const action=manage?serviceActionIcon("edit",s.id,s.name)+serviceActionIcon("duplicate",s.id,s.name)+serviceActionIcon("delete",s.id,s.name):'<button class="secondary" data-fav="'+safe(s.id)+'" title="'+(s.favorite?"Remove from favorites":"Add to favorites")+'" aria-label="'+(s.favorite?"Remove from favorites: ":"Add to favorites: ")+safe(s.name)+'">'+(s.favorite?"★":"☆")+"</button>";
 return '<tr '+(canDrag?'data-order-id="'+safe(s.id)+'" class="orderable-card"':'')+'><td><span class="table-service-icon">'+serviceIconHtml(s)+'</span>'+handle+safe(s.name)+'</td><td>'+safe(s.category)+'</td><td>'+(s.tags||[]).map(tagHtml).join("")+'</td><td><a href="'+safe(s.url)+'" target="_blank" rel="noopener">Open ↗</a></td><td class="action-cell"><div class="action-group">'+action+'</div></td></tr>';
 }).join("")+'</tbody></table>';
@@ -2048,15 +2054,15 @@ const densityControl=$("regularBtn").parentElement;
 densityControl.style.display=view==="cards"?"flex":"none";
 $("cardArea").style.display=view==="cards"?"block":"none";
 $("listArea").style.display=view==="list"?"block":"none";$("dotArea").style.display=view==="dots"?"block":"none";
-$("reorderControl").hidden=!((isCategory||isTag)&&!queryActive);
+$("reorderControl").hidden=!((isCategory||isTag||isFavorites)&&!queryActive);
 $("reorderToggle").classList.toggle("active",reorderEnabled);
 $("reorderToggle").setAttribute("aria-pressed",reorderEnabled?"true":"false");
-$("reorderToggle").innerHTML='<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M12.8 3.2 16.8 7.2M3 17l4-.9 9.8-9.8a2.1 2.1 0 0 0-3-3L4 13.1 3 17Z"/><path d="M10.5 4.5 14.5 8.5"/></svg><span>'+(reorderEnabled?"Done editing":"Edit mode")+'</span>';
-$("reorderToggle").title=isTag?"Edit, duplicate, or delete services tagged "+activeTag:"Edit services in "+current+"; add, edit, duplicate, delete, or drag to reorder";
-const canManageServices=(isCategory||isTag)&&reorderEnabled&&!queryActive;
-$("cardArea").innerHTML=view==="cards"?renderServiceCards(items,canManageServices):"";
-$("listArea").innerHTML=view==="list"?renderServiceTable(items,canManageServices,isCategory&&reorderEnabled):"";$("dotArea").innerHTML=view==="dots"?renderServiceDots(items,canManageServices):"";
-$("listArea").classList.toggle("service-order-host",isCategory&&reorderEnabled&&view==="list");
+$("reorderToggle").innerHTML='<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M12.8 3.2 16.8 7.2M3 17l4-.9 9.8-9.8a2.1 2.1 0 0 0-3-3L4 13.1 3 17Z"/><path d="M10.5 4.5 14.5 8.5"/></svg><span>'+(reorderEnabled?(isFavorites?"Done reordering":"Done editing"):(isFavorites?"Reorder favorites":"Edit mode"))+'</span>';
+$("reorderToggle").title=isFavorites?"Drag favorites to set your preferred order":isTag?"Edit, duplicate, or delete services tagged "+activeTag:"Edit services in "+current+"; add, edit, duplicate, delete, or drag to reorder";
+const canManageServices=(isCategory||isTag)&&reorderEnabled&&!queryActive,canReorderFavorites=isFavorites&&reorderEnabled&&!queryActive;
+$("cardArea").innerHTML=view==="cards"?renderServiceCards(items,canManageServices,canReorderFavorites):"";
+$("listArea").innerHTML=view==="list"?renderServiceTable(items,canManageServices,(isCategory&&reorderEnabled)||canReorderFavorites):"";$("dotArea").innerHTML=view==="dots"?renderServiceDots(items,canManageServices,canReorderFavorites):"";
+$("listArea").classList.toggle("service-order-host",(isCategory||isFavorites)&&reorderEnabled&&view==="list");
 }
 function bindRenderedActions(){
 document.querySelectorAll("[data-fav]").forEach(b=>b.onclick=async e=>{e.stopPropagation();const s=services.find(item=>String(item.id)===String(b.dataset.fav));if(!s)return;const changed={...s,favorite:!s.favorite};try{if(apiConnected){const saved=await remoteSaveService(changed,false);Object.assign(s,saved)}else{s.favorite=changed.favorite;toast("Favorite changed locally only")}render()}catch(error){toast("Could not save favorite: "+(error.message||"database error"))}});
@@ -2068,9 +2074,9 @@ document.querySelectorAll("[data-category-open]").forEach(b=>b.onclick=()=>navig
 bindServiceOrdering();
 }
 function bindServiceOrdering(){
-if(page!=="category"||!reorderEnabled||$("search").value.trim())return;
-const host=view==="cards"?$("cardArea"):$("listArea");
-if(!host)return;
+const queryActive=!!$("search").value.trim(),isFavoritePage=page==="favorites";
+if((page!=="category"&&!isFavoritePage)||!reorderEnabled||queryActive)return;
+const host=view==="cards"?$("cardArea"):view==="dots"?$("dotArea"):$("listArea");if(!host)return;
 let draggedId=null;
 const cards=[...host.querySelectorAll("[data-order-id]")];
 const handles=host.querySelectorAll("[data-order-drag]");
@@ -2079,20 +2085,15 @@ handles.forEach(handle=>{
  handle.addEventListener("dragstart",event=>{
   if(!reorderEnabled||$("search").value.trim()){event.preventDefault();return}
   draggedId=Number(handle.dataset.orderDrag);
-  const row=handle.closest("[data-order-id]");
-  row?.classList.add("dragging");
+  handle.closest("[data-order-id]")?.classList.add("dragging");
   if(event.dataTransfer){event.dataTransfer.effectAllowed="move";event.dataTransfer.setData("text/plain",String(draggedId))}
  });
- handle.addEventListener("dragend",()=>{
-  draggedId=null;host.querySelectorAll("[data-order-id]").forEach(row=>row.classList.remove("dragging","drag-over"));
- });
+ handle.addEventListener("dragend",()=>{draggedId=null;host.querySelectorAll("[data-order-id]").forEach(row=>row.classList.remove("dragging","drag-over"))});
 });
 cards.forEach(card=>{
  card.addEventListener("dragover",event=>{
   if(!reorderEnabled||draggedId==null||draggedId===Number(card.dataset.orderId)||$("search").value.trim())return;
-  event.preventDefault();
-  if(event.dataTransfer)event.dataTransfer.dropEffect="move";
-  card.classList.add("drag-over");
+  event.preventDefault();if(event.dataTransfer)event.dataTransfer.dropEffect="move";card.classList.add("drag-over");
  });
  card.addEventListener("dragleave",()=>card.classList.remove("drag-over"));
  card.addEventListener("drop",async event=>{
@@ -2100,23 +2101,40 @@ cards.forEach(card=>{
   const fromId=draggedId??Number(event.dataTransfer?.getData("text/plain")),toId=Number(card.dataset.orderId);
   draggedId=null;host.querySelectorAll("[data-order-id]").forEach(row=>row.classList.remove("dragging","drag-over"));
   if(!reorderEnabled||$("search").value.trim()||!fromId||fromId===toId)return;
-  const categoryRecord=categoryRecords.find(item=>item.name===current);
-  const categoryId=Number(categoryRecord?.id||services.find(item=>Number(item.id)===fromId)?.categoryId);
   const fromService=services.find(item=>Number(item.id)===fromId),toService=services.find(item=>Number(item.id)===toId);
-  if(!categoryId||fromService?.category!==current||toService?.category!==current){toast("Reordering is limited to the current category.");return}
-  const scoped=services.filter(item=>item.category===current).slice().sort((a,b)=>(Number(a.categorySortOrder)||9999)-(Number(b.categorySortOrder)||9999)||Number(a.id)-Number(b.id));
-  const order=scoped.map(item=>Number(item.id)),from=order.indexOf(fromId),to=order.indexOf(toId);
-  if(from<0||to<0)return;
+  let order=[];
+  if(isFavoritePage){
+   if(!fromService?.favorite||!toService?.favorite){toast("Only favorite services can be reordered here.");return}
+   order=orderedFavoriteItems(services.filter(item=>item.favorite)).map(item=>Number(item.id));
+  }else{
+   const categoryRecord=categoryRecords.find(item=>item.name===current);
+   const categoryId=Number(categoryRecord?.id||fromService?.categoryId);
+   if(!categoryId||fromService?.category!==current||toService?.category!==current){toast("Reordering is limited to the current category.");return}
+   order=services.filter(item=>item.category===current).slice().sort((a,b)=>(Number(a.categorySortOrder)||9999)-(Number(b.categorySortOrder)||9999)||Number(a.id)-Number(b.id)).map(item=>Number(item.id));
+  }
+  const from=order.indexOf(fromId),to=order.indexOf(toId);if(from<0||to<0)return;
   const [moved]=order.splice(from,1);order.splice(to,0,moved);
+  if(isFavoritePage){
+   const previous=favoritesOrder.slice();
+   const status=$("serviceOrderStatus");if(status)status.textContent="Saving Favorites order…";
+   try{
+    if(apiConnected){
+     const result=await apiRequest("favorites-order",{method:"PUT",body:JSON.stringify({order})});
+     if(!Array.isArray(result.order)||result.order.map(Number).join(",")!==order.join(","))throw new Error("The server returned an invalid Favorites order.");
+     favoritesOrder=result.order.map(Number);saveProfileCache(currentProfile);render();toast("Favorites order saved");
+    }else{favoritesOrder=order.slice();saveProfileCache(currentProfile);render();toast("Favorites order changed locally only; database is unavailable")}
+   }catch(error){favoritesOrder=previous;render();toast("Could not save Favorites order: "+(error.message||"database error"))}
+   return;
+  }
   const previous=services.map(item=>({...item}));
   const status=$("serviceOrderStatus");if(status)status.textContent="Saving category order…";
   try{
    if(apiConnected){
+    const categoryRecord=categoryRecords.find(item=>item.name===current),categoryId=Number(categoryRecord?.id||fromService?.categoryId);
     const result=await apiRequest("services",{method:"PATCH",body:JSON.stringify({scope:"category",categoryId,order})});
     if(!Array.isArray(result))throw new Error("The server returned an invalid category order.");
     const returned=result.map(item=>({...item,id:Number(item.id),favorite:!!item.favorite,tags:Array.isArray(item.tags)?item.tags:[]}));
-    const byId=new Map(returned.map(item=>[Number(item.id),item]));
-    services=services.map(item=>byId.get(Number(item.id))||item);
+    const byId=new Map(returned.map(item=>[Number(item.id),item]));services=services.map(item=>byId.get(Number(item.id))||item);
     render();toast("Category service order saved");
    }else{
     const byId=new Map(order.map((id,index)=>[id,index+1]));
@@ -2126,7 +2144,8 @@ cards.forEach(card=>{
   }catch(error){services=previous;render();toast("Could not save category order: "+(error.message||"database error"))}
  });
 });
-}function taxonomyMessageIfAvailable(_id,message){
+}
+function taxonomyMessageIfAvailable(_id,message){
 const target=$("serviceOrderStatus");
 if(target)target.textContent=message;
 }
@@ -2424,7 +2443,7 @@ if(!query&&page==="all"&&searchReturnPage==="home"){page="home";searchReturnPage
  if(reorderEnabled&&query)reorderEnabled=false;
  render();
 };
-$("reorderToggle").onclick=()=>{if(page!=="category"&&page!=="tag")return;if(!reorderEnabled&&$("search").value.trim()){toast("Clear the global search before entering Edit mode.");return}reorderEnabled=!reorderEnabled;render();toast(reorderEnabled?(page==="tag"?"Edit mode enabled for tag: "+activeTag:"Edit mode enabled for "+current):"Edit mode finished")};
+$("reorderToggle").onclick=()=>{if(page!=="category"&&page!=="tag"&&page!=="favorites")return;if(!reorderEnabled&&$("search").value.trim()){toast("Clear the global search before reordering.");return}reorderEnabled=!reorderEnabled;render();toast(reorderEnabled?(page==="favorites"?"Drag favorite services to change their order":page==="tag"?"Edit mode enabled for tag: "+activeTag:"Edit mode enabled for "+current):(page==="favorites"?"Favorites reordering finished":"Edit mode finished"))};
 $("catalogControlsToggle").onclick=()=>{
  catalogControlsExpanded=!catalogControlsExpanded;
  const panel=$("catalogControlsPanel"),button=$("catalogControlsToggle");
