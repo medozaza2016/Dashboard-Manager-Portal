@@ -44,8 +44,9 @@ async function renameLinkedServiceImages(env) {
 
   for (const service of services.results || []) {
     const oldKey = service.logoKey;
-    if (!oldKey || !isAllowedAssetKey(oldKey, "service")) {
-      summary.skipped++;
+    if (!oldKey) continue;
+    if (!isAllowedAssetKey(oldKey, "service")) {
+      summary.failed.push({ serviceId: Number(service.id), name: service.name, reason: "Unsupported service image key format; reference retained." });
       continue;
     }
 
@@ -145,7 +146,21 @@ export async function onRequest({ request, env }) {
 
   const state = await readMigrationState(env.DB);
   if (state === "completed") {
-    return jsonResponse({ success: true, alreadyComplete: true, migrated: 0, message: "Service image key migration is already complete." });
+    // A previous run may have marked completion after the broken legacy-key validator
+    // incorrectly skipped every UUID key. Re-open only when service references remain legacy.
+    const linked = await env.DB.prepare(
+      "SELECT logo_key FROM services WHERE logo_key LIKE 'service-logos/%'"
+    ).all();
+    const stillLegacy = (linked.results || []).some(row => {
+      const key = String(row.logo_key || "");
+      return !NAMED_SERVICE_FILE.test(key.slice("service-logos/".length));
+    });
+    if (!stillLegacy) {
+      return jsonResponse({ success: true, alreadyComplete: true, migrated: 0, message: "Service image key migration is already complete." });
+    }
+    await env.DB.prepare(
+      "UPDATE portal_settings SET setting_value = 'failed', updated_at = CURRENT_TIMESTAMP WHERE setting_key = ? AND setting_value = 'completed'"
+    ).bind(MIGRATION_SETTING).run();
   }
   if (state === "running") {
     return jsonResponse({ success: false, running: true, message: "Service image migration is already running." }, 409);

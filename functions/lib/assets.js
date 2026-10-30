@@ -1,7 +1,7 @@
 const SERVICE_PREFIX = "service-logos/";
 const BRANDING_PREFIX = "branding/";
-const LEGACY_UUID_FILE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\\.(png|jpg|webp|gif)$/i;
-const NAMED_SERVICE_FILE = /^[a-z0-9-]{1,48}_[a-z0-9-]{1,56}_\\d+_[0-9a-f-]{36}\\.(png|jpg|webp|gif)$/i;
+const LEGACY_UUID_FILE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(png|jpg|webp|gif)$/i;
+const NAMED_SERVICE_FILE = /^[a-z0-9-]{1,48}_[a-z0-9-]{1,56}_\d+_[0-9a-f-]{36}\.(png|jpg|webp|gif)$/i;
 
 export function isAllowedAssetKey(key, scope) {
   if (typeof key !== "string" || key.length > 220) return false;

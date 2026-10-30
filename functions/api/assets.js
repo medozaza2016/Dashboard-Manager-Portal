@@ -99,7 +99,7 @@ export async function onRequest({ request, env }) {
       let customMetadata;
       if (scope === "service") {
         const serviceSlug = slugSegment(service.name, 48, "service");
-        const originalBase = originalName.replace(/\\.[^.]+$/, "");
+        const originalBase = originalName.replace(/\.[^.]+$/, "");
         const originalSlug = slugSegment(originalBase, 56, "image");
         const uploadId = crypto.randomUUID();
         key = "service-logos/" + serviceSlug + "_" + originalSlug + "_" + serviceId + "_" + uploadId + "." + descriptor.ext;
