@@ -1753,12 +1753,13 @@ $("serviceLogoUploadStatus").textContent="Optional · PNG, JPEG, WebP or GIF · 
 }
 
 $("serviceForm").onsubmit=async e=>{
-e.preventDefault();if(serviceLogoUploadBusy){toast("Wait for the image operation to finish.");return}serviceLogoUploadBusy=true;
+e.preventDefault();if(serviceLogoUploadBusy){toast("Wait for the image operation to finish.");return}
 const originalPage=page,wasOnManagePage=(page==="category"||page==="tag")&&reorderEnabled,originalCategory=current,originalTag=activeTag,wasEditMode=reorderEnabled;
 let id=$("serviceId").value;
 const existing=services.find(s=>String(s.id)===String(id));
 const selectedFile=pendingServiceLogoFile;
 if(selectedFile&&!apiConnected){toast("Connect to the shared database before saving a service image.");return}
+serviceLogoUploadBusy=true;
 let item={id:id?Number(id):nextId++,name:$("name").value.trim(),url:$("url").value.trim(),category:$("category").value,description:$("description").value.trim(),icon:$("icon").value.trim()||"🔧",logoKey:selectedFile?(existing?.logoKey||null):($("serviceLogoKey").value||null),tags:[...serviceSelectedTags],favorite:existing?.favorite||false};
 let newUploadedKey=null;
 try{
@@ -1770,7 +1771,7 @@ if(apiConnected){
   nextId=Math.max(nextId,Number(item.id)+1);
 
   if(selectedFile){
-    serviceLogoUploadBusy=true;$("serviceLogoUploadStatus").textContent="Uploading named image to R2…";
+    $("serviceLogoUploadStatus").textContent="Uploading named image to R2…";
     const uploaded=await uploadImage(selectedFile,"service",{serviceId:item.id,profileId:currentProfile});
     newUploadedKey=uploaded.key;
     const replacement={...item,logoKey:uploaded.key};
