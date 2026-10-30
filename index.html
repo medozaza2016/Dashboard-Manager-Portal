@@ -720,7 +720,7 @@
 <div class="content">
 <section id="homePage">
   <div class="pagehead"><div><div class="eyebrow">WORKSPACE / OVERVIEW</div><h1>Welcome back</h1><p>Your favorite services, all in one place.</p></div></div>
-  <div class="section-title"><h2>Favorites</h2><button class="secondary" id="homeFavoritesMore">View all favorites</button></div>
+  <div class="section-title"><h2>Favorites</h2></div>
   <div id="homeFavoriteCards"></div>
 </section>
 <section id="catalogPage" hidden><div class="pagehead catalog-pagehead"><div class="catalog-heading-copy"><div class="eyebrow" id="catalogEyebrow">SERVICE CATALOG</div><h1 id="heading">Browse by category</h1><p id="catalogDescription">Open a category to browse and manage its services.</p></div><div class="catalog-head-actions">
@@ -1843,7 +1843,7 @@ $("categoryFilter").oninput=()=>renderCategoryManager();
 $("tagFilter").oninput=()=>renderTagManager();
 $("serviceTagSearch").oninput=()=>{serviceTagQuery=$("serviceTagSearch").value;renderServiceTagPicker()};
 
-$("homeFavoritesMore").onclick=()=>navigatePage("favorites");
+
 updateProfileUI();
 bindProfileSwitcher();
 loadRemoteData();
