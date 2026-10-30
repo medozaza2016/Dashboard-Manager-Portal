@@ -1563,7 +1563,7 @@ const seed=[
 {id:11,name:"Proxmox",icon:"🖥️",description:"Virtualization platform",category:"Infrastructure",tags:["Infrastructure","VMs"],url:"https://proxmox.example",favorite:true},
 {id:12,name:"TrueNAS",icon:"🗄️",description:"File storage",category:"Infrastructure",tags:["Infrastructure","Storage"],url:"https://truenas.example",favorite:false}
 ];
-let services=structuredClone(seed),current="All",view="list",density="regular",page="home",nextId=13,reorderEnabled=false,catalogControlsExpanded=false;
+let services=structuredClone(seed),favoritesOrder=[],current="All",view="list",density="regular",page="home",nextId=13,reorderEnabled=false,catalogControlsExpanded=false;
 let currentProfile=1,sidebarCategoriesExpanded=false,localViewPreference=false,searchReturnPage=null; // 1=Personal, 2=Work
 let profileLoadToken=0,taxonomyLoadToken=0,dataProfileId=1;
 let branding={name:"Luxorit",subtitle:"Pro",logo:""};
@@ -1830,7 +1830,7 @@ function bindProfileSwitcher(){
 }
 
 async function apiRequest(path,options={},profileOverride=currentProfile){
-  const profileEndpoints = ["services","categories","tags","categories-manage"];
+  const profileEndpoints = ["services","categories","tags","categories-manage","favorites-order"];
   const needsProfile = profileEndpoints.some(p => path === p || path.startsWith(p + "?") || path.startsWith(p + "&"));
   const profileParam = needsProfile ? `profile=${profileOverride}` : '';
   const separator = path.includes('?') ? '&' : '?';
@@ -1897,16 +1897,16 @@ function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";
 function profileCacheKey(profileId){return "luxorit-profile-cache-v1-"+profileId}
 function saveProfileCache(profileId=currentProfile){
  if(dataProfileId!==profileId)return;
- try{localStorage.setItem(profileCacheKey(profileId),JSON.stringify({profileId,services,categoryRecords,taxonomyCategories,tagRecords,nextId}))}catch{}
+ try{localStorage.setItem(profileCacheKey(profileId),JSON.stringify({profileId,services,favoritesOrder,categoryRecords,taxonomyCategories,tagRecords,nextId}))}catch{}
 }
 function clearProfileData(profileId){
- services=[];categoryRecords=[];taxonomyCategories=[];tagRecords=[];taxonomyLoaded=false;nextId=1;dataProfileId=profileId;
+ services=[];favoritesOrder=[];categoryRecords=[];taxonomyCategories=[];tagRecords=[];taxonomyLoaded=false;nextId=1;dataProfileId=profileId;
 }
 function restoreProfileCache(profileId){
  try{
   const cached=JSON.parse(localStorage.getItem(profileCacheKey(profileId)));
   if(cached&&cached.profileId===profileId&&Array.isArray(cached.services)){
-   services=cached.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));
+   services=cached.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));favoritesOrder=Array.isArray(cached.favoritesOrder)?cached.favoritesOrder.map(Number).filter(Number.isSafeInteger):[];
    categoryRecords=Array.isArray(cached.categoryRecords)?cached.categoryRecords:[];
    taxonomyCategories=Array.isArray(cached.taxonomyCategories)?cached.taxonomyCategories:[];
    tagRecords=Array.isArray(cached.tagRecords)?cached.tagRecords:[];
