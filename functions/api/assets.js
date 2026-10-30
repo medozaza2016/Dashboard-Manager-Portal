@@ -9,6 +9,18 @@ const IMAGE_TYPES = {
   "image/gif": { ext: "gif", matches: (b) => b.length >= 6 && ["GIF87a", "GIF89a"].includes(String.fromCharCode(...b.slice(0, 6))) },
 };
 
+function slugSegment(value, maxLength, fallback) {
+  const slug = String(value || "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, maxLength)
+    .replace(/-+$/g, "");
+  return slug || fallback;
+}
+
 function imageResponse(object) {
   const type = object.httpMetadata?.contentType;
   if (!Object.prototype.hasOwnProperty.call(IMAGE_TYPES, type)) {
@@ -62,15 +74,52 @@ export async function onRequest({ request, env }) {
     const descriptor = IMAGE_TYPES[type];
     if (!descriptor) return jsonResponse({ error: "Supported formats are PNG, JPEG, WebP, and GIF. SVG is not accepted." }, 415);
 
+    let service = null;
+    let serviceId = null;
+    let profileId = null;
+    let originalName = "";
+    if (scope === "service") {
+      serviceId = Number(form.get("serviceId"));
+      profileId = Number(form.get("profileId") || 1);
+      if (!Number.isSafeInteger(serviceId) || serviceId < 1 || ![1, 2].includes(profileId)) {
+        return jsonResponse({ error: "Save the service before uploading its image." }, 400);
+      }
+      service = await env.DB.prepare(
+        "SELECT id, name FROM services WHERE id = ? AND (profile_id = ? OR (profile_id IS NULL AND ? = 1))"
+      ).bind(serviceId, profileId, profileId).first();
+      if (!service) return jsonResponse({ error: "The service was not found in the selected profile." }, 404);
+      originalName = String(file.name || form.get("originalName") || "image").slice(0, 180);
+    }
+
     try {
       const bytes = new Uint8Array(await file.arrayBuffer());
       if (!descriptor.matches(bytes)) return jsonResponse({ error: "The uploaded file does not match its declared image format." }, 415);
-      const key = (scope === "service" ? "service-logos/" : "branding/") + crypto.randomUUID() + "." + descriptor.ext;
+      const uploadedAt = new Date().toISOString();
+      let key;
+      let customMetadata;
+      if (scope === "service") {
+        const serviceSlug = slugSegment(service.name, 48, "service");
+        const originalBase = originalName.replace(/\\.[^.]+$/, "");
+        const originalSlug = slugSegment(originalBase, 56, "image");
+        const uploadId = crypto.randomUUID();
+        key = "service-logos/" + serviceSlug + "_" + originalSlug + "_" + serviceId + "_" + uploadId + "." + descriptor.ext;
+        customMetadata = {
+          purpose: "service",
+          current: "true",
+          serviceId: String(serviceId),
+          serviceName: String(service.name).slice(0, 100),
+          originalName,
+          uploadedAt,
+        };
+      } else {
+        key = "branding/" + crypto.randomUUID() + "." + descriptor.ext;
+        customMetadata = { purpose: "branding", uploadedAt };
+      }
       await env.R2_LOGOS.put(key, bytes, {
         httpMetadata: { contentType: type, cacheControl: "private, max-age=300, must-revalidate" },
-        customMetadata: { purpose: scope, uploadedAt: new Date().toISOString() },
+        customMetadata,
       });
-      return jsonResponse({ uploaded: true, key, contentType: type, size: bytes.byteLength }, 201);
+      return jsonResponse({ uploaded: true, key, contentType: type, size: bytes.byteLength, originalName }, 201);
     } catch {
       return jsonResponse({ error: "Image upload failed. Check the R2 binding and try again." }, 500);
     }
