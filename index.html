@@ -2074,9 +2074,9 @@ document.querySelectorAll("[data-category-open]").forEach(b=>b.onclick=()=>navig
 bindServiceOrdering();
 }
 function bindServiceOrdering(){
-if(page!=="category"||!reorderEnabled||$("search").value.trim())return;
-const host=view==="cards"?$("cardArea"):$("listArea");
-if(!host)return;
+const queryActive=!!$("search").value.trim(),isFavoritePage=page==="favorites";
+if((page!=="category"&&!isFavoritePage)||!reorderEnabled||queryActive)return;
+const host=view==="cards"?$("cardArea"):view==="dots"?$("dotArea"):$("listArea");if(!host)return;
 let draggedId=null;
 const cards=[...host.querySelectorAll("[data-order-id]")];
 const handles=host.querySelectorAll("[data-order-drag]");
@@ -2085,20 +2085,15 @@ handles.forEach(handle=>{
  handle.addEventListener("dragstart",event=>{
   if(!reorderEnabled||$("search").value.trim()){event.preventDefault();return}
   draggedId=Number(handle.dataset.orderDrag);
-  const row=handle.closest("[data-order-id]");
-  row?.classList.add("dragging");
+  handle.closest("[data-order-id]")?.classList.add("dragging");
   if(event.dataTransfer){event.dataTransfer.effectAllowed="move";event.dataTransfer.setData("text/plain",String(draggedId))}
  });
- handle.addEventListener("dragend",()=>{
-  draggedId=null;host.querySelectorAll("[data-order-id]").forEach(row=>row.classList.remove("dragging","drag-over"));
- });
+ handle.addEventListener("dragend",()=>{draggedId=null;host.querySelectorAll("[data-order-id]").forEach(row=>row.classList.remove("dragging","drag-over"))});
 });
 cards.forEach(card=>{
  card.addEventListener("dragover",event=>{
   if(!reorderEnabled||draggedId==null||draggedId===Number(card.dataset.orderId)||$("search").value.trim())return;
-  event.preventDefault();
-  if(event.dataTransfer)event.dataTransfer.dropEffect="move";
-  card.classList.add("drag-over");
+  event.preventDefault();if(event.dataTransfer)event.dataTransfer.dropEffect="move";card.classList.add("drag-over");
  });
  card.addEventListener("dragleave",()=>card.classList.remove("drag-over"));
  card.addEventListener("drop",async event=>{
@@ -2106,23 +2101,40 @@ cards.forEach(card=>{
   const fromId=draggedId??Number(event.dataTransfer?.getData("text/plain")),toId=Number(card.dataset.orderId);
   draggedId=null;host.querySelectorAll("[data-order-id]").forEach(row=>row.classList.remove("dragging","drag-over"));
   if(!reorderEnabled||$("search").value.trim()||!fromId||fromId===toId)return;
-  const categoryRecord=categoryRecords.find(item=>item.name===current);
-  const categoryId=Number(categoryRecord?.id||services.find(item=>Number(item.id)===fromId)?.categoryId);
   const fromService=services.find(item=>Number(item.id)===fromId),toService=services.find(item=>Number(item.id)===toId);
-  if(!categoryId||fromService?.category!==current||toService?.category!==current){toast("Reordering is limited to the current category.");return}
-  const scoped=services.filter(item=>item.category===current).slice().sort((a,b)=>(Number(a.categorySortOrder)||9999)-(Number(b.categorySortOrder)||9999)||Number(a.id)-Number(b.id));
-  const order=scoped.map(item=>Number(item.id)),from=order.indexOf(fromId),to=order.indexOf(toId);
-  if(from<0||to<0)return;
+  let order=[];
+  if(isFavoritePage){
+   if(!fromService?.favorite||!toService?.favorite){toast("Only favorite services can be reordered here.");return}
+   order=orderedFavoriteItems(services.filter(item=>item.favorite)).map(item=>Number(item.id));
+  }else{
+   const categoryRecord=categoryRecords.find(item=>item.name===current);
+   const categoryId=Number(categoryRecord?.id||fromService?.categoryId);
+   if(!categoryId||fromService?.category!==current||toService?.category!==current){toast("Reordering is limited to the current category.");return}
+   order=services.filter(item=>item.category===current).slice().sort((a,b)=>(Number(a.categorySortOrder)||9999)-(Number(b.categorySortOrder)||9999)||Number(a.id)-Number(b.id)).map(item=>Number(item.id));
+  }
+  const from=order.indexOf(fromId),to=order.indexOf(toId);if(from<0||to<0)return;
   const [moved]=order.splice(from,1);order.splice(to,0,moved);
+  if(isFavoritePage){
+   const previous=favoritesOrder.slice();
+   const status=$("serviceOrderStatus");if(status)status.textContent="Saving Favorites order…";
+   try{
+    if(apiConnected){
+     const result=await apiRequest("favorites-order",{method:"PUT",body:JSON.stringify({order})});
+     if(!Array.isArray(result.order)||result.order.map(Number).join(",")!==order.join(","))throw new Error("The server returned an invalid Favorites order.");
+     favoritesOrder=result.order.map(Number);saveProfileCache(currentProfile);render();toast("Favorites order saved");
+    }else{favoritesOrder=order.slice();saveProfileCache(currentProfile);render();toast("Favorites order changed locally only; database is unavailable")}
+   }catch(error){favoritesOrder=previous;render();toast("Could not save Favorites order: "+(error.message||"database error"))}
+   return;
+  }
   const previous=services.map(item=>({...item}));
   const status=$("serviceOrderStatus");if(status)status.textContent="Saving category order…";
   try{
    if(apiConnected){
+    const categoryRecord=categoryRecords.find(item=>item.name===current),categoryId=Number(categoryRecord?.id||fromService?.categoryId);
     const result=await apiRequest("services",{method:"PATCH",body:JSON.stringify({scope:"category",categoryId,order})});
     if(!Array.isArray(result))throw new Error("The server returned an invalid category order.");
     const returned=result.map(item=>({...item,id:Number(item.id),favorite:!!item.favorite,tags:Array.isArray(item.tags)?item.tags:[]}));
-    const byId=new Map(returned.map(item=>[Number(item.id),item]));
-    services=services.map(item=>byId.get(Number(item.id))||item);
+    const byId=new Map(returned.map(item=>[Number(item.id),item]));services=services.map(item=>byId.get(Number(item.id))||item);
     render();toast("Category service order saved");
    }else{
     const byId=new Map(order.map((id,index)=>[id,index+1]));
@@ -2132,7 +2144,8 @@ cards.forEach(card=>{
   }catch(error){services=previous;render();toast("Could not save category order: "+(error.message||"database error"))}
  });
 });
-}function taxonomyMessageIfAvailable(_id,message){
+}
+function taxonomyMessageIfAvailable(_id,message){
 const target=$("serviceOrderStatus");
 if(target)target.textContent=message;
 }
