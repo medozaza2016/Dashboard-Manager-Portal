@@ -1,7 +1,7 @@
 {
   "name": "dashboard-manager-portal",
   "private": true,
-  "version": "0.1.61",
+  "version": "0.1.62",
   "type": "module",
   "scripts": {
     "dev": "npm run build && npx wrangler pages dev dist/ --port 5173 --ip 0.0.0.0",
