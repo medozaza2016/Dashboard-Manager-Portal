@@ -1012,6 +1012,42 @@ a:focus-visible{
   background:rgba(240,180,90,.16)!important;
   color:#F0B45A!important;
 }
+
+/* Override legacy catalog-control declarations that hard-coded green tints. */
+.main .catalog-display-controls .views button.active,
+.main .catalog-display-controls .density button.active,
+.main .catalog-display-controls .reorder-toggle.active{
+  background:#403426!important;
+  color:#F0B45A!important;
+  border-color:rgba(240,180,90,.30)!important;
+  box-shadow:inset 0 0 0 1px rgba(240,180,90,.08)!important;
+}
+.main .catalog-display-controls .reorder-toggle:hover,
+.main .catalog-controls-toggle:hover,
+.main .catalog-controls-toggle.active{
+  border-color:#F0B45A!important;
+}
+.main .catalog-controls-toggle-icon,
+.main .catalog-controls-toggle.active .catalog-controls-chevron{
+  color:#F0B45A!important;
+}
+.main .catalog-display-controls .views button:focus-visible,
+.main .catalog-display-controls .density button:focus-visible,
+.main .catalog-display-controls .reorder-toggle:focus-visible{
+  outline:2px solid #F0B45A!important;
+}
+.main .top-actions .nav.active{
+  background:#403426!important;
+  color:#F0B45A!important;
+  border-color:rgba(240,180,90,.30)!important;
+}
+.main .list tr.drag-over,
+.main .service-card-drag-handle:focus-visible{
+  outline-color:#F0B45A!important;
+}
+.main .taxonomy-danger,
+.main .danger-button{color:#F87171!important}
+
 .main .iconbtn:focus-visible,
 .main button:focus-visible,
 .main input:focus-visible,
