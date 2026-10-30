@@ -976,7 +976,7 @@ function renderServiceImageSizePreview(value=preferences.serviceImageSize){
    image.hidden=true;image.removeAttribute("src");delete image.dataset.source;fallback.hidden=false;
  }
 }
-let apiConnected=false,apiError="";
+let apiConnected=false,apiError="",serviceAssetMigrationInFlight=false,serviceAssetMigrationCompleted=false;
 let adminTab="categories",adminServiceQuery="";
 let serviceSelectedTags=new Set(),serviceTagQuery="";
 let categoryRecords=[],taxonomyCategories=[],tagRecords=[],taxonomyLoaded=false,taxonomyBusy=false,taxonomyModalType=null,taxonomyModalId=null,taxonomyModalOriginalName="",taxonomyReturnToService=false,confirmResolver=null,sidebarTagsExpanded=false,activeTag=null;
@@ -1226,6 +1226,28 @@ async function apiRequest(path,options={},profileOverride=currentProfile){
 }
 function apiPayload(s){return {name:s.name,url:s.url,description:s.description||"",icon:s.icon||"🔧",logoKey:s.logoKey||null,category:s.category,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}}
 async function remoteSaveService(s,isNew=false){return apiRequest("services"+(!isNew&&s.id!=null?"?id="+encodeURIComponent(s.id):""),{method:isNew?"POST":"PUT",body:JSON.stringify(apiPayload(s))})}
+async function runServiceAssetMigration(){
+ if(!apiConnected||serviceAssetMigrationInFlight||serviceAssetMigrationCompleted)return;
+ serviceAssetMigrationInFlight=true;
+ try{
+  const response=await fetch("/api/assets-migrate",{method:"POST",credentials:"same-origin",headers:{"content-type":"application/json"},body:JSON.stringify({confirm:true})});
+  const result=await response.json().catch(()=>({}));
+  if(response.status===409&&result.running){serviceAssetMigrationCompleted=true;return}
+  if(result.success){
+   serviceAssetMigrationCompleted=true;
+   if(Number(result.migrated)>0){
+    toast("Service images renamed and marked current: "+result.migrated);
+    await loadRemoteData(currentProfile);
+   }
+  }else{
+   toast("Service image cleanup needs attention: "+(result.message||result.error||"migration did not complete"));
+  }
+ }catch(error){
+  toast("Service image cleanup could not run: "+(error.message||"request failed"));
+ }finally{
+  serviceAssetMigrationInFlight=false;
+ }
+}
 async function loadRemoteData(profileId=currentProfile){
  const requestToken=++profileLoadToken;
  try{
@@ -1244,7 +1266,7 @@ async function loadRemoteData(profileId=currentProfile){
   document.documentElement.dataset.theme=preferences.theme||"dark";
   dataProfileId=profileId;apiConnected=true;apiError="";
   setD1Status("connected","Connection verified. Catalog and portal settings are reachable in shared D1.",{serviceCount:services.length,categoryCount:remoteCategories.length,tagCount:countTagsInUse(services)});
-  saveProfileCache(profileId);render();return true;
+  saveProfileCache(profileId);render();void runServiceAssetMigration();return true;
  }catch(error){
   if(profileId!==currentProfile||requestToken!==profileLoadToken)return false;
   apiConnected=false;apiError=error.message||"Database API unavailable";
