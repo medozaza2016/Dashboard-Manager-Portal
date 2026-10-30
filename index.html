@@ -2443,7 +2443,7 @@ if(!query&&page==="all"&&searchReturnPage==="home"){page="home";searchReturnPage
  if(reorderEnabled&&query)reorderEnabled=false;
  render();
 };
-$("reorderToggle").onclick=()=>{if(page!=="category"&&page!=="tag")return;if(!reorderEnabled&&$("search").value.trim()){toast("Clear the global search before entering Edit mode.");return}reorderEnabled=!reorderEnabled;render();toast(reorderEnabled?(page==="tag"?"Edit mode enabled for tag: "+activeTag:"Edit mode enabled for "+current):"Edit mode finished")};
+$("reorderToggle").onclick=()=>{if(page!=="category"&&page!=="tag"&&page!=="favorites")return;if(!reorderEnabled&&$("search").value.trim()){toast("Clear the global search before reordering.");return}reorderEnabled=!reorderEnabled;render();toast(reorderEnabled?(page==="favorites"?"Drag favorite services to change their order":page==="tag"?"Edit mode enabled for tag: "+activeTag:"Edit mode enabled for "+current):(page==="favorites"?"Favorites reordering finished":"Edit mode finished"))};
 $("catalogControlsToggle").onclick=()=>{
  catalogControlsExpanded=!catalogControlsExpanded;
  const panel=$("catalogControlsPanel"),button=$("catalogControlsToggle");
