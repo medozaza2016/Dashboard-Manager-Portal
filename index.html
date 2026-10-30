@@ -1400,12 +1400,12 @@ const densityControl=$("regularBtn").parentElement;
 densityControl.style.display=view==="cards"?"flex":"none";
 $("cardArea").style.display=view==="cards"?"block":"none";
 $("listArea").style.display=view==="list"?"block":"none";$("dotArea").style.display=view==="dots"?"block":"none";
-$("reorderControl").hidden=!((isCategory||isTag)&&!queryActive);
+$("reorderControl").hidden=!((isCategory||isTag)||queryActive);
 $("reorderToggle").classList.toggle("active",reorderEnabled);
 $("reorderToggle").setAttribute("aria-pressed",reorderEnabled?"true":"false");
 $("reorderToggle").innerHTML='<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M12.8 3.2 16.8 7.2M3 17l4-.9 9.8-9.8a2.1 2.1 0 0 0-3-3L4 13.1 3 17Z"/><path d="M10.5 4.5 14.5 8.5"/></svg><span>'+(reorderEnabled?"Done editing":"Edit mode")+'</span>';
-$("reorderToggle").title=isTag?"Edit, duplicate, or delete services tagged "+activeTag:"Edit services in "+current+"; add, edit, duplicate, delete, or drag to reorder";
-const canManageServices=(isCategory||isTag)&&reorderEnabled&&!queryActive;
+$("reorderToggle").title=queryActive?"Edit, duplicate, or delete services matching the global search":isTag?"Edit, duplicate, or delete services tagged "+activeTag:"Edit services in "+current+"; add, edit, duplicate, delete, or drag to reorder";
+const canManageServices=reorderEnabled&&(isCategory||isTag||queryActive);
 $("cardArea").innerHTML=view==="cards"?renderServiceCards(items,canManageServices):"";
 $("listArea").innerHTML=view==="list"?renderServiceTable(items,canManageServices,isCategory&&reorderEnabled):"";$("dotArea").innerHTML=view==="dots"?renderServiceDots(items,canManageServices):"";
 $("listArea").classList.toggle("service-order-host",isCategory&&reorderEnabled&&view==="list");
@@ -1740,10 +1740,9 @@ $("cancel").onclick=()=>closeServiceModal();$("add").onclick=()=>{if(page==="cat
   searchReturnPage="home";page="all";current="All";activeTag=null;reorderEnabled=false;catalogControlsExpanded=false;
  }
 if(!query&&page==="all"&&searchReturnPage==="home"){page="home";searchReturnPage=null;current="All";activeTag=null;reorderEnabled=false}
- if(reorderEnabled&&query)reorderEnabled=false;
  render();
 };
-$("reorderToggle").onclick=()=>{if(page!=="category"&&page!=="tag")return;if(!reorderEnabled&&$("search").value.trim()){toast("Clear the global search before entering Edit mode.");return}reorderEnabled=!reorderEnabled;render();toast(reorderEnabled?(page==="tag"?"Edit mode enabled for tag: "+activeTag:"Edit mode enabled for "+current):"Edit mode finished")};
+$("reorderToggle").onclick=()=>{const queryActive=!!$("search").value.trim();if(page!=="category"&&page!=="tag"&&!queryActive)return;reorderEnabled=!reorderEnabled;render();toast(reorderEnabled?(queryActive?"Edit mode enabled for search results":page==="tag"?"Edit mode enabled for tag: "+activeTag:"Edit mode enabled for "+current):"Edit mode finished")};
 $("catalogControlsToggle").onclick=()=>{
  catalogControlsExpanded=!catalogControlsExpanded;
  const panel=$("catalogControlsPanel"),button=$("catalogControlsToggle");
