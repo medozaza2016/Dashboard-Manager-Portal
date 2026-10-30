@@ -1,13 +1,17 @@
 const SERVICE_PREFIX = "service-logos/";
 const BRANDING_PREFIX = "branding/";
-const UUID_FILE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(png|jpg|webp|gif)$/i;
+const LEGACY_UUID_FILE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\\.(png|jpg|webp|gif)$/i;
+const NAMED_SERVICE_FILE = /^[a-z0-9-]{1,48}_[a-z0-9-]{1,56}_\\d+_[0-9a-f-]{36}\\.(png|jpg|webp|gif)$/i;
 
 export function isAllowedAssetKey(key, scope) {
-  if (typeof key !== "string" || key.length > 120) return false;
-  const prefix = scope === "service" ? SERVICE_PREFIX : scope === "branding" ? BRANDING_PREFIX : null;
-  if (prefix) return key.startsWith(prefix) && UUID_FILE.test(key.slice(prefix.length));
-  return (key.startsWith(SERVICE_PREFIX) && UUID_FILE.test(key.slice(SERVICE_PREFIX.length)))
-    || (key.startsWith(BRANDING_PREFIX) && UUID_FILE.test(key.slice(BRANDING_PREFIX.length)));
+  if (typeof key !== "string" || key.length > 220) return false;
+  const serviceFile = key.startsWith(SERVICE_PREFIX) ? key.slice(SERVICE_PREFIX.length) : "";
+  const brandingFile = key.startsWith(BRANDING_PREFIX) ? key.slice(BRANDING_PREFIX.length) : "";
+  if (scope === "service") return LEGACY_UUID_FILE.test(serviceFile) || NAMED_SERVICE_FILE.test(serviceFile);
+  if (scope === "branding") return LEGACY_UUID_FILE.test(brandingFile);
+  return LEGACY_UUID_FILE.test(brandingFile)
+    || LEGACY_UUID_FILE.test(serviceFile)
+    || NAMED_SERVICE_FILE.test(serviceFile);
 }
 
 export async function isAssetReferenced(env, key) {
