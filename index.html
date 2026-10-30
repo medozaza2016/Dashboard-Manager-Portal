@@ -818,6 +818,99 @@ html[data-theme="light"] #sidebar .nav:hover{background:var(--sidebar-hover)!imp
 #sidebar .version{color:rgba(245,247,250,.72)!important}
 #sidebar .bottom{border-top-color:#303640!important}
 
+
+/* Global Dashboard Manager amber/bronze brand system */
+:root,
+[data-theme=light]{
+  --brand-charcoal:#191C22;
+  --brand-bronze:#403426;
+  --brand-amber:#F0B45A;
+  --brand-hover:#272C34;
+  --brand-white:#F5F7FA;
+  --green:#F0B45A;
+  --green-hover:#F7C879;
+  --deep-green:#F0B45A;
+  --dark-green:#403426;
+  --green2:#403426;
+  --pale-green:rgba(240,180,90,.16);
+  --sidebar-surface:#191C22;
+  --sidebar-edge:#303640;
+  --sidebar-muted:#F5F7FA;
+  --sidebar-copy:#F5F7FA;
+  --sidebar-hover:#272C34;
+  --sidebar-active:#403426;
+  --sidebar-accent:#F0B45A;
+}
+/* Primary actions and selected controls use the global amber/bronze identity. */
+.primary{
+  background:#F0B45A!important;
+  border-color:#F0B45A!important;
+  color:#191C22!important;
+}
+.primary:hover{
+  background:#F7C879!important;
+  border-color:#F7C879!important;
+  color:#191C22!important;
+}
+.secondary:hover,
+.chip:hover,
+.density button:hover,
+.views button:hover{
+  background:#272C34!important;
+  border-color:#272C34!important;
+  color:#F5F7FA!important;
+}
+.chip.active,
+.density button.active,
+.views button.active{
+  background:#403426!important;
+  border-color:rgba(240,180,90,.28)!important;
+  color:#F0B45A!important;
+}
+.card:hover{
+  border-color:#F0B45A!important;
+}
+.card-actions a,
+.list a,
+a.brand-link{
+  color:#F0B45A;
+}
+.card-actions a:hover,
+.list a:hover,
+a.brand-link:hover{
+  color:#F7C879;
+}
+.star{
+  color:#F0B45A;
+}
+.avatar{
+  background:#403426!important;
+  color:#F0B45A!important;
+}
+.iconbtn:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible{
+  outline:2px solid #F0B45A!important;
+  outline-offset:2px;
+}
+.iconbtn:hover{
+  background:#272C34!important;
+  border-color:#F0B45A!important;
+  color:#F5F7FA!important;
+}
+.search input:focus,
+.modal input:focus,
+.modal select:focus{
+  border-color:#F0B45A!important;
+  box-shadow:0 0 0 3px rgba(240,180,90,.16);
+}
+.badge,.count-badge,.status-badge{
+  --badge-accent:#F0B45A;
+}
+
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
