@@ -1282,6 +1282,11 @@ a:focus-visible{
   color:#1B2028!important;
 }
 
+.service-dot-card.orderable-card{cursor:grab}
+.service-dot-card.orderable-card.dragging{opacity:.4}
+.service-dot-card.orderable-card.drag-over{outline:2px solid var(--green);outline-offset:-2px}
+.service-dot-drag-handle{position:absolute;top:5px;left:5px;z-index:2;width:22px;height:22px;min-width:22px;flex:0 0 22px;border-radius:6px;font-size:14px;opacity:.9}
+.service-dot-drag-handle:active{cursor:grabbing}
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
@@ -1989,21 +1994,22 @@ const dragHandle=orderable?'<button type="button" class="service-card-drag-handl
 return '<article class="card '+(slim?"slim-card ":"")+(orderable?"orderable-card":"")+'" data-order-id="'+safe(s.id)+'" data-open="'+safe(s.id)+'"><div class="card-top">'+dragHandle+'<div class="service-icon">'+serviceIconHtml(s)+'</div><div class="slim-card-identity" style="min-width:0"><div class="service-title">'+safe(s.name)+'</div>'+category+'</div><button class="star" data-fav="'+safe(s.id)+'" title="Toggle favorite" aria-label="Toggle favorite for '+safe(s.name)+'">'+(s.favorite?"★":"☆")+'</button></div>'+details+actionRow+'</article>';
 }).join("")+'</div>';
 }
-function renderServiceDots(items,manage=false){
+function renderServiceDots(items,manage=false,allowReorder=false){
 if(!items.length)return '<div class="empty">No services match this view. Try another search or category.</div>';
-const queryActive=!!$("search").value.trim();
+const queryActive=!!$("search").value.trim(),orderable=!!allowReorder&&!queryActive;
 return '<div class="service-dot-grid">'+items.map(s=>{
 const actions=manage?'<div class="service-dot-actions">'+serviceActionIcon("edit",s.id,s.name)+serviceActionIcon("duplicate",s.id,s.name)+serviceActionIcon("delete",s.id,s.name)+'</div>':"";
 const category=queryActive?'<span class="service-dot-category"><span>Category</span> '+safe(s.category)+'</span>':"";
 const description=preferences.showCardDescriptions&&s.description?'<span class="service-dot-description">'+safe(s.description)+'</span>':"";
-return '<article class="service-dot-card" data-open="'+safe(s.id)+'" tabindex="0" aria-label="Open service '+safe(s.name)+'" title="Open '+safe(s.name)+'"><button type="button" class="service-dot-favorite" data-fav="'+safe(s.id)+'" title="'+(s.favorite?"Remove from":"Add to")+' favorites" aria-label="'+(s.favorite?"Remove from":"Add to")+' favorites: '+safe(s.name)+'">'+(s.favorite?"★":"☆")+'</button><div class="service-dot-icon">'+serviceIconHtml(s)+'</div><span class="service-dot-label">'+safe(s.name)+'</span>'+category+description+actions+'</article>';
+const dragHandle=orderable?'<button type="button" class="service-card-drag-handle service-dot-drag-handle" data-order-drag="'+safe(s.id)+'" draggable="true" title="Drag to reorder favorites" aria-label="Drag to reorder '+safe(s.name)+'">⠿</button>':"";
+return '<article class="service-dot-card '+(orderable?"orderable-card":"")+'" data-order-id="'+safe(s.id)+'" data-open="'+safe(s.id)+'" tabindex="0" aria-label="Open service '+safe(s.name)+'" title="Open '+safe(s.name)+'">'+dragHandle+'<button type="button" class="service-dot-favorite" data-fav="'+safe(s.id)+'" title="'+(s.favorite?"Remove from":"Add to")+' favorites" aria-label="'+(s.favorite?"Remove from":"Add to")+' favorites: '+safe(s.name)+'">'+(s.favorite?"★":"☆")+'</button><div class="service-dot-icon">'+serviceIconHtml(s)+'</div><span class="service-dot-label">'+safe(s.name)+'</span>'+category+description+actions+'</article>';
 }).join("")+'</div>';
 }
 function renderServiceTable(items,manage,orderable=false){
 if(!items.length)return '<div class="empty">No services in this view. Choose a category from the sidebar.</div>';
-const canDrag=!!orderable&&!$("search").value.trim()&&page==="category"&&!!manage;
+const canDrag=!!orderable&&!$("search").value.trim()&&((page==="category"&&!!manage)||(page==="favorites"&&reorderEnabled));
 return '<table><thead><tr><th>Service</th><th>Category</th><th>Tags</th><th>URL</th><th>Actions</th></tr></thead><tbody>'+items.map(s=>{
-const handle=canDrag?'<button type="button" class="service-card-drag-handle table-drag-handle" data-order-drag="'+safe(s.id)+'" draggable="true" title="Drag to reorder within '+safe(current)+'" aria-label="Drag to reorder '+safe(s.name)+'">⠿</button>':"";
+const handle=canDrag?'<button type="button" class="service-card-drag-handle table-drag-handle" data-order-drag="'+safe(s.id)+'" draggable="true" title="Drag to reorder '+(page==="favorites"?"favorites":"within "+safe(current))+'" aria-label="Drag to reorder '+safe(s.name)+'">⠿</button>':"";
 const action=manage?serviceActionIcon("edit",s.id,s.name)+serviceActionIcon("duplicate",s.id,s.name)+serviceActionIcon("delete",s.id,s.name):'<button class="secondary" data-fav="'+safe(s.id)+'" title="'+(s.favorite?"Remove from favorites":"Add to favorites")+'" aria-label="'+(s.favorite?"Remove from favorites: ":"Add to favorites: ")+safe(s.name)+'">'+(s.favorite?"★":"☆")+"</button>";
 return '<tr '+(canDrag?'data-order-id="'+safe(s.id)+'" class="orderable-card"':'')+'><td><span class="table-service-icon">'+serviceIconHtml(s)+'</span>'+handle+safe(s.name)+'</td><td>'+safe(s.category)+'</td><td>'+(s.tags||[]).map(tagHtml).join("")+'</td><td><a href="'+safe(s.url)+'" target="_blank" rel="noopener">Open ↗</a></td><td class="action-cell"><div class="action-group">'+action+'</div></td></tr>';
 }).join("")+'</tbody></table>';
@@ -2048,15 +2054,15 @@ const densityControl=$("regularBtn").parentElement;
 densityControl.style.display=view==="cards"?"flex":"none";
 $("cardArea").style.display=view==="cards"?"block":"none";
 $("listArea").style.display=view==="list"?"block":"none";$("dotArea").style.display=view==="dots"?"block":"none";
-$("reorderControl").hidden=!((isCategory||isTag)&&!queryActive);
+$("reorderControl").hidden=!((isCategory||isTag||isFavorites)&&!queryActive);
 $("reorderToggle").classList.toggle("active",reorderEnabled);
 $("reorderToggle").setAttribute("aria-pressed",reorderEnabled?"true":"false");
-$("reorderToggle").innerHTML='<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M12.8 3.2 16.8 7.2M3 17l4-.9 9.8-9.8a2.1 2.1 0 0 0-3-3L4 13.1 3 17Z"/><path d="M10.5 4.5 14.5 8.5"/></svg><span>'+(reorderEnabled?"Done editing":"Edit mode")+'</span>';
-$("reorderToggle").title=isTag?"Edit, duplicate, or delete services tagged "+activeTag:"Edit services in "+current+"; add, edit, duplicate, delete, or drag to reorder";
-const canManageServices=(isCategory||isTag)&&reorderEnabled&&!queryActive;
-$("cardArea").innerHTML=view==="cards"?renderServiceCards(items,canManageServices):"";
-$("listArea").innerHTML=view==="list"?renderServiceTable(items,canManageServices,isCategory&&reorderEnabled):"";$("dotArea").innerHTML=view==="dots"?renderServiceDots(items,canManageServices):"";
-$("listArea").classList.toggle("service-order-host",isCategory&&reorderEnabled&&view==="list");
+$("reorderToggle").innerHTML='<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M12.8 3.2 16.8 7.2M3 17l4-.9 9.8-9.8a2.1 2.1 0 0 0-3-3L4 13.1 3 17Z"/><path d="M10.5 4.5 14.5 8.5"/></svg><span>'+(reorderEnabled?(isFavorites?"Done reordering":"Done editing"):(isFavorites?"Reorder favorites":"Edit mode"))+'</span>';
+$("reorderToggle").title=isFavorites?"Drag favorites to set your preferred order":isTag?"Edit, duplicate, or delete services tagged "+activeTag:"Edit services in "+current+"; add, edit, duplicate, delete, or drag to reorder";
+const canManageServices=(isCategory||isTag)&&reorderEnabled&&!queryActive,canReorderFavorites=isFavorites&&reorderEnabled&&!queryActive;
+$("cardArea").innerHTML=view==="cards"?renderServiceCards(items,canManageServices,canReorderFavorites):"";
+$("listArea").innerHTML=view==="list"?renderServiceTable(items,canManageServices,(isCategory&&reorderEnabled)||canReorderFavorites):"";$("dotArea").innerHTML=view==="dots"?renderServiceDots(items,canManageServices,canReorderFavorites):"";
+$("listArea").classList.toggle("service-order-host",(isCategory||isFavorites)&&reorderEnabled&&view==="list");
 }
 function bindRenderedActions(){
 document.querySelectorAll("[data-fav]").forEach(b=>b.onclick=async e=>{e.stopPropagation();const s=services.find(item=>String(item.id)===String(b.dataset.fav));if(!s)return;const changed={...s,favorite:!s.favorite};try{if(apiConnected){const saved=await remoteSaveService(changed,false);Object.assign(s,saved)}else{s.favorite=changed.favorite;toast("Favorite changed locally only")}render()}catch(error){toast("Could not save favorite: "+(error.message||"database error"))}});
