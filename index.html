@@ -982,13 +982,14 @@ let serviceSelectedTags=new Set(),serviceTagQuery="";
 let categoryRecords=[],taxonomyCategories=[],tagRecords=[],taxonomyLoaded=false,taxonomyBusy=false,taxonomyModalType=null,taxonomyModalId=null,taxonomyModalOriginalName="",taxonomyReturnToService=false,confirmResolver=null,sidebarTagsExpanded=false,activeTag=null;
 let persistedBrandingLogoKey=null,brandingLogoPreviewUrl=null,brandingLogoUploadToken=0,brandingLogoUploadBusy=false;
 let pendingBrandingLogoKeys=new Set();
-let serviceLogoPreviewUrl=null,serviceUploadToken=0,serviceLogoUploadBusy=false;
+let serviceLogoPreviewUrl=null,serviceUploadToken=0,serviceLogoUploadBusy=false,pendingServiceLogoFile=null;
 let pendingServiceLogoKeys=new Set();
 const MAX_IMAGE_BYTES=5*1024*1024;
 function assetUrl(key){return "/api/assets?key="+encodeURIComponent(key)}
-async function uploadImage(file,scope){
+async function uploadImage(file,scope,options={}){
 if(!apiConnected)throw new Error("Connect to the shared database before uploading a logo.");
 const form=new FormData();form.append("scope",scope);form.append("file",file,file.name||"logo");
+if(scope==="service"){form.append("serviceId",String(options.serviceId||""));form.append("profileId",String(options.profileId||currentProfile));form.append("originalName",file.name||"image")}
 const response=await fetch("/api/assets",{method:"POST",credentials:"same-origin",body:form});
 const body=await response.json().catch(()=>({}));
 if(!response.ok)throw new Error(body.error||("Upload failed ("+response.status+")"));
@@ -1699,11 +1700,11 @@ function renderServiceLogoPreview(source,fallback="🔧"){
 const image=$("serviceLogoImage"),text=$("serviceLogoFallback");
 if(source){image.src=source;image.hidden=false;text.hidden=true;image.onerror=()=>{image.hidden=true;text.hidden=false}}
 else{image.removeAttribute("src");image.hidden=true;text.textContent=fallback||"🔧";text.hidden=false}
-$("removeServiceLogo").hidden=!$("serviceLogoKey").value;
+$("removeServiceLogo").hidden=!($("serviceLogoKey").value||pendingServiceLogoFile);
 }
 function releaseServiceLogoPreview(){if(serviceLogoPreviewUrl){URL.revokeObjectURL(serviceLogoPreviewUrl);serviceLogoPreviewUrl=null}}
 function closeServiceModal(){
-serviceUploadToken++;serviceLogoUploadBusy=false;$("serviceModal").classList.remove("open");releaseServiceLogoPreview();$("serviceLogoFile").value="";
+serviceUploadToken++;serviceLogoUploadBusy=false;pendingServiceLogoFile=null;$("serviceModal").classList.remove("open");releaseServiceLogoPreview();$("serviceLogoFile").value="";
 $("serviceLogoUploadStatus").textContent="Optional · PNG, JPEG, WebP or GIF · up to 5 MB";$("chooseServiceLogo").disabled=false;void cleanupPendingServiceLogos();
 }
 function renderServiceTagPicker(){
@@ -1717,7 +1718,7 @@ selectedHost.querySelectorAll("[data-remove-service-tag]").forEach(button=>butto
 optionsHost.querySelectorAll("[data-toggle-service-tag]").forEach(button=>button.onclick=()=>{const name=button.dataset.toggleServiceTag;if(serviceSelectedTags.has(name))serviceSelectedTags.delete(name);else serviceSelectedTags.add(name);renderServiceTagPicker()});
 }
 function openModal(id,presetCategory=null){
-const s=services.find(item=>item.id==id);void cleanupPendingServiceLogos();serviceUploadToken++;serviceLogoUploadBusy=false;releaseServiceLogoPreview();
+const s=services.find(item=>item.id==id);void cleanupPendingServiceLogos();serviceUploadToken++;serviceLogoUploadBusy=false;pendingServiceLogoFile=null;releaseServiceLogoPreview();
 $("serviceForm").reset();$("serviceId").value=s?s.id:"";$("serviceLogoKey").value=s?.logoKey||"";
 $("modalTitle").textContent=s?"Edit service":"Add service";$("name").value=s?.name||"";$("url").value=s?.url||"";$("description").value=s?.description||"";$("icon").value=s?.icon||"🔧";
 serviceSelectedTags=new Set(s?.tags||[]);serviceTagQuery="";$("serviceTagSearch").value="";
@@ -1730,16 +1731,48 @@ $("serviceLogoUploadStatus").textContent="Optional · PNG, JPEG, WebP or GIF · 
 }
 
 $("serviceForm").onsubmit=async e=>{
-e.preventDefault();if(serviceLogoUploadBusy){toast("Wait for the image upload to finish.");return}
+e.preventDefault();if(serviceLogoUploadBusy){toast("Wait for the image operation to finish.");return}
 const originalPage=page,wasOnManagePage=(page==="category"||page==="tag")&&reorderEnabled,originalCategory=current,originalTag=activeTag,wasEditMode=reorderEnabled;
-const id=$("serviceId").value;
-let item={id:id?Number(id):nextId++,name:$("name").value.trim(),url:$("url").value.trim(),category:$("category").value,description:$("description").value.trim(),icon:$("icon").value.trim()||"🔧",logoKey:$("serviceLogoKey").value||null,tags:[...serviceSelectedTags],favorite:services.find(s=>s.id==id)?.favorite||false};
+let id=$("serviceId").value;
+const existing=services.find(s=>String(s.id)===String(id));
+const selectedFile=pendingServiceLogoFile;
+if(selectedFile&&!apiConnected){toast("Connect to the shared database before saving a service image.");return}
+let item={id:id?Number(id):nextId++,name:$("name").value.trim(),url:$("url").value.trim(),category:$("category").value,description:$("description").value.trim(),icon:$("icon").value.trim()||"🔧",logoKey:selectedFile?(existing?.logoKey||null):($("serviceLogoKey").value||null),tags:[...serviceSelectedTags],favorite:existing?.favorite||false};
+let newUploadedKey=null;
 try{
-if(apiConnected)item=await remoteSaveService(item,!id);
-if(id)services=services.map(s=>s.id==id?item:s);else{if(!apiConnected)nextId=Math.max(nextId,Number(item.id)+1);services.unshift(item)}
-if(item.logoKey)pendingServiceLogoKeys.delete(item.logoKey);
-closeServiceModal();if(wasOnManagePage){if(originalPage==="tag"){page="tag";activeTag=originalTag;current="All"}else{page="category";current=originalCategory}reorderEnabled=wasEditMode}else{page="home";current="All";reorderEnabled=false}render();toast(apiConnected?(id?"Service saved to database":"Service added to database"):(id?"Service saved locally only":"Service added locally only"))
-}catch(error){toast("Could not save service: "+(error.message||"database error"))}
+if(apiConnected){
+  // Save service fields first so a newly created service has a permanent ID.
+  item=await remoteSaveService(item,!id);
+  id=String(item.id);$("serviceId").value=id;
+  services=existing?services.map(s=>String(s.id)===id?item:s):[item,...services];
+  nextId=Math.max(nextId,Number(item.id)+1);
+
+  if(selectedFile){
+    serviceLogoUploadBusy=true;$("serviceLogoUploadStatus").textContent="Uploading named image to R2…";
+    const uploaded=await uploadImage(selectedFile,"service",{serviceId:item.id,profileId:currentProfile});
+    newUploadedKey=uploaded.key;
+    const replacement={...item,logoKey:uploaded.key};
+    item=await remoteSaveService(replacement,false);
+    newUploadedKey=null;
+    services=services.map(s=>String(s.id)===String(item.id)?item:s);
+    $("serviceLogoKey").value=item.logoKey||"";
+  }else{
+    // A cleared logoKey removes the existing object after D1 has stopped referencing it.
+    services=services.map(s=>String(s.id)===String(item.id)?item:s);
+  }
+}else{
+  if(id)services=services.map(s=>String(s.id)===String(id)?item:s);
+  else{services.unshift(item);nextId=Math.max(nextId,Number(item.id)+1)}
+}
+closeServiceModal();
+if(wasOnManagePage){if(originalPage==="tag"){page="tag";activeTag=originalTag;current="All"}else{page="category";current=originalCategory}reorderEnabled=wasEditMode}else{page="home";current="All";reorderEnabled=false}
+render();toast(apiConnected?(selectedFile?"Service and image saved to database":id?"Service saved to database":"Service added to database"):(id?"Service saved locally only":"Service added locally only"));
+}catch(error){
+ if(newUploadedKey)await deleteUploadedImage(newUploadedKey);
+ serviceLogoUploadBusy=false;
+ $("chooseServiceLogo").disabled=false;
+ toast((id?"Service details saved, but image update failed: ":"Could not save service: ")+(error.message||"database error"));
+}
 };
 $("cancel").onclick=()=>closeServiceModal();$("add").onclick=()=>{if(page==="category"&&reorderEnabled)openModal(null,current)};$("search").oninput=()=>{
  const query=$("search").value.trim();
@@ -1818,30 +1851,20 @@ if(branding.logoKey&&pendingBrandingLogoKeys.has(branding.logoKey)){void deleteU
 branding.logoKey=null;$("brandingLogoUploadStatus").textContent="Logo removal will take effect when you save settings.";applyBranding();
 };
 $("chooseServiceLogo").onclick=()=>{if(!apiConnected){toast("The shared database connection is required for R2 uploads.");return}$("serviceLogoFile").click()};
-$("serviceLogoFile").onchange=async e=>{
+$("serviceLogoFile").onchange=e=>{
 const file=e.target.files&&e.target.files[0];e.target.value="";if(!file)return;
 if(file.size<1||file.size>MAX_IMAGE_BYTES){toast("Choose an image no larger than 5 MB.");return}
 if(!["image/png","image/jpeg","image/webp","image/gif"].includes(file.type.toLowerCase())){toast("Use a PNG, JPEG, WebP or GIF image.");return}
-const token=++serviceUploadToken;serviceLogoUploadBusy=true;$("chooseServiceLogo").disabled=true;$("serviceLogoUploadStatus").textContent="Uploading logo to private R2 storage…";
-const objectUrl=URL.createObjectURL(file),previousUrl=serviceLogoPreviewUrl,previousKey=$("serviceLogoKey").value||null;
-renderServiceLogoPreview(objectUrl,$("icon").value||"🔧");
-try{
-const uploaded=await uploadImage(file,"service");
-if(token!==serviceUploadToken||!$("serviceModal").classList.contains("open")){await deleteUploadedImage(uploaded.key);URL.revokeObjectURL(objectUrl);return}
-$("serviceLogoKey").value=uploaded.key;pendingServiceLogoKeys.add(uploaded.key);serviceLogoPreviewUrl=objectUrl;
-if(previousUrl)URL.revokeObjectURL(previousUrl);
-if(previousKey&&pendingServiceLogoKeys.has(previousKey)&&previousKey!==uploaded.key){pendingServiceLogoKeys.delete(previousKey);await deleteUploadedImage(previousKey)}
-$("serviceLogoUploadStatus").textContent="Uploaded to R2. Save the service to attach this logo.";renderServiceLogoPreview(objectUrl,$("icon").value||"🔧");
-}catch(error){
-URL.revokeObjectURL(objectUrl);
-if(token===serviceUploadToken){renderServiceLogoPreview(previousUrl||(previousKey&&apiConnected?assetUrl(previousKey):""),$("icon").value||"🔧");$("serviceLogoUploadStatus").textContent=error.message||"Upload failed.";toast("Service logo upload failed: "+(error.message||"upload failed"))}
-}finally{if(token===serviceUploadToken){serviceLogoUploadBusy=false;$("chooseServiceLogo").disabled=false}}
+pendingServiceLogoFile=file;
+releaseServiceLogoPreview();serviceLogoPreviewUrl=URL.createObjectURL(file);
+renderServiceLogoPreview(serviceLogoPreviewUrl,$("icon").value||"🔧");
+$("serviceLogoUploadStatus").textContent="Selected: "+file.name+". The image will be uploaded when you save the service.";
 };
 $("removeServiceLogo").onclick=()=>{
-if(serviceLogoUploadBusy){toast("Wait for the upload to finish.");return}
-const key=$("serviceLogoKey").value;if(key&&pendingServiceLogoKeys.has(key)){pendingServiceLogoKeys.delete(key);void deleteUploadedImage(key)}
-releaseServiceLogoPreview();$("serviceLogoKey").value="";renderServiceLogoPreview("",$("icon").value||"🔧");
-$("serviceLogoUploadStatus").textContent="Logo removal will take effect when you save the service.";
+if(serviceLogoUploadBusy){toast("Wait for the image operation to finish.");return}
+pendingServiceLogoFile=null;releaseServiceLogoPreview();$("serviceLogoFile").value="";$("serviceLogoKey").value="";
+renderServiceLogoPreview("",$("icon").value||"🔧");
+$("serviceLogoUploadStatus").textContent="Image removal will take effect when you save the service.";
 };
 $("testD1Connection").onclick=()=>checkD1Connection(true);
 $("refreshR2Connection").onclick=()=>checkR2Connection(true);
