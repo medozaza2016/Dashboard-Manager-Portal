@@ -912,6 +912,230 @@ a:focus-visible{
   --badge-accent:#F0B45A;
 }
 
+
+/* Main workspace neutral charcoal and amber theme.
+   Scoped deliberately to the main area and its detached dialogs.
+   The sidebar is not targeted by these rules. */
+.main,
+#serviceModal,
+#taxonomyModalBackdrop,
+#appConfirmModal,
+#toast{
+  color-scheme:dark;
+  --bg:#14171D;
+  --panel:#191D24;
+  --panel2:#202630;
+  --elevated:#202630;
+  --hover:#272C34;
+  --text:#F2F3F5;
+  --body:#B0B6C0;
+  --muted:#B0B6C0;
+  --subtle:#87909C;
+  --line:#303640;
+  --green:#F0B45A;
+  --green-hover:#F7C879;
+  --deep-green:#F0B45A;
+  --dark-green:#403426;
+  --green2:#403426;
+  --tag:#202630;
+  --pale-green:rgba(240,180,90,.16);
+  --charcoal:#191C22;
+  --github-filter:brightness(0) invert(1);
+}
+.main{
+  background:#14171D!important;
+  color:#F2F3F5;
+}
+/* Keep the main header and all cards/panels on the same neutral surfaces. */
+.main .topbar{background:#191D24!important;border-color:#303640!important}
+.main .card,
+.main .settings-card,
+.main .integration-card,
+.main .list,
+.main .modal,
+.main .taxonomy-row,
+.main .app-form-dialog,
+.main .app-confirm-dialog{
+  background-color:#191D24;
+  border-color:#303640;
+  color:#F2F3F5;
+}
+.main .catalog-display-controls,
+.main .catalog-controls-panel-inner,
+.main .list th,
+.main .taxonomy-row-fields,
+.main .service-tag-options,
+.main .service-selected-tags{
+  background-color:#202630;
+  border-color:#303640;
+}
+/* Main content controls use amber for selected/focus states and charcoal hover. */
+.main .primary{
+  background:#F0B45A!important;
+  border-color:#F0B45A!important;
+  color:#191C22!important;
+}
+.main .primary:hover{
+  background:#F7C879!important;
+  border-color:#F7C879!important;
+  color:#191C22!important;
+}
+.main .secondary,
+.main .iconbtn,
+.main .chip,
+.main .density button,
+.main .views button,
+.main .reorder-toggle{
+  border-color:#303640;
+  background:#191D24;
+  color:#B0B6C0;
+}
+.main .secondary:hover,
+.main .iconbtn:hover,
+.main .chip:hover,
+.main .density button:hover,
+.main .views button:hover,
+.main .reorder-toggle:hover{
+  background:#272C34!important;
+  border-color:#303640!important;
+  color:#F2F3F5!important;
+}
+.main .chip.active,
+.main .density button.active,
+.main .views button.active,
+.main .reorder-toggle.active{
+  background:#403426!important;
+  border-color:rgba(240,180,90,.35)!important;
+  color:#F0B45A!important;
+}
+.main .catalog-controls-panel-inner>.chips .chip.active .tag-chip-mark{
+  background:rgba(240,180,90,.16)!important;
+  color:#F0B45A!important;
+}
+
+/* Override legacy catalog-control declarations that hard-coded green tints. */
+.main .catalog-display-controls .views button.active,
+.main .catalog-display-controls .density button.active,
+.main .catalog-display-controls .reorder-toggle.active{
+  background:#403426!important;
+  color:#F0B45A!important;
+  border-color:rgba(240,180,90,.30)!important;
+  box-shadow:inset 0 0 0 1px rgba(240,180,90,.08)!important;
+}
+.main .catalog-display-controls .reorder-toggle:hover,
+.main .catalog-controls-toggle:hover,
+.main .catalog-controls-toggle.active{
+  border-color:#F0B45A!important;
+}
+.main .catalog-controls-toggle-icon,
+.main .catalog-controls-toggle.active .catalog-controls-chevron{
+  color:#F0B45A!important;
+}
+.main .catalog-display-controls .views button:focus-visible,
+.main .catalog-display-controls .density button:focus-visible,
+.main .catalog-display-controls .reorder-toggle:focus-visible{
+  outline:2px solid #F0B45A!important;
+}
+.main .top-actions .nav.active{
+  background:#403426!important;
+  color:#F0B45A!important;
+  border-color:rgba(240,180,90,.30)!important;
+}
+.main .list tr.drag-over,
+.main .service-card-drag-handle:focus-visible{
+  outline-color:#F0B45A!important;
+}
+.main .taxonomy-danger,
+.main .danger-button{color:#F87171!important}
+
+.main .iconbtn:focus-visible,
+.main button:focus-visible,
+.main input:focus-visible,
+.main select:focus-visible,
+.main textarea:focus-visible,
+.main a:focus-visible{
+  outline:2px solid #F0B45A!important;
+  outline-offset:2px;
+}
+.main input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+.main select,
+.main textarea{
+  background-color:#14171D;
+  border-color:#303640;
+  color:#F2F3F5;
+  caret-color:#F0B45A;
+}
+#serviceModal input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+#serviceModal select,
+#taxonomyModalBackdrop input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+#taxonomyModalBackdrop select,
+#appConfirmModal input,
+#appConfirmModal select,
+#appConfirmModal textarea{
+  background-color:#14171D;
+  border-color:#303640;
+  color:#F2F3F5;
+  caret-color:#F0B45A;
+}
+.main input::placeholder,
+.main textarea::placeholder,
+#serviceModal input::placeholder,
+#taxonomyModalBackdrop input::placeholder{
+  color:#87909C;
+  opacity:1;
+}
+.main option,
+#serviceModal option,
+#taxonomyModalBackdrop option{
+  background:#191D24;
+  color:#F2F3F5;
+}
+.main .search input,
+.main .modal input,
+.main .modal select,
+#serviceModal .modal input,
+#serviceModal .modal select,
+#taxonomyModalBackdrop input,
+#taxonomyModalBackdrop select{
+  border-color:#303640;
+}
+.main .search input:focus,
+.main .modal input:focus,
+.main .modal select:focus,
+#serviceModal .modal input:focus,
+#serviceModal .modal select:focus,
+#taxonomyModalBackdrop input:focus,
+#taxonomyModalBackdrop select:focus{
+  border-color:#F0B45A!important;
+  box-shadow:0 0 0 3px rgba(240,180,90,.16);
+}
+/* Remove the legacy green tint from content-only markers and status accents. */
+.main .list a,
+.main .card-actions a,
+.main .service-card-category-value,
+.main .catalog-controls-chevron,
+.main .catalog-controls-chevron svg,
+.main .settings-check input,
+.main input[type="checkbox"],
+.main input[type="radio"],
+.main input[type="range"],
+.main .list tr.drag-over{
+  accent-color:#F0B45A;
+}
+.main .list a,
+.main .card-actions a,
+.main .service-card-category-value{color:#F0B45A}
+.main .list tr.drag-over{outline-color:#F0B45A}
+.main .logo{
+  background:#403426!important;
+  color:#F0B45A!important;
+}
+#toast{
+  background:#202630!important;
+  border-color:#303640!important;
+  color:#F2F3F5!important;
+}
+
 </style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
@@ -922,7 +1146,7 @@ a:focus-visible{
 
 
 <button type="button" class="group-label sidebar-section-toggle" id="toggleCategoriesSection" aria-expanded="true"><span>Categories</span><span class="sidebar-section-chevron" aria-hidden="true">⌄</span></button><div id="categorySectionContent"><div id="categoryNav"></div><button type="button" class="nav tag-more-toggle" id="showMoreCategories" hidden>Show all categories</button></div><button type="button" class="group-label sidebar-section-toggle tag-nav-heading" id="toggleTagsSection" aria-expanded="true"><span>Tags</span><span class="sidebar-section-chevron" aria-hidden="true">⌄</span></button><div id="tagSectionContent"><div id="tagNav"></div><button type="button" class="nav tag-more-toggle" id="showMoreTags" hidden>Show more tags</button></div><div class="bottom">
-<button class="nav" data-page="admin" title="Administration"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m8.5 12 2.3 2.3 4.8-5"/></svg></span><span>Admin</span></button><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.65</div></div></aside>
+<button class="nav" data-page="admin" title="Administration"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m8.5 12 2.3 2.3 4.8-5"/></svg></span><span>Admin</span></button><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.66</div></div></aside>
 <main class="main"><header class="topbar"><button class="iconbtn" id="collapse" title="Collapse sidebar" aria-label="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="m14 7-5 5 5 5"/></svg></button><div class="search"><span class="search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="search" placeholder="Search all services across this profile..." aria-label="Search all services"></div><div class="top-actions"><button class="iconbtn" id="theme" title="Toggle theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg></button><button class="iconbtn help" id="help" title="About" aria-label="About"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button><button class="nav" id="profileToggle" title="Switch profile" style="font-size:11px;padding:4px 10px;border-radius:8px;min-width:auto;">Personal</button></div></header>
 <div class="content">
 <section id="homePage">
@@ -1089,7 +1313,7 @@ a:focus-visible{
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.65";
+const APP_VERSION="0.1.66";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
