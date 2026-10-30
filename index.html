@@ -235,6 +235,7 @@
 .service-card-category-value{min-width:0;color:var(--green);font-size:11px;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .service-dot-category{max-width:100%;display:block;color:var(--green);font-size:8px;line-height:1.3;font-weight:650;overflow-wrap:anywhere}
 .service-dot-category span{color:var(--muted);font-size:7px;font-weight:750;letter-spacing:.4px;text-transform:uppercase}
+.service-dot-description{display:-webkit-box;width:100%;max-width:100%;color:var(--muted);font-size:8px;line-height:1.35;font-weight:400;overflow-wrap:anywhere;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .service-dot-favorite{position:absolute;top:4px;right:6px;z-index:1;width:22px;height:22px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--panel);color:#E8B84A;font-size:13px;line-height:1;cursor:pointer}
 .service-dot-actions{display:flex;justify-content:center;gap:3px;margin-top:1px}
 .service-dot-actions .icon-action{width:24px;height:24px;min-width:24px;padding:4px}
@@ -794,8 +795,8 @@
           <div class="settings-field full"><label for="defaultViewSetting">Default service layout</label><select id="defaultViewSetting"><option value="list">Compact list</option><option value="cards">Regular cards</option><option value="slim">Slim cards</option><option value="dots">Dot mode</option></select></div>
           <div class="settings-field full"><label for="serviceImageSizeSetting">Service logo size <span id="serviceImageSizeValue">34 px</span></label><div class="service-image-size-control"><input id="serviceImageSizeSetting" type="range" min="20" max="64" step="2" value="34" aria-label="Service logo size in pixels"><div class="service-logo-preview service-image-size-preview" id="serviceImageSizePreview"><span id="serviceImageSizePreviewFallback">🔧</span><img id="serviceImageSizePreviewImage" alt="" hidden></div></div><p class="settings-help">Adjusts uploaded logos and built-in icons across regular cards, Slim cards, compact rows, and the service editor preview. Original uploaded files remain unchanged.</p></div>
         </div>
-        <label class="settings-check"><input id="showSlimDescriptionsSetting" type="checkbox"><span>Show descriptions in Slim cards</span></label>
-        <p class="settings-help" style="margin-top:6px">When off, Slim cards show just the service name and icon. The card itself opens the service. This applies across Home, Favorites, and category pages, including filtered results.</p>
+        <label class="settings-check"><input id="showCardDescriptionsSetting" type="checkbox"><span>Show descriptions in all card layouts</span></label>
+        <p class="settings-help" style="margin-top:6px">Controls service descriptions in Regular, Slim, and Dot layouts across Home, Favorites, All Services, categories, tags, and search results. When off, descriptions are hidden in all card layouts. List view is unchanged.</p>
         <label class="settings-check"><input id="sidebarCollapsedSetting" type="checkbox"><span>Start with the sidebar collapsed</span></label>
       </article>
       <article class="settings-card">
@@ -951,7 +952,7 @@ let services=structuredClone(seed),current="All",view="list",density="regular",p
 let currentProfile=1,sidebarCategoriesExpanded=false,localViewPreference=false,searchReturnPage=null; // 1=Personal, 2=Work
 let profileLoadToken=0,taxonomyLoadToken=0,dataProfileId=1;
 let branding={name:"Luxorit",subtitle:"Pro",logo:""};
-let preferences={theme:"dark",landingPage:"home",defaultView:"list",sidebarCollapsed:false,sidebarCategoriesCollapsed:false,sidebarTagsCollapsed:false,showSlimDescriptions:false,serviceImageSize:34};
+let preferences={theme:"dark",landingPage:"home",defaultView:"list",sidebarCollapsed:false,sidebarCategoriesCollapsed:false,sidebarTagsCollapsed:false,showCardDescriptions:false,showSlimDescriptions:false,serviceImageSize:34};
 function normalizeServiceImageSize(value){
  const size=Number(value);
  return value==null||!Number.isFinite(size)?34:Math.min(64,Math.max(20,Math.round(size/2)*2));
@@ -1261,7 +1262,7 @@ async function loadRemoteData(profileId=currentProfile){
   services=remoteServices.map(s=>({...s,id:Number(s.id),favorite:!!s.favorite,tags:Array.isArray(s.tags)?s.tags:[]}));
   categoryRecords=remoteCategories;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;
   branding={...branding,...(remoteSettings.branding||{})};persistedBrandingLogoKey=branding.logoKey||null;
-  preferences={...preferences,...(remoteSettings.preferences||{})};
+  const remotePreferences=remoteSettings.preferences||{};preferences={...preferences,...remotePreferences,showCardDescriptions:typeof remotePreferences.showCardDescriptions==="boolean"?remotePreferences.showCardDescriptions:typeof remotePreferences.showSlimDescriptions==="boolean"?remotePreferences.showSlimDescriptions:!!preferences.showCardDescriptions};
    if(!localViewPreference){view=preferences.defaultView==="list"?"list":preferences.defaultView==="dots"?"dots":"cards";density=preferences.defaultView==="slim"?"slim":"regular"}
   document.documentElement.dataset.theme=preferences.theme||"dark";
   dataProfileId=profileId;apiConnected=true;apiError="";
@@ -1307,7 +1308,7 @@ function load(){
  if(d){
   if(d.currentProfile===1||d.currentProfile===2)currentProfile=d.currentProfile;
   if(["list","cards","dots"].includes(d.view)){view=d.view;localViewPreference=true}if(d.density)density=d.density;if(d.theme)document.documentElement.dataset.theme=d.theme;
-  if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences};
+  if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences,showCardDescriptions:typeof d.preferences.showCardDescriptions==="boolean"?d.preferences.showCardDescriptions:typeof d.preferences.showSlimDescriptions==="boolean"?d.preferences.showSlimDescriptions:false};
   // The former shared services cache had no reliable profile owner, so never reuse it across profiles.
   restoreProfileCache(currentProfile);
  }else dataProfileId=currentProfile;
@@ -1365,7 +1366,8 @@ if(!items.length)return '<div class="empty">No services match this view. Try ano
 const queryActive=!!$("search").value.trim(),slim=density==="slim",orderable=!!manage&&page==="category"&&!queryActive;
 return '<div class="grid '+(slim?"slim":"")+'">'+items.map(s=>{
 const category=queryActive?'<div class="service-card-category"><span class="service-card-category-prefix">Category</span><span class="service-card-category-value">'+safe(s.category)+'</span></div>':slim?"":'<div class="service-desc" style="margin:2px 0 0;min-height:0">'+safe(s.category)+'</div>';
-const details=slim?(preferences.showSlimDescriptions?'<div class="service-desc slim-card-description">'+safe(s.description||"")+'</div>':""):'<div class="service-desc">'+safe(s.description||"")+'</div><div class="tags">'+(s.tags||[]).map(tagHtml).join("")+'</div>';
+const description=preferences.showCardDescriptions&&s.description?'<div class="service-desc '+(slim?"slim-card-description":"")+'">'+safe(s.description)+'</div>':"";
+const details=description+(slim?"":'<div class="tags">'+(s.tags||[]).map(tagHtml).join("")+'</div>');
 const actions=manage?'<span class="manage-actions">'+serviceActionIcon("edit",s.id,s.name)+serviceActionIcon("duplicate",s.id,s.name)+serviceActionIcon("delete",s.id,s.name)+'</span>':"";
 const actionRow=manage?'<div class="card-actions '+(slim?"slim-card-actions":"")+'">'+actions+'</div>':"";
 const dragHandle=orderable?'<button type="button" class="service-card-drag-handle" data-order-drag="'+safe(s.id)+'" draggable="true" title="Drag to reorder" aria-label="Drag to reorder '+safe(s.name)+'">⠿</button>':"";
@@ -1378,7 +1380,8 @@ const queryActive=!!$("search").value.trim();
 return '<div class="service-dot-grid">'+items.map(s=>{
 const actions=manage?'<div class="service-dot-actions">'+serviceActionIcon("edit",s.id,s.name)+serviceActionIcon("duplicate",s.id,s.name)+serviceActionIcon("delete",s.id,s.name)+'</div>':"";
 const category=queryActive?'<span class="service-dot-category"><span>Category</span> '+safe(s.category)+'</span>':"";
-return '<article class="service-dot-card" data-open="'+safe(s.id)+'" tabindex="0" aria-label="Open service '+safe(s.name)+'" title="Open '+safe(s.name)+'"><button type="button" class="service-dot-favorite" data-fav="'+safe(s.id)+'" title="'+(s.favorite?"Remove from":"Add to")+' favorites" aria-label="'+(s.favorite?"Remove from":"Add to")+' favorites: '+safe(s.name)+'">'+(s.favorite?"★":"☆")+'</button><div class="service-dot-icon">'+serviceIconHtml(s)+'</div><span class="service-dot-label">'+safe(s.name)+'</span>'+category+actions+'</article>';
+const description=preferences.showCardDescriptions&&s.description?'<span class="service-dot-description">'+safe(s.description)+'</span>':"";
+return '<article class="service-dot-card" data-open="'+safe(s.id)+'" tabindex="0" aria-label="Open service '+safe(s.name)+'" title="Open '+safe(s.name)+'"><button type="button" class="service-dot-favorite" data-fav="'+safe(s.id)+'" title="'+(s.favorite?"Remove from":"Add to")+' favorites" aria-label="'+(s.favorite?"Remove from":"Add to")+' favorites: '+safe(s.name)+'">'+(s.favorite?"★":"☆")+'</button><div class="service-dot-icon">'+serviceIconHtml(s)+'</div><span class="service-dot-label">'+safe(s.name)+'</span>'+category+description+actions+'</article>';
 }).join("")+'</div>';
 }
 function renderServiceTable(items,manage,orderable=false){
@@ -1716,7 +1719,7 @@ document.querySelectorAll("[data-admin-tab]").forEach(button=>{const active=butt
 if(adminTab==="categories")renderCategoryManager();if(adminTab==="tags")renderTagManager();
 }
 function setAdminTab(tab){if(!["categories","tags"].includes(tab))return;adminTab=tab;page="admin";showPage();renderAdminPage();bindRenderedActions();void refreshTaxonomy(false,currentProfile)}
-function renderSettings(){$("brandingName").value=branding.name||"Luxorit";$("brandingSubtitle").value=branding.subtitle||"";$("brandingLogo").value=branding.logo||"";$("themeSetting").value=document.documentElement.dataset.theme||"dark";$("landingSetting").value=preferences.landingPage||"home";$("defaultViewSetting").value=preferences.defaultView||"list";$("serviceImageSizeSetting").value=normalizeServiceImageSize(preferences.serviceImageSize);renderServiceImageSizePreview(preferences.serviceImageSize);$("showSlimDescriptionsSetting").checked=!!preferences.showSlimDescriptions;$("sidebarCollapsedSetting").checked=!!preferences.sidebarCollapsed;$("settingsVersion").textContent=APP_VERSION;applyBranding();renderD1Status();renderR2Status()}
+function renderSettings(){$("brandingName").value=branding.name||"Luxorit";$("brandingSubtitle").value=branding.subtitle||"";$("brandingLogo").value=branding.logo||"";$("themeSetting").value=document.documentElement.dataset.theme||"dark";$("landingSetting").value=preferences.landingPage||"home";$("defaultViewSetting").value=preferences.defaultView||"list";$("serviceImageSizeSetting").value=normalizeServiceImageSize(preferences.serviceImageSize);renderServiceImageSizePreview(preferences.serviceImageSize);$("showCardDescriptionsSetting").checked=!!preferences.showCardDescriptions;$("sidebarCollapsedSetting").checked=!!preferences.sidebarCollapsed;$("settingsVersion").textContent=APP_VERSION;applyBranding();renderD1Status();renderR2Status()}
 function render(){applyServiceImageSize(preferences.serviceImageSize);nav();showPage();if(page==="home")renderHome();else if(page==="settings")renderSettings();else if(page==="admin")renderAdminPage();else renderCatalog();$("versionLabel").textContent="v"+APP_VERSION;applyBranding();bindRenderedActions();persist()}
 function renderServiceLogoPreview(source,fallback="🔧"){
 const image=$("serviceLogoImage"),text=$("serviceLogoFallback");
@@ -1845,7 +1848,7 @@ updateProfileUI();
 bindProfileSwitcher();
 loadRemoteData();
 $("export").onclick=async()=>{try{let backup;if(apiConnected){backup=await apiRequest("backup")}else{backup={schemaVersion:1,exportedAt:new Date().toISOString(),source:"browser-local",version:APP_VERSION,services,categories:[...new Map(services.map(s=>[s.category,{name:s.category,icon:"grid"}])).values()],branding,preferences,theme:document.documentElement.dataset.theme}}const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:"application/json"}));a.download="dashboard-manager-portal-backup-"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast(apiConnected?"Shared D1 backup exported":"Browser-only backup exported, D1 is not connected")}catch(error){toast("Backup export failed: "+(error.message||"database error"))}};
-$("import").onclick=()=>$("importFile").click();$("importFile").onchange=async e=>{try{const file=e.target.files&&e.target.files[0];if(!file)return;const d=JSON.parse(await file.text());if(!d||!Array.isArray(d.services))throw Error("Backup must contain a services array");if(d.services.length>200)throw Error("Backups can contain at most 200 services");if(apiConnected){const proceed=await confirmInApp({title:"Restore shared database backup?",message:"This will replace the current services, categories, tags, branding, and preferences in the shared database. Export a backup first if you need to keep the current data.",confirmLabel:"Restore database"});if(!proceed)return;const result=await apiRequest("backup",{method:"POST",body:JSON.stringify(d)});await loadRemoteData();page="home";current="All";render();toast("D1 restored: "+result.serviceCount+" services, "+result.categoryCount+" categories")}else{const proceed=await confirmInApp({title:"Import browser-only backup?",message:"The shared database is not connected. This imports the backup into this browser only and will not update D1.",confirmLabel:"Import backup"});if(!proceed)return;services=d.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences};if(d.theme)document.documentElement.dataset.theme=d.theme;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;page="home";current="All";render();toast("Backup imported into this browser only")}}catch(error){toast("Could not restore backup: "+(error.message||"invalid JSON"))}finally{e.target.value=""}};
+$("import").onclick=()=>$("importFile").click();$("importFile").onchange=async e=>{try{const file=e.target.files&&e.target.files[0];if(!file)return;const d=JSON.parse(await file.text());if(!d||!Array.isArray(d.services))throw Error("Backup must contain a services array");if(d.services.length>200)throw Error("Backups can contain at most 200 services");if(apiConnected){const proceed=await confirmInApp({title:"Restore shared database backup?",message:"This will replace the current services, categories, tags, branding, and preferences in the shared database. Export a backup first if you need to keep the current data.",confirmLabel:"Restore database"});if(!proceed)return;const result=await apiRequest("backup",{method:"POST",body:JSON.stringify(d)});await loadRemoteData();page="home";current="All";render();toast("D1 restored: "+result.serviceCount+" services, "+result.categoryCount+" categories")}else{const proceed=await confirmInApp({title:"Import browser-only backup?",message:"The shared database is not connected. This imports the backup into this browser only and will not update D1.",confirmLabel:"Import backup"});if(!proceed)return;services=d.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences,showCardDescriptions:typeof d.preferences.showCardDescriptions==="boolean"?d.preferences.showCardDescriptions:typeof d.preferences.showSlimDescriptions==="boolean"?d.preferences.showSlimDescriptions:false};if(d.theme)document.documentElement.dataset.theme=d.theme;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;page="home";current="All";render();toast("Backup imported into this browser only")}}catch(error){toast("Could not restore backup: "+(error.message||"invalid JSON"))}finally{e.target.value=""}};
 $("help").onclick=()=>toast("Dashboard Manager Portal. Version "+APP_VERSION+". Catalog changes save to shared D1 when connected.");
 $("brandingName").addEventListener("input",()=>{$("settingsBrandPreview").textContent=($("brandingName").value||"Luxorit")+(($("brandingSubtitle").value)?" "+$("brandingSubtitle").value:"")});
 $("brandingSubtitle").addEventListener("input",()=>{$("settingsBrandPreview").textContent=($("brandingName").value||"Luxorit")+(($("brandingSubtitle").value)?" "+$("brandingSubtitle").value:"")});
@@ -1899,7 +1902,7 @@ $("refreshPagesDeployment").onclick=()=>checkPagesDeployment(true);
 $("settingsForm").onsubmit=async e=>{
 e.preventDefault();if(brandingLogoUploadBusy){toast("Wait for the portal logo upload to finish.");return}
 const nextBranding={name:$("brandingName").value.trim()||"Luxorit",subtitle:$("brandingSubtitle").value.trim(),logo:$("brandingLogo").value.trim(),logoKey:branding.logoKey||null};
-const nextPreferences={theme:$("themeSetting").value,landingPage:$("landingSetting").value,defaultView:$("defaultViewSetting").value,sidebarCollapsed:$("sidebarCollapsedSetting").checked,showSlimDescriptions:$("showSlimDescriptionsSetting").checked,serviceImageSize:normalizeServiceImageSize($("serviceImageSizeSetting").value)};
+const nextPreferences={theme:$("themeSetting").value,landingPage:$("landingSetting").value,defaultView:$("defaultViewSetting").value,sidebarCollapsed:$("sidebarCollapsedSetting").checked,showCardDescriptions:$("showCardDescriptionsSetting").checked,serviceImageSize:normalizeServiceImageSize($("serviceImageSizeSetting").value)};
 try{
 if(apiConnected)await apiRequest("settings",{method:"PUT",body:JSON.stringify({branding:nextBranding,preferences:nextPreferences})});
 branding=nextBranding;persistedBrandingLogoKey=nextBranding.logoKey;preferences=nextPreferences;document.documentElement.dataset.theme=preferences.theme;
