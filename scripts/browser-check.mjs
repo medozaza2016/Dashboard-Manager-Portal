@@ -163,12 +163,15 @@ if (server) {
 
 let chrome;
 let cdp;
-const cleanup = () => {
+const cleanup = async () => {
   try { cdp?.ws.close(); } catch {}
   try { spawnSync("taskkill", ["/pid", String(chrome?.pid || 0), "/T", "/F"], { stdio: "ignore" }); } catch {}
   if (server) {
     try { spawnSync("taskkill", ["/pid", String(server.pid), "/T", "/F"], { stdio: "ignore" }); } catch {}
   }
+  // Chrome keeps its profile locked until it exits, so remove it afterwards.
+  await sleep(1200);
+  try { fs.rmSync(profile, { recursive: true, force: true }); } catch {}
 };
 try {
   if (!(await waitForServer())) throw new Error("dev server never answered on " + BASE);
@@ -281,7 +284,7 @@ try {
 } catch (error) {
   check("browser pass completed", false, String(error && error.message).slice(0, 300));
 } finally {
-  cleanup();
+  await cleanup();
   const failed = results.filter((entry) => !entry[1]);
   for (const [label, ok, extra] of results) console.log((ok ? "  ok   " : "  FAIL ") + label + (extra ? "  (" + extra + ")" : ""));
   console.log("browser: " + (results.length - failed.length) + "/" + results.length + " checks passed, screenshots in " + OUT);
