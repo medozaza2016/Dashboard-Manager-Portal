@@ -1,44 +1,49 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title id="pageTitle">Dashboard Manager Portal</title>
-<link id="portalFavicon" rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23191C22'/%3E%3Cpath d='M32 7 53 19v26L32 57 11 45V19Z' fill='none' stroke='%23F0B45A' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M25 24 18 32l7 8m14-16 7 8-7 8M29 40l6-16' fill='none' stroke='%23F0B45A' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<title id="pageTitle">Anchor Dashboard</title>
+<link id="portalFavicon" rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2064%2064'%3E%3Crect%20width%3D'64'%20height%3D'64'%20rx%3D'15'%20fill%3D'%230B1F3A'%2F%3E%3Cg%20fill%3D'none'%20stroke%3D'%23FFFFFF'%20stroke-width%3D'4'%20stroke-linecap%3D'round'%3E%3Ccircle%20cx%3D'32'%20cy%3D'19'%20r%3D'4.5'%2F%3E%3Cpath%20d%3D'M32%2023.5V50M23%2031h18M20%2039c0%208%205.4%2014%2012%2014s12-6%2012-14'%2F%3E%3C%2Fg%3E%3Cpath%20d%3D'M41%2012.5%2045%2016.5%2053%208'%20fill%3D'none'%20stroke%3D'%2300A6D6'%20stroke-width%3D'4'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E">
+<meta name="theme-color" content="#0B1F3A">
+<meta name="description" content="Anchor Dashboard - the internal service catalog.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
 <style>
-:root{color-scheme:dark;--bg:#0B0F0E;--panel:#101614;--panel2:#151C19;--elevated:#1B2420;--hover:#202B25;--text:#F8FAFC;--body:#CBD5E1;--muted:#94A3B8;--subtle:#64748B;--line:#26332C;--green:#3ECF8E;--green-hover:#5BE3A5;--deep-green:#24A875;--dark-green:#16794B;--green2:#193328;--tag:#1B2420;--pale-green:#D9FBE8;--charcoal:#1E293B;--github-filter:brightness(0) invert(1)}
-[data-theme=light]{color-scheme:light;--bg:#F7F7F4;--panel:#FFFFFF;--panel2:#F1F1EC;--elevated:#FFFFFF;--hover:#F1F1EC;--text:#15191E;--body:#3D4C5E;--muted:#5A626D;--subtle:#8B9197;--line:#E4E4DE;--green:#17845B;--green-hover:#116F4D;--deep-green:#17845B;--dark-green:#116F4D;--green2:#EAF4F0;--tag:#F1F1EC;--pale-green:#EAF4F0;--charcoal:#1E293B;--github-filter:brightness(0)}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,select{font:inherit}button,a{cursor:pointer}a{color:inherit;text-decoration:none}.app{height:100vh;min-height:100vh;overflow:hidden;display:flex}.sidebar{width:244px;height:100vh;max-height:100vh;position:sticky;top:0;align-self:flex-start;flex-shrink:0;background:var(--panel);border-right:1px solid var(--line);padding:18px 12px;display:flex;flex-direction:column;transition:width .2s;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin}.sidebar.collapsed{width:64px}.brand{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;margin:-18px -12px 0;padding:21px 20px 18px;background:var(--panel);font-weight:750;font-size:15px;white-space:nowrap;overflow:hidden;flex:0 0 auto;min-height:70px}.brand-copy{min-width:0;overflow:hidden;text-overflow:ellipsis}.logo{width:34px;height:34px;flex:0 0 34px;aspect-ratio:1;border-radius:11px;background:linear-gradient(135deg,#3ECF8E,#16794B);display:grid;place-items:center;color:#0F172A;font-size:18px}.logo svg{width:23px;height:23px}.brand small{font-weight:450;color:var(--muted)}.group-label{font-size:10px;letter-spacing:1.2px;color:var(--muted);padding:12px 12px 7px}.nav{border:0;background:transparent;color:var(--muted);border-radius:10px;padding:11px 12px;display:flex;gap:12px;align-items:center;text-align:left;width:100%;margin:2px 0;white-space:nowrap}.nav .ico{width:18px;height:20px;display:inline-grid;place-items:center;flex-shrink:0}.nav .ico svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.nav .count{margin-left:auto;background:var(--panel2);color:var(--muted);font-size:10px;line-height:1;padding:4px 6px;border-radius:6px}.sidebar.collapsed .nav .count{display:none}.nav.active{background:var(--green2);color:var(--deep-green);font-weight:700}[data-theme=dark] .nav.active{color:var(--green)}[data-theme=light] .nav.active{color:var(--deep-green)}[data-theme=light] .primary{color:#FFFFFF}[data-theme=light] .logo{background:#EAF4F0;color:#17845B}.nav:hover{background:var(--panel2);color:var(--text)}.sidebar.collapsed .brand span,.sidebar.collapsed .group-label,.sidebar.collapsed .nav span:not(.ico){display:none}.sidebar.collapsed .nav{justify-content:center;padding:12px 0}.bottom{margin-top:auto;border-top:1px solid var(--line);padding-top:12px}.main{min-width:0;min-height:0;height:100vh;flex:1;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}.topbar{height:70px;position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:15px;padding:0 26px;background:var(--panel);border-bottom:1px solid var(--line)}.iconbtn{height:38px;min-width:38px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--text);display:inline-grid;place-items:center}.iconbtn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.iconbtn:hover{background:var(--hover);border-color:var(--line)}.search{flex:1;max-width:460px;position:relative}.search input{width:100%;padding:11px 14px 11px 38px;border:1px solid var(--line);border-radius:11px;background:var(--bg);color:var(--text);outline:none}.search .search-ico{position:absolute;left:13px;top:11px;color:var(--muted);display:grid;place-items:center}.search .search-ico svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.top-actions{margin-left:auto;display:flex;gap:9px;align-items:center}.avatar{width:36px;height:36px;border-radius:50%;background:var(--green2);color:var(--green);display:grid;place-items:center;font-weight:750}.content{max-width:1500px;margin:auto;padding:28px}.pagehead{display:flex;gap:15px;align-items:flex-start;justify-content:space-between;margin-bottom:25px}.eyebrow{color:var(--muted);font-size:12px;margin-bottom:5px}.pagehead h1{font-size:26px;letter-spacing:-.7px;margin:0 0 6px}.pagehead p{color:var(--muted);margin:0}.primary,.secondary{padding:10px 14px;border-radius:10px;border:1px solid var(--line);font-weight:650;background:var(--panel);color:var(--text)}.primary{background:var(--green);border-color:var(--green);color:#0F172A}.primary:hover{background:var(--green-hover);border-color:var(--green-hover)}.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 18px}.chips{display:flex;gap:7px;flex:1;flex-wrap:wrap}.chip,.density button,.views button{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:9px;padding:7px 11px;font-size:12px}.chip.active,.density button.active,.views button.active{background:var(--green2);color:var(--deep-green);border-color:transparent;font-weight:700}[data-theme=dark] .chip.active,[data-theme=dark] .density button.active,[data-theme=dark] .views button.active{color:var(--green)}.density,.views{display:flex;gap:3px;padding:3px;background:var(--panel);border:1px solid var(--line);border-radius:11px}.density button,.views button{border:0;background:transparent}.section-title{display:flex;justify-content:space-between;align-items:center;margin:22px 0 11px}.section-title h2{font-size:15px;margin:0}.section-title span{color:var(--muted);font-size:12px}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.card{position:relative;min-width:0;padding:15px;background:var(--panel);border:1px solid var(--line);border-radius:13px;transition:transform .15s,border .15s}.card:hover{transform:translateY(-2px);border-color:var(--green)}.card-top{display:flex;align-items:center;gap:11px}.service-icon{height:42px;width:42px;display:grid;place-items:center;border-radius:11px;background:transparent;font-size:22px;flex-shrink:0;overflow:hidden}.service-icon img{width:34px;height:34px;object-fit:contain;display:block}.service-icon .icon-fallback{width:34px;height:34px;display:none;place-items:center;border-radius:9px;background:var(--panel2);font-weight:800;font-size:21px}.service-icon .custom-svg{width:36px;height:36px;display:block}.service-icon .github-brand{filter:var(--github-filter)}.grid.slim .service-icon img,.grid.slim .service-icon .icon-fallback{width:27px;height:27px}.grid.slim .service-icon .custom-svg{width:28px;height:28px}.service-title{font-size:13px;font-weight:750;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.service-desc{font-size:11px;color:var(--muted);margin:12px 0;min-height:17px}.star{margin-left:auto;border:0;background:transparent;color:#ffbe32;font-size:18px}.tags{display:flex;flex-wrap:wrap;gap:4px}.tag{font-size:10px;background:var(--tag);color:var(--body);padding:4px 7px;border-radius:5px;border:1px solid var(--line)}.table-service-icon{display:inline-grid;vertical-align:middle;place-items:center;width:26px;height:26px;margin-right:8px}.table-service-icon .custom-svg,.table-service-icon img{width:23px;height:23px;object-fit:contain}.table-service-icon .icon-fallback{display:none;width:22px;height:22px;place-items:center}.card-actions{display:flex;align-items:center;gap:5px;margin-top:12px}.card-actions a{font-size:11px;color:var(--green)}.card-actions button{margin-left:auto;border:0;background:transparent;color:var(--muted)}.grid.slim{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.grid.slim .card{padding:10px}.grid.slim .service-icon{width:30px;height:30px;font-size:17px}.grid.slim .service-desc{margin:7px 0;font-size:10px;min-height:26px}.list{display:none;border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:auto}.list table{border-collapse:collapse;width:100%;text-align:left}.list th{background:var(--panel2);color:var(--muted);text-transform:uppercase;font-size:10px;letter-spacing:.6px}.list td,.list th{padding:12px 14px;border-bottom:1px solid var(--line)}.list td{font-size:12px}.list tr:hover{background:var(--panel2)}.list a{color:var(--green)}.empty{text-align:center;padding:36px;color:var(--muted)}.toast{position:fixed;bottom:18px;right:18px;background:var(--elevated);border:1px solid var(--line);box-shadow:0 8px 30px #0003;padding:12px 16px;border-radius:10px;display:none;z-index:20}.modal-backdrop{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:16px;z-index:30}.modal-backdrop.open{display:flex}.modal{width:min(520px,100%);background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}.modal h2{margin:0 0 18px}.modal label{display:block;font-size:12px;color:var(--muted);margin:12px 0 5px}.modal input,.modal select{width:100%;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text);padding:10px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}@media(max-width:1150px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.grid.slim{grid-template-columns:repeat(4,minmax(0,1fr))}}@media(max-width:850px){.sidebar{width:64px}.sidebar .brand span,.sidebar .group-label,.sidebar .nav span:not(.ico){display:none}.sidebar .nav{justify-content:center;padding:12px 0}.grid,.grid.slim{grid-template-columns:repeat(2,minmax(0,1fr))}.content{padding:20px}.topbar{padding:0 15px}}@media(max-width:550px){.grid,.grid.slim{grid-template-columns:1fr}.pagehead{display:block}.pagehead .primary{margin-top:15px}.top-actions .help{display:none}.content{padding:15px}.search{max-width:none}.topbar{gap:8px}}
-:root{--sidebar-surface:#191C22;--sidebar-edge:#303640;--sidebar-muted:#F5F7FA;--sidebar-copy:#F5F7FA;--sidebar-hover:#272C34;--sidebar-active:#403426;--sidebar-accent:#F0B45A}
+:root{color-scheme:light;--anchor-navy:#0B1F3A;--anchor-primary:#075985;--anchor-primary-hover:#064766;--anchor-action:#0868F9;--anchor-action-hover:#0757D6;--anchor-accent:#00A6D6;--anchor-page:#F1F6FB;--anchor-card:#FFFFFF;--anchor-muted:#E8F0F7;--anchor-border:#D6E2EE;--anchor-text:#172B43;--anchor-text-2:#536981;--bg:#F1F6FB;--panel:#FFFFFF;--panel2:#E8F0F7;--elevated:#FFFFFF;--hover:#E8F0F7;--text:#172B43;--body:#536981;--muted:#536981;--subtle:#62718A;--line:#D6E2EE;--green:#075985;--green-hover:#064766;--deep-green:#075985;--dark-green:#E7F1FA;--green2:#E7F1FA;--pale-green:#E7F1FA;--tag:#EEF3F9;--charcoal:#0B1F3A;--navy:#0B1F3A;--github-filter:brightness(0);--action:#0868F9;--action-hover:#0757D6;--accent-cyan:#00A6D6;--on-navy:#D3E2F0;--star:#B77908;--status-success:#16865F;--status-success-text:#116B4C;--status-success-surface:#F0FAF5;--status-warning:#B77908;--status-warning-text:#855506;--status-warning-surface:#FFF9ED;--status-danger:#C9363E;--status-danger-text:#B4232B;--status-danger-surface:#FFF5F5;--status-info:#176EB5;--status-info-text:#075985;--status-info-surface:#EFF8FF;--font-sans:'DM Sans',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;--font-display:'Manrope',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;--radius-control:8px;--radius-card:12px;--radius-pill:10px;--shadow-card:0 1px 2px rgba(11,31,58,.06);--shadow-pop:0 24px 60px rgba(11,31,58,.22);--sidebar-surface:#0B1F3A;--sidebar-edge:rgba(255,255,255,.10);--sidebar-copy:#FFFFFF;--sidebar-muted:#D3E2F0;--sidebar-hover:rgba(255,255,255,.08);--sidebar-active:#0868F9;--nav-tone:#D3E2F0;--nav-wash:rgba(255,255,255,.10)}
+
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 var(--font-sans)}button,input,select{font:inherit}button,a{cursor:pointer}a{color:inherit;text-decoration:none}.app{height:100vh;min-height:100vh;overflow:hidden;display:flex}.sidebar{width:244px;height:100vh;max-height:100vh;position:sticky;top:0;align-self:flex-start;flex-shrink:0;background:var(--panel);border-right:1px solid var(--line);padding:18px 12px;display:flex;flex-direction:column;transition:width .2s;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-width:thin}.sidebar.collapsed{width:64px}.brand{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;margin:-18px -12px 0;padding:21px 20px 18px;background:var(--panel);font-weight:750;font-size:15px;white-space:nowrap;overflow:hidden;flex:0 0 auto;min-height:70px}.brand-copy{min-width:0;overflow:hidden;text-overflow:ellipsis}.logo{width:34px;height:34px;flex:0 0 34px;aspect-ratio:1;border-radius:10px;background:var(--navy);display:grid;place-items:center;color:#FFFFFF;font-size:18px}.logo svg{width:23px;height:23px}.brand small{font-weight:450;color:var(--muted)}.group-label{font-size:10px;letter-spacing:1.2px;color:var(--muted);padding:12px 12px 7px}.nav{border:0;background:transparent;color:var(--muted);border-radius:10px;padding:11px 12px;display:flex;gap:12px;align-items:center;text-align:left;width:100%;margin:2px 0;white-space:nowrap}.nav .ico{width:18px;height:20px;display:inline-grid;place-items:center;flex-shrink:0}.nav .ico svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.nav .count{margin-left:auto;background:var(--panel2);color:var(--muted);font-size:10px;line-height:1;padding:4px 6px;border-radius:6px}.sidebar.collapsed .nav .count{display:none}.nav.active{background:var(--green2);color:var(--deep-green);font-weight:700}.nav:hover{background:var(--panel2);color:var(--text)}.sidebar.collapsed .brand span,.sidebar.collapsed .group-label,.sidebar.collapsed .nav span:not(.ico){display:none}.sidebar.collapsed .nav{justify-content:center;padding:12px 0}.bottom{margin-top:auto;border-top:1px solid var(--line);padding-top:12px}.main{min-width:0;min-height:0;height:100vh;flex:1;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}.topbar{height:70px;position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:15px;padding:0 26px;background:var(--bg);border-bottom:1px solid var(--line)}.iconbtn{height:38px;min-width:38px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--text);display:inline-grid;place-items:center}.iconbtn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.iconbtn:hover{background:var(--hover);border-color:var(--line)}.search{flex:1;max-width:460px;position:relative}.search input{width:100%;padding:11px 14px 11px 38px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text);outline:none}.search .search-ico{position:absolute;left:13px;top:11px;color:var(--muted);display:grid;place-items:center}.search .search-ico svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.top-actions{margin-left:auto;display:flex;gap:9px;align-items:center}.avatar{width:36px;height:36px;border-radius:50%;background:var(--green2);color:var(--green);display:grid;place-items:center;font-weight:750}.content{max-width:1500px;margin:auto;padding:28px}.pagehead{display:flex;gap:15px;align-items:flex-start;justify-content:space-between;margin-bottom:25px}.eyebrow{color:var(--muted);font-size:12px;margin-bottom:5px}.pagehead h1{font-size:26px;letter-spacing:-.7px;margin:0 0 6px}.pagehead p{color:var(--muted);margin:0}.primary,.secondary{padding:10px 14px;border-radius:10px;border:1px solid var(--line);font-weight:650;background:var(--panel);color:var(--text)}.primary{background:var(--action);border-color:var(--action);color:#FFFFFF}.primary:hover{background:var(--action-hover);border-color:var(--action-hover)}.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 18px}.chips{display:flex;gap:7px;flex:1;flex-wrap:wrap}.chip,.density button,.views button{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:9px;padding:7px 11px;font-size:12px}.chip.active,.density button.active,.views button.active{background:var(--green2);color:var(--deep-green);border-color:transparent;font-weight:700}.density,.views{display:flex;gap:3px;padding:3px;background:var(--panel);border:1px solid var(--line);border-radius:11px}.density button,.views button{border:0;background:transparent}.section-title{display:flex;justify-content:space-between;align-items:center;margin:22px 0 11px}.section-title h2{font-size:15px;margin:0}.section-title span{color:var(--muted);font-size:12px}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.card{position:relative;min-width:0;padding:15px;background:var(--panel);border:1px solid var(--line);border-radius:13px;transition:transform .15s,border .15s}.card:hover{transform:translateY(-2px);border-color:var(--green)}.card-top{display:flex;align-items:center;gap:11px}.service-icon{height:42px;width:42px;display:grid;place-items:center;border-radius:11px;background:transparent;font-size:22px;flex-shrink:0;overflow:hidden}.service-icon img{width:34px;height:34px;object-fit:contain;display:block}.service-icon .icon-fallback{width:34px;height:34px;display:none;place-items:center;border-radius:9px;background:var(--panel2);font-weight:800;font-size:21px}.service-icon .custom-svg{width:36px;height:36px;display:block}.service-icon .github-brand{filter:var(--github-filter)}.grid.slim .service-icon img,.grid.slim .service-icon .icon-fallback{width:27px;height:27px}.grid.slim .service-icon .custom-svg{width:28px;height:28px}.service-title{font-size:13px;font-weight:750;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.service-desc{font-size:11px;color:var(--muted);margin:12px 0;min-height:17px}.star{margin-left:auto;border:0;background:transparent;color:var(--star);font-size:18px}.tags{display:flex;flex-wrap:wrap;gap:4px}.tag{font-size:10px;background:var(--tag);color:var(--body);padding:4px 7px;border-radius:5px;border:1px solid var(--line)}.table-service-icon{display:inline-grid;vertical-align:middle;place-items:center;width:26px;height:26px;margin-right:8px}.table-service-icon .custom-svg,.table-service-icon img{width:23px;height:23px;object-fit:contain}.table-service-icon .icon-fallback{display:none;width:22px;height:22px;place-items:center}.card-actions{display:flex;align-items:center;gap:5px;margin-top:12px}.card-actions a{font-size:11px;color:var(--green)}.card-actions button{margin-left:auto;border:0;background:transparent;color:var(--muted)}.grid.slim{grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}.grid.slim .card{padding:10px}.grid.slim .service-icon{width:30px;height:30px;font-size:17px}.grid.slim .service-desc{margin:7px 0;font-size:10px;min-height:26px}.list{display:none;border:1px solid var(--line);border-radius:12px;background:var(--panel);overflow:auto}.list table{border-collapse:collapse;width:100%;text-align:left}.list th{background:var(--panel2);color:var(--muted);text-transform:uppercase;font-size:10px;letter-spacing:.6px}.list td,.list th{padding:12px 14px;border-bottom:1px solid var(--line)}.list td{font-size:12px}.list tr:hover{background:var(--panel2)}.list a{color:var(--green)}.empty{text-align:center;padding:36px;color:var(--muted)}.toast{position:fixed;bottom:18px;right:18px;background:var(--elevated);border:1px solid var(--line);box-shadow:0 8px 30px #0003;padding:12px 16px;border-radius:10px;display:none;z-index:20}.modal-backdrop{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;padding:16px;z-index:30}.modal-backdrop.open{display:flex}.modal{width:min(520px,100%);background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}.modal h2{margin:0 0 18px}.modal label{display:block;font-size:12px;color:var(--muted);margin:12px 0 5px}.modal input,.modal select{width:100%;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text);padding:10px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}@media(max-width:1150px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.grid.slim{grid-template-columns:repeat(4,minmax(0,1fr))}}@media(max-width:850px){.sidebar{width:64px}.sidebar .brand span,.sidebar .group-label,.sidebar .nav span:not(.ico){display:none}.sidebar .nav{justify-content:center;padding:12px 0}.grid,.grid.slim{grid-template-columns:repeat(2,minmax(0,1fr))}.content{padding:20px}.topbar{padding:0 15px}}@media(max-width:550px){.grid,.grid.slim{grid-template-columns:1fr}.pagehead{display:block}.pagehead .primary{margin-top:15px}.top-actions .help{display:none}.content{padding:15px}.search{max-width:none}.topbar{gap:8px}}
+
 .sidebar{background:var(--sidebar-surface);border-right-color:var(--sidebar-edge);scrollbar-width:none;-ms-overflow-style:none}
 .sidebar::-webkit-scrollbar{display:none;width:0;height:0}
 .sidebar .brand{background:var(--sidebar-surface)}
 .sidebar .bottom{border-top-color:var(--sidebar-edge)}
 /* Modern sidebar visual system */
 .sidebar{width:244px}
-.nav{--nav-tone:#8b9aaa;--nav-wash:rgba(139,154,170,.12);gap:11px;min-height:44px;padding:6px 10px 6px 8px;border:1px solid transparent;border-radius:12px;color:var(--body);transition:background .15s,border-color .15s,color .15s}
+.nav{--nav-tone:#075985;--nav-wash:rgba(7,89,133,.10);gap:11px;min-height:44px;padding:6px 10px 6px 8px;border:1px solid transparent;border-radius:12px;color:var(--body);transition:background .15s,border-color .15s,color .15s}
 .nav .ico{width:34px;height:34px;flex:0 0 34px;border-radius:10px;background:var(--nav-wash);color:var(--nav-tone);display:inline-grid;place-items:center;transition:background .15s,transform .15s}
 .nav .ico svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .nav:hover{background:var(--panel2);color:var(--text);border-color:var(--line)}
 .nav:hover .ico{transform:translateY(-1px)}
-.nav.active{background:var(--green2);color:var(--text);border-color:rgba(62,207,142,.16);box-shadow:inset 3px 0 0 var(--green);font-weight:750}
-.nav.active .ico{background:var(--nav-tone);color:#102019;box-shadow:0 3px 10px color-mix(in srgb,var(--nav-tone) 22%,transparent)}
+.nav.active{background:var(--green2);color:var(--text);border-color:rgba(7,89,133,.16);box-shadow:inset 3px 0 0 var(--green);font-weight:750}
+.nav.active .ico{background:var(--nav-tone);color:#0B1F3A;box-shadow:0 3px 10px color-mix(in srgb,var(--nav-tone) 22%,transparent)}
 .nav .count{margin-left:auto;min-width:28px;text-align:center;background:var(--nav-wash);color:var(--nav-tone);font-size:10px;font-weight:750;line-height:1;padding:5px 8px;border-radius:999px;font-variant-numeric:tabular-nums}
 .nav.active .count{background:var(--nav-wash);color:var(--nav-tone)}
 
-.nav[data-page="all"]{--nav-tone:#8b83ff;--nav-wash:rgba(139,131,255,.14)}
-.nav[data-page="favorites"]{--nav-tone:#F0B45A;--nav-wash:rgba(240,180,90,.14)}
 
-.nav[data-cat="My Projects"]{--nav-tone:#a879ff;--nav-wash:rgba(168,121,255,.14)}
-.nav[data-cat="Cloudflare"]{--nav-tone:#ff914d;--nav-wash:rgba(255,145,77,.14)}
-.nav[data-cat="Infrastructure"]{--nav-tone:#50aaff;--nav-wash:rgba(80,170,255,.14)}
-.nav[data-cat="SupaDock"]{--nav-tone:#42d99a;--nav-wash:rgba(66,217,154,.14)}
-.nav[data-cat="Storage"]{--nav-tone:#ff755f;--nav-wash:rgba(255,117,95,.14)}
-.nav[data-cat="Networking"]{--nav-tone:#35c8df;--nav-wash:rgba(53,200,223,.14)}
-.nav[data-cat="Remote Access"]{--nav-tone:#aa82ff;--nav-wash:rgba(170,130,255,.14)}
-.nav[data-cat="Development"]{--nav-tone:#5aabff;--nav-wash:rgba(90,171,255,.14)}
-.nav[data-cat="Healthcare"]{--nav-tone:#fb687b;--nav-wash:rgba(251,104,123,.14)}
-.nav[data-cat="Financial"]{--nav-tone:#38d99b;--nav-wash:rgba(56,217,155,.14)}
-.nav[data-cat="Personal"]{--nav-tone:#91a1b8;--nav-wash:rgba(145,161,184,.14)}
+
+
+
+
+
+
+
+
+
+
+
+
+
 .group-label{font-size:10px;font-weight:800;letter-spacing:1.35px;text-transform:uppercase;padding:15px 10px 8px}
 .sidebar.collapsed{width:66px}
 .sidebar.collapsed .nav{min-height:46px;padding:6px 0;border-color:transparent}
@@ -49,7 +54,7 @@
 .version{font-size:10px;color:var(--subtle);padding:8px 12px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .top-actions .nav{width:auto;text-align:center;padding:5px 10px;margin:0 2px;font-size:11px;border-radius:8px;min-width:auto}
 .top-actions .nav.active{background:var(--green2);color:var(--green)}
-#profileToggle.active{background:var(--green);color:#0F172A;font-weight:700}
+#profileToggle.active{background:var(--action);color:#FFFFFF;font-weight:700}
 .sidebar.collapsed .version{text-align:center;padding:8px 0 0;font-size:8px;letter-spacing:-.2px}
 .stats-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:0 0 23px}
 .stat-card{min-width:0;padding:16px 18px;background:var(--panel);border:1px solid var(--line);border-radius:13px}
@@ -59,11 +64,11 @@
 .category-shortcut:hover{border-color:var(--green);background:var(--hover)}.shortcut-ico{width:36px;height:36px;flex:0 0 36px;display:grid;place-items:center;background:var(--green2);border-radius:10px}.shortcut-ico svg{width:20px;height:20px}.shortcut-meta{min-width:0;flex:1}.shortcut-meta strong{display:block;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.shortcut-meta small{display:block;font-size:11px;color:var(--muted);margin-top:3px}
 .admin-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.admin-panel{padding:19px;background:var(--panel);border:1px solid var(--line);border-radius:13px}.admin-panel h2{font-size:15px;margin:6px 0}.admin-panel p{font-size:12px;color:var(--muted);min-height:36px;margin:0 0 15px}.admin-panel .eyebrow{font-size:10px;letter-spacing:.8px}
 .action-cell{white-space:nowrap}.action-group{display:flex;align-items:center;gap:5px;flex-wrap:wrap}.action-group .secondary{padding:6px 9px;font-size:11px}
-.card-actions .manage-actions{margin-left:auto;display:flex;align-items:center;gap:5px}.card-actions .manage-actions button{margin-left:0;padding:5px 7px;font-size:11px}.card-actions .manage-actions button.icon-action{padding:0}.icon-action{display:inline-grid;place-items:center;width:30px;height:30px;min-width:30px;padding:0!important}.icon-action .action-icon{width:15px;height:15px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.icon-action[data-delete]{color:#F87171}
+.card-actions .manage-actions{margin-left:auto;display:flex;align-items:center;gap:5px}.card-actions .manage-actions button{margin-left:0;padding:5px 7px;font-size:11px}.card-actions .manage-actions button.icon-action{padding:0}.icon-action{display:inline-grid;place-items:center;width:30px;height:30px;min-width:30px;padding:0!important}.icon-action .action-icon{width:15px;height:15px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.icon-action[data-delete]{color:var(--status-danger-text)}
 .category-cloudflare{width:21px;height:21px}
 .admin-tabs{display:flex;gap:6px;flex-wrap:wrap;padding:4px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;margin:-5px 0 18px;width:max-content;max-width:100%}
 .admin-tab{border:0;background:transparent;color:var(--muted);border-radius:8px;padding:9px 14px;font-size:12px;font-weight:650}
-.admin-tab.active{background:var(--green2);color:var(--deep-green)}[data-theme=dark] .admin-tab.active{color:var(--green)}
+.admin-tab.active{background:var(--green2);color:var(--deep-green)}
 .admin-panel-view{min-width:0}.admin-service-controls{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:0 0 12px}
 .admin-service-controls input,.admin-service-controls select{min-width:160px;flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text);font:inherit}
 .admin-service-list{max-height:58vh;overflow:auto;border:1px solid var(--line);border-radius:10px;overscroll-behavior:contain}
@@ -78,21 +83,21 @@
 .taxonomy-row-actions{display:flex;justify-content:flex-end;gap:6px}.taxonomy-row-actions .secondary{padding:5px 9px;font-size:10px}
 .taxonomy-tag-row .taxonomy-row-fields{grid-template-columns:minmax(100px,1fr) auto}
 .taxonomy-usage{font-size:10px;color:var(--muted);white-space:nowrap}
-.taxonomy-message{font-size:11px;color:var(--muted);margin-top:8px;min-height:16px}.taxonomy-message.error{color:#F87171}
+.taxonomy-message{font-size:11px;color:var(--muted);margin-top:8px;min-height:16px}.taxonomy-message.error{color:var(--status-danger-text)}
 .taxonomy-empty{font-size:11px;color:var(--muted);padding:13px;border:1px dashed var(--line);border-radius:8px}
-.taxonomy-danger{color:#F87171!important}.taxonomy-row button:disabled{opacity:.45;cursor:not-allowed}
+.taxonomy-danger{color:var(--status-danger-text)!important}.taxonomy-row button:disabled{opacity:.45;cursor:not-allowed}
 .taxonomy-filter{min-width:175px;max-width:260px;flex:1;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:11px}
 .service-tag-picker{display:grid;gap:8px;margin:4px 0 13px}
 .service-selected-tags,.service-tag-options{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.service-selected-tags{min-height:28px}
 .service-tag-search{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);font:inherit}
 .tag-picker-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;background:var(--panel2);color:var(--text);font-size:11px;padding:6px 9px;max-width:100%}
-.tag-picker-chip.selected{border-color:var(--green);background:var(--green2);color:var(--deep-green)}[data-theme=dark] .tag-picker-chip.selected{color:var(--green)}
+.tag-picker-chip.selected{border-color:var(--green);background:var(--green2);color:var(--deep-green)}
 .tag-picker-chip span{font-weight:800}.tag-picker-chip:focus-visible{outline:2px solid var(--green);outline-offset:2px}
 .service-tag-empty{font-size:11px;color:var(--muted);padding:8px 0}
 @media(max-width:1000px){.taxonomy-row-fields{grid-template-columns:minmax(100px,1fr) 108px 64px auto}}
 @media(max-width:700px){.taxonomy-create-row{grid-template-columns:minmax(0,1fr) 100px}.taxonomy-create-row input[type=number]{width:100%}.taxonomy-row-fields{grid-template-columns:minmax(0,1fr) 100px}.taxonomy-row-fields .taxonomy-usage{grid-column:1/-1}}
 @media(max-width:550px){.admin-tabs{width:100%}.admin-tab{flex:1;padding:9px 7px}.admin-service-controls{align-items:stretch}.admin-service-controls input,.admin-service-controls select{min-width:0;width:100%;flex:auto}.admin-service-list{max-height:60vh}}
-.taxonomy-management-card{grid-column:1/-1}.taxonomy-manager-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px}.taxonomy-panel{min-width:0}.taxonomy-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px}.taxonomy-panel-head h3{font-size:13px;margin:0}.taxonomy-panel-head .secondary{padding:6px 9px;font-size:11px}.taxonomy-create-row{display:grid;grid-template-columns:minmax(110px,1fr) 112px 75px auto;gap:6px;align-items:center;margin:10px 0}.taxonomy-create-row input,.taxonomy-create-row select,.taxonomy-row input,.taxonomy-row select{min-width:0;width:100%;padding:8px 9px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:11px}.taxonomy-create-row .primary{padding:8px 10px;font-size:11px;white-space:nowrap}.taxonomy-list{display:grid;gap:7px;margin-top:10px}.taxonomy-row{display:grid;gap:7px;border:1px solid var(--line);background:var(--panel2);border-radius:9px;padding:9px;min-width:0}.taxonomy-row-fields{display:grid;grid-template-columns:minmax(100px,1fr) 108px 64px auto;gap:6px;align-items:center}.taxonomy-row-actions{display:flex;justify-content:flex-end;gap:6px}.taxonomy-row-actions .secondary{padding:5px 9px;font-size:10px}.taxonomy-tag-row .taxonomy-row-fields{grid-template-columns:minmax(100px,1fr) auto}.taxonomy-usage{font-size:10px;color:var(--muted);white-space:nowrap}.taxonomy-message{font-size:11px;color:var(--muted);margin-top:8px;min-height:16px}.taxonomy-message.error{color:#F87171}.taxonomy-empty{font-size:11px;color:var(--muted);padding:13px;border:1px dashed var(--line);border-radius:8px}.taxonomy-danger{color:#F87171!important}.taxonomy-row button:disabled{opacity:.45;cursor:not-allowed}
+.taxonomy-management-card{grid-column:1/-1}.taxonomy-manager-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px}.taxonomy-panel{min-width:0}.taxonomy-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px}.taxonomy-panel-head h3{font-size:13px;margin:0}.taxonomy-panel-head .secondary{padding:6px 9px;font-size:11px}.taxonomy-create-row{display:grid;grid-template-columns:minmax(110px,1fr) 112px 75px auto;gap:6px;align-items:center;margin:10px 0}.taxonomy-create-row input,.taxonomy-create-row select,.taxonomy-row input,.taxonomy-row select{min-width:0;width:100%;padding:8px 9px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:11px}.taxonomy-create-row .primary{padding:8px 10px;font-size:11px;white-space:nowrap}.taxonomy-list{display:grid;gap:7px;margin-top:10px}.taxonomy-row{display:grid;gap:7px;border:1px solid var(--line);background:var(--panel2);border-radius:9px;padding:9px;min-width:0}.taxonomy-row-fields{display:grid;grid-template-columns:minmax(100px,1fr) 108px 64px auto;gap:6px;align-items:center}.taxonomy-row-actions{display:flex;justify-content:flex-end;gap:6px}.taxonomy-row-actions .secondary{padding:5px 9px;font-size:10px}.taxonomy-tag-row .taxonomy-row-fields{grid-template-columns:minmax(100px,1fr) auto}.taxonomy-usage{font-size:10px;color:var(--muted);white-space:nowrap}.taxonomy-message{font-size:11px;color:var(--muted);margin-top:8px;min-height:16px}.taxonomy-message.error{color:var(--status-danger-text)}.taxonomy-empty{font-size:11px;color:var(--muted);padding:13px;border:1px dashed var(--line);border-radius:8px}.taxonomy-danger{color:var(--status-danger-text)!important}.taxonomy-row button:disabled{opacity:.45;cursor:not-allowed}
 @media(max-width:1000px){.taxonomy-manager-grid{grid-template-columns:1fr}.taxonomy-row-fields{grid-template-columns:minmax(100px,1fr) 108px 64px auto}}
 @media(max-width:600px){.taxonomy-create-row{grid-template-columns:minmax(0,1fr) 100px}.taxonomy-create-row input[type=number]{width:100%}.taxonomy-row-fields{grid-template-columns:minmax(0,1fr) 100px}.taxonomy-row-fields .taxonomy-usage{grid-column:1/-1}.taxonomy-manager-grid{gap:18px}}
 @media(max-width:850px){.stats-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-panels{grid-template-columns:1fr}.stat-card{padding:13px}.stat-number{font-size:23px}}
@@ -149,7 +154,7 @@
 .deployment-actions button:disabled{opacity:.6;cursor:wait}
 .deployment-note{font-size:10px;line-height:1.45;color:var(--muted);margin:10px 0 0}
 .integration-status.status-connected{color:var(--green);border-color:var(--green);background:var(--green2)}
-.integration-status.status-offline{color:#F87171;border-color:#B91C1C;background:color-mix(in srgb,#B91C1C 12%,var(--panel))}
+.integration-status.status-offline{color:var(--status-danger-text);border-color:var(--status-danger);background:color-mix(in srgb,var(--status-danger) 12%,var(--panel))}
 .integration-status.status-checking{color:var(--muted)}
 .d1-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:12px}
 .d1-metric{padding:9px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel);min-width:0}
@@ -273,7 +278,7 @@
 .service-dot-category{max-width:100%;display:block;color:var(--green);font-size:8px;line-height:1.3;font-weight:650;overflow-wrap:anywhere}
 .service-dot-category span{color:var(--muted);font-size:7px;font-weight:750;letter-spacing:.4px;text-transform:uppercase}
 .service-dot-description{display:-webkit-box;width:100%;max-width:100%;color:var(--muted);font-size:8px;line-height:1.35;font-weight:400;overflow-wrap:anywhere;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.service-dot-favorite{position:absolute;top:4px;right:6px;z-index:1;width:22px;height:22px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--panel);color:#E8B84A;font-size:13px;line-height:1;cursor:pointer}
+.service-dot-favorite{position:absolute;top:4px;right:6px;z-index:1;width:22px;height:22px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--panel);color:var(--star);font-size:13px;line-height:1;cursor:pointer}
 .service-dot-actions{display:flex;justify-content:center;gap:3px;margin-top:1px}
 .service-dot-actions .icon-action{width:24px;height:24px;min-width:24px;padding:4px}
 @media(max-width:620px){.service-dot-grid{grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:6px}}
@@ -282,7 +287,7 @@
 .reorder-control{display:flex;align-items:center;flex-shrink:0}
 .reorder-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--text);font-size:11px;font-weight:700;white-space:nowrap}
 .reorder-toggle:hover{border-color:var(--green)}
-.reorder-toggle.active{border-color:var(--green);background:var(--green2);color:var(--deep-green)}[data-theme=dark] .reorder-toggle.active{color:var(--green)}
+.reorder-toggle.active{border-color:var(--green);background:var(--green2);color:var(--deep-green)}
 .service-card-drag-handle{display:inline-grid;place-items:center;flex:0 0 25px;width:25px;height:29px;padding:0;border:1px solid var(--line);border-radius:7px;background:var(--panel2);color:var(--muted);font-size:17px;line-height:1;cursor:grab;touch-action:none;user-select:none}
 .service-card-drag-handle:active{cursor:grabbing}
 .service-card-drag-handle:disabled{display:none}
@@ -326,8 +331,8 @@
 .app-modal-actions button{min-width:90px}
 .app-confirm-dialog p{font-size:13px;line-height:1.6;color:var(--muted);margin:10px 0 0;overflow-wrap:anywhere}
 .confirm-symbol{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);font-weight:800;color:var(--green);margin-bottom:15px}
-.danger-button{border:1px solid #B91C1C;background:#DC2626;color:white;border-radius:8px;padding:9px 13px;font-size:12px;font-weight:700}
-.danger-button:hover{background:#B91C1C}
+.danger-button{border:1px solid var(--status-danger);background:var(--status-danger);color:white;border-radius:8px;padding:9px 13px;font-size:12px;font-weight:700}
+.danger-button:hover{background:var(--status-danger)}
 .taxonomy-overview-row{display:grid;grid-template-columns:24px minmax(0,1fr) auto auto;align-items:center;gap:10px;padding:9px 11px;min-height:52px;cursor:grab}
 .taxonomy-overview-main{display:flex;align-items:center;gap:9px;min-width:0}
 .taxonomy-overview-icon{width:30px;height:30px;flex:0 0 30px;display:grid;place-items:center;border-radius:8px;background:var(--green2);color:var(--green)}
@@ -363,8 +368,8 @@
 .app-modal-actions button{min-width:90px}
 .app-confirm-dialog p{font-size:13px;line-height:1.6;color:var(--muted);margin:10px 0 0;overflow-wrap:anywhere}
 .confirm-symbol{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);font-weight:800;color:var(--green);margin-bottom:15px}
-.danger-button{border:1px solid #B91C1C;background:#DC2626;color:white;border-radius:8px;padding:9px 13px;font-size:12px;font-weight:700}
-.danger-button:hover{background:#B91C1C}
+.danger-button{border:1px solid var(--status-danger);background:var(--status-danger);color:white;border-radius:8px;padding:9px 13px;font-size:12px;font-weight:700}
+.danger-button:hover{background:var(--status-danger)}
 .taxonomy-overview-row{display:grid;grid-template-columns:22px minmax(0,1fr) auto auto;align-items:center;gap:9px;padding:9px 11px;min-height:52px;cursor:grab}
 .taxonomy-overview-main{display:flex;align-items:center;gap:9px;min-width:0}
 .taxonomy-overview-icon{width:30px;height:30px;flex:0 0 30px;display:grid;place-items:center;border-radius:8px;background:var(--green2);color:var(--green)}
@@ -436,8 +441,8 @@
 .catalog-display-controls .views,.catalog-display-controls .density{display:flex;align-items:center;gap:3px;min-height:42px;padding:3px;background:var(--panel);border:1px solid var(--line);border-radius:11px}
 .catalog-display-controls .views button{display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;padding:0;border:1px solid transparent;border-radius:8px;background:transparent;color:var(--muted);transition:background .15s,color .15s,border-color .15s}
 .catalog-display-controls .views button svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
-.catalog-display-controls .views button.active,.catalog-display-controls .density button.active{background:var(--green2);color:var(--deep-green);border-color:rgba(62,207,142,.2);box-shadow:0 1px 2px rgba(15,23,42,.06)}
-[data-theme=dark] .catalog-display-controls .views button.active,[data-theme=dark] .catalog-display-controls .density button.active{color:var(--green)}
+.catalog-display-controls .views button.active,.catalog-display-controls .density button.active{background:var(--green2);color:var(--deep-green);border-color:rgba(7,89,133,.2);box-shadow:0 1px 2px rgba(15,23,42,.06)}
+
 .catalog-display-controls .views button:hover:not(.active),.catalog-display-controls .density button:hover:not(.active){background:var(--hover);color:var(--text)}
 .catalog-display-controls .density button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:34px;padding:0 12px;border:1px solid transparent;border-radius:8px;background:transparent;color:var(--muted);font-size:12px;font-weight:650;white-space:nowrap;transition:background .15s,color .15s,border-color .15s}
 .catalog-display-controls .density button svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
@@ -446,8 +451,8 @@
 .catalog-display-controls .reorder-toggle{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 14px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--text);font-size:12px;font-weight:700;white-space:nowrap;transition:background .15s,border-color .15s,color .15s}
 .catalog-display-controls .reorder-toggle svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .catalog-display-controls .reorder-toggle:hover{border-color:var(--green);background:var(--hover)}
-.catalog-display-controls .reorder-toggle.active{border-color:var(--green);background:var(--green2);color:var(--deep-green);box-shadow:inset 0 0 0 1px rgba(62,207,142,.09)}
-[data-theme=dark] .catalog-display-controls .reorder-toggle.active{color:var(--green)}
+.catalog-display-controls .reorder-toggle.active{border-color:var(--green);background:var(--green2);color:var(--deep-green);box-shadow:inset 0 0 0 1px rgba(7,89,133,.09)}
+
 .catalog-display-controls button:focus-visible{outline:2px solid var(--green);outline-offset:2px}
 @media(max-width:1080px){
  .catalog-toolbar{align-items:flex-start}
@@ -518,8 +523,8 @@
 /* v0.1.39 tag filters and global catalog search */
 .catalog-controls-panel-inner>.chips .chip{display:inline-flex;align-items:center;gap:5px}
 .tag-chip-mark{display:inline-grid;place-items:center;min-width:15px;height:15px;border-radius:5px;background:var(--panel2);color:var(--green);font-size:11px;font-weight:800;line-height:1}
-.catalog-controls-panel-inner>.chips .chip.active .tag-chip-mark{background:rgba(62,207,142,.14);color:var(--deep-green)}
-[data-theme=dark] .catalog-controls-panel-inner>.chips .chip.active .tag-chip-mark{color:var(--green)}
+.catalog-controls-panel-inner>.chips .chip.active .tag-chip-mark{background:rgba(7,89,133,.14);color:var(--deep-green)}
+
 
 /* v0.1.44 place Filters & display in the catalog header */
 .catalog-pagehead{display:flex;align-items:flex-start;justify-content:space-between;gap:22px}
@@ -745,542 +750,143 @@
 }
 .sidebar{background:var(--sidebar-surface);border-right-color:var(--sidebar-edge);color:var(--sidebar-copy);scrollbar-width:none;-ms-overflow-style:none}
 .sidebar .brand{background:var(--sidebar-surface);color:var(--sidebar-copy)}
-.sidebar .brand small{color:#9ca3af}
-.sidebar .group-label{color:#a1a1aa}
-.sidebar .nav{color:var(--sidebar-muted)}
-.sidebar .nav:hover{background:var(--sidebar-hover);border-color:#3b424c;color:#ffffff}
-.sidebar .nav.active{background:var(--sidebar-active);border-color:rgba(62,207,142,.22);box-shadow:inset 3px 0 0 #3ecf8e;color:#69e2ad}
+.sidebar .brand small{color:var(--sidebar-muted)}
+.sidebar .group-label{color:var(--sidebar-muted)}
+.sidebar .nav{color:var(--sidebar-copy)}
+.sidebar .nav:hover{background:var(--sidebar-hover);border-color:var(--sidebar-edge);color:#FFFFFF}
+.sidebar .nav.active{background:var(--sidebar-active);border-color:transparent;box-shadow:none;color:#FFFFFF}
 .sidebar .nav .count{background:var(--nav-wash);color:var(--nav-tone)}
 .sidebar .bottom{border-top-color:var(--sidebar-edge)}
-.sidebar .version{color:#8f98a5}
+.sidebar .version{color:var(--sidebar-muted)}
 
-/* White sidebar typography for the shared charcoal surface in both themes. */
-.sidebar{color:#ffffff}
-.sidebar .brand,.sidebar .brand-copy,.sidebar .brand small{color:#ffffff}
-.sidebar .group-label{color:rgba(255,255,255,.78)}
-.sidebar .nav,.sidebar .nav.active,.sidebar .nav:hover{color:#ffffff}
-.sidebar .nav .count{color:#ffffff}
-.sidebar .version{color:rgba(255,255,255,.66)}
-.sidebar .bottom{color:#ffffff}
+/* =========================================================================
+   Anchor design system — the portal's single, locked appearance.
+   Tokens mirror Anchor src/theme.css (anchor theme) and src/styles.css:
+   navy #0B1F3A rail, #F1F6FB canvas, white 12px cards, #0868F9 actions.
+   There is no light/dark variant and no runtime theme switching.
+   ========================================================================= */
 
-/* Force readable white text on the charcoal sidebar, including light theme. */
-html[data-theme="light"] #sidebar,
-html[data-theme="light"] #sidebar .brand,
-html[data-theme="light"] #sidebar .brand-copy,
-html[data-theme="light"] #sidebar .brand-copy > span,
-html[data-theme="light"] #sidebar .brand-copy small,
-html[data-theme="light"] #sidebar .group-label,
-html[data-theme="light"] #sidebar .group-label span,
-html[data-theme="light"] #sidebar .nav,
-html[data-theme="light"] #sidebar .nav > span:not(.ico),
-html[data-theme="light"] #sidebar .nav.active,
-html[data-theme="light"] #sidebar .nav:hover,
-html[data-theme="light"] #sidebar .nav .count,
-html[data-theme="light"] #sidebar .version,
-html[data-theme="light"] #sidebar .bottom{color:#ffffff!important}
-html[data-theme="light"] #sidebar .group-label{color:rgba(255,255,255,.82)!important}
-html[data-theme="light"] #sidebar .version{color:rgba(255,255,255,.72)!important}
-html[data-theme="light"] #sidebar .nav .ico{color:var(--nav-tone)!important}
-html[data-theme="light"] #sidebar .nav .count{background:var(--nav-wash)!important}
-html[data-theme="light"] #sidebar .nav.active{background:var(--sidebar-active)!important}
-html[data-theme="light"] #sidebar .nav:hover{background:var(--sidebar-hover)!important}
+/* ---------- Typography ---------- */
+body{font:14px/1.5 var(--font-sans);-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.pagehead h1,.settings-card h2,.admin-panel h2,.taxonomy-panel-head h3,.modal h2,.app-form-dialog h2,.app-confirm-dialog h2{font-family:var(--font-display);letter-spacing:-.015em}
+#brandName{font-family:var(--font-display);font-weight:700;letter-spacing:-.01em}
+.stat-number,.nav .count,.settings-version{font-variant-numeric:tabular-nums}
+::selection{background:rgba(8,104,249,.18);color:var(--text)}
 
-/* Dashboard Manager sidebar brand palette */
-#sidebar,
-#sidebar .brand,
-#sidebar .bottom{background:#191C22!important}
-#sidebar{color:#F5F7FA!important;border-right-color:#303640!important;scrollbar-width:none;-ms-overflow-style:none}
-#sidebar::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
-#sidebar .brand{color:#F5F7FA!important;border-bottom:1px solid rgba(255,255,255,.035)}
-#sidebar .brand-copy,
-#sidebar .brand-copy>span,
-#sidebar .brand-copy small{color:#F5F7FA!important}
-#sidebar .brand-copy small{opacity:.82}
-#sidebar .logo{background:#403426!important;color:#F0B45A!important;border:1px solid rgba(240,180,90,.28);box-shadow:0 3px 12px rgba(0,0,0,.2)}
-#sidebar .logo svg{color:#F0B45A!important}
-#sidebar .logo svg path{stroke:#F0B45A!important}
-#sidebar .group-label,
-#sidebar .group-label span{color:#F5F7FA!important}
-#sidebar .nav,
-#sidebar .nav>span:not(.ico),
-#sidebar .nav.active,
-#sidebar .nav:hover,
-#sidebar .version,
-#sidebar .bottom{color:#F5F7FA!important}
-#sidebar .nav{border:1px solid transparent}
-#sidebar .nav:hover{background:#272C34!important;border-color:#3A414B!important;color:#F5F7FA!important}
-#sidebar .nav.active{background:#403426!important;border-color:rgba(240,180,90,.30)!important;box-shadow:inset 3px 0 0 #F0B45A!important;color:#F5F7FA!important;font-weight:750}
-#sidebar .nav.active .ico{background:rgba(240,180,90,.13)!important;color:#F0B45A!important;box-shadow:0 2px 10px rgba(240,180,90,.10)!important}
-#sidebar .nav.active .ico svg,
-#sidebar .nav.active .ico svg *{color:#F0B45A!important;stroke:#F0B45A!important;fill:none!important}
-#sidebar .nav .count{background:#303640!important;color:#F5F7FA!important;border:1px solid rgba(255,255,255,.06)}
-#sidebar .nav.active .count{background:rgba(240,180,90,.14)!important;color:#F5F7FA!important;border-color:rgba(240,180,90,.24)}
-#sidebar .group-label{opacity:.88}
-#sidebar .version{color:rgba(245,247,250,.72)!important}
-#sidebar .bottom{border-top-color:#303640!important}
+/* ---------- Sidebar rail ---------- */
+.sidebar{width:246px;padding:16px 14px 20px;background:var(--sidebar-surface);border-right:1px solid var(--sidebar-edge)}
+.sidebar.collapsed{width:76px}
+.sidebar .brand{padding:2px 6px 14px;gap:10px}
+.sidebar .logo{background:var(--navy);color:#FFFFFF;border-radius:10px;box-shadow:none}
+.sidebar .brand small{color:var(--sidebar-muted);font-size:11px;font-weight:500}
+.sidebar .group-label,.sidebar .sidebar-section-toggle{color:var(--sidebar-muted);font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.sidebar .nav,.sidebar .nav.tag-more-toggle{height:42px;min-height:40px;padding:0 12px;gap:11px;border:0;border-radius:var(--radius-pill);background:transparent;color:var(--sidebar-copy);font-size:13.5px;font-weight:500;box-shadow:none;transform:none}
+.sidebar .nav .ico{width:22px;height:22px;flex:0 0 22px;background:transparent;box-shadow:none;color:inherit}
+.sidebar .nav .ico svg{width:18px;height:18px;stroke-width:1.8}
+.sidebar .nav:hover{background:var(--sidebar-hover);color:#FFFFFF}
+.sidebar .nav:hover .ico{transform:none}
+.sidebar .nav.active,.sidebar .nav.active:hover{background:var(--sidebar-active);color:#FFFFFF;font-weight:600;border-color:transparent;box-shadow:none}
+.sidebar .nav.active .ico{background:transparent;color:#FFFFFF;box-shadow:none}
+.sidebar .nav .count{min-width:24px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.14);color:#FFFFFF;font-size:10.5px;font-weight:600}
+.sidebar .nav.active .count{background:rgba(255,255,255,.22);color:#FFFFFF}
+.sidebar .nav:focus-visible{outline:2px solid #FFFFFF;outline-offset:2px}
+.sidebar .bottom{margin-top:14px;padding-top:10px;border-top:1px solid var(--sidebar-edge)}
+.sidebar .version{color:var(--sidebar-muted);font-size:10px;letter-spacing:.02em}
+.sidebar .sidebar-section-chevron{color:var(--sidebar-muted)}
 
+/* ---------- Top bar ---------- */
+.main{background:var(--bg)}
+.topbar{height:70px;padding:0 32px;gap:14px;background:var(--bg);border-bottom:1px solid var(--line)}
+.topbar .iconbtn{height:42px;min-width:42px;border-radius:var(--radius-control);background:var(--panel);border:1px solid var(--line);color:var(--text);box-shadow:var(--shadow-card)}
+.topbar .iconbtn:hover{background:var(--panel);border-color:#C3D5E7;color:var(--green)}
+.search{flex:1;max-width:none}
+.search input{height:42px;padding:0 14px 0 40px;border-radius:var(--radius-control);background:var(--panel);border:1px solid var(--line);color:var(--text);font-size:13px;box-shadow:var(--shadow-card)}
+.search input::placeholder{color:var(--subtle)}
+.search input:focus{outline:none;border-color:var(--action);box-shadow:0 0 0 3px rgba(8,104,249,.18)}
+.search .search-ico{left:14px;top:50%;transform:translateY(-50%);color:var(--subtle)}
+.top-actions{gap:8px}
+.top-actions .nav{border-radius:999px;padding:7px 12px;font-weight:500;color:var(--body)}
+.top-actions .nav.active{background:var(--status-info-surface);color:var(--green);font-weight:600}
+#profileToggle.active{background:var(--action);color:#FFFFFF;font-weight:600}
 
-/* Global Dashboard Manager amber/bronze brand system */
-:root,
-[data-theme=light]{
-  --brand-charcoal:#191C22;
-  --brand-bronze:#403426;
-  --brand-amber:#F0B45A;
-  --brand-hover:#272C34;
-  --brand-white:#F5F7FA;
-  --green:#F0B45A;
-  --green-hover:#F7C879;
-  --deep-green:#F0B45A;
-  --dark-green:#403426;
-  --green2:#403426;
-  --pale-green:rgba(240,180,90,.16);
-  --sidebar-surface:#191C22;
-  --sidebar-edge:#303640;
-  --sidebar-muted:#F5F7FA;
-  --sidebar-copy:#F5F7FA;
-  --sidebar-hover:#272C34;
-  --sidebar-active:#403426;
-  --sidebar-accent:#F0B45A;
-}
-/* Primary actions and selected controls use the global amber/bronze identity. */
-.primary{
-  background:#F0B45A!important;
-  border-color:#F0B45A!important;
-  color:#191C22!important;
-}
-.primary:hover{
-  background:#F7C879!important;
-  border-color:#F7C879!important;
-  color:#191C22!important;
-}
-.secondary:hover,
-.chip:hover,
-.density button:hover,
-.views button:hover{
-  background:#272C34!important;
-  border-color:#272C34!important;
-  color:#F5F7FA!important;
-}
-.chip.active,
-.density button.active,
-.views button.active{
-  background:#403426!important;
-  border-color:rgba(240,180,90,.28)!important;
-  color:#F0B45A!important;
-}
-.card:hover{
-  border-color:#F0B45A!important;
-}
-.card-actions a,
-.list a,
-a.brand-link{
-  color:#F0B45A;
-}
-.card-actions a:hover,
-.list a:hover,
-a.brand-link:hover{
-  color:#F7C879;
-}
-.star{
-  color:#F0B45A;
-}
-.avatar{
-  background:#403426!important;
-  color:#F0B45A!important;
-}
-.iconbtn:focus-visible,
-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible,
-a:focus-visible{
-  outline:2px solid #F0B45A!important;
-  outline-offset:2px;
-}
-.iconbtn:hover{
-  background:#272C34!important;
-  border-color:#F0B45A!important;
-  color:#F5F7FA!important;
-}
-.search input:focus,
-.modal input:focus,
-.modal select:focus{
-  border-color:#F0B45A!important;
-  box-shadow:0 0 0 3px rgba(240,180,90,.16);
-}
-.badge,.count-badge,.status-badge{
-  --badge-accent:#F0B45A;
-}
+/* ---------- Content & headings ---------- */
+.content{max-width:1500px;padding:26px 32px 40px}
+.pagehead h1{font-size:clamp(21px,2vw,28px);font-weight:800;letter-spacing:-.6px;line-height:1.15;color:var(--text)}
+.pagehead p{color:var(--muted);font-size:13px}
+.eyebrow{color:var(--action);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
 
+/* ---------- Surfaces ---------- */
+.card,.stat-card,.settings-card,.admin-panel,.category-shortcut,.admin-service-list,.taxonomy-row{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-card);box-shadow:var(--shadow-card)}
+.card{transition:border-color .15s ease,box-shadow .15s ease}
+.card:hover{border-color:#C3D5E7;box-shadow:0 8px 20px rgba(11,31,58,.08);transform:none}
+.stat-card:hover{transform:none}
+.settings-card h2{font-size:16px;font-weight:700}
+.settings-help,.stat-note,.stat-label,.shortcut-meta small,.admin-panel p{color:var(--muted)}
+.admin-tabs{background:var(--panel2);border:1px solid var(--line);border-radius:var(--radius-control)}
 
-/* Main workspace neutral charcoal and amber theme.
-   Scoped deliberately to the main area and its detached dialogs.
-   The sidebar is not targeted by these rules. */
-.main,
-#serviceModal,
-#taxonomyModalBackdrop,
-#appConfirmModal,
-#toast{
-  color-scheme:dark;
-  --bg:#14171D;
-  --panel:#191D24;
-  --panel2:#202630;
-  --elevated:#202630;
-  --hover:#272C34;
-  --text:#F2F3F5;
-  --body:#B0B6C0;
-  --muted:#B0B6C0;
-  --subtle:#87909C;
-  --line:#303640;
-  --green:#F0B45A;
-  --green-hover:#F7C879;
-  --deep-green:#F0B45A;
-  --dark-green:#403426;
-  --green2:#403426;
-  --tag:#202630;
-  --pale-green:rgba(240,180,90,.16);
-  --charcoal:#191C22;
-  --github-filter:brightness(0) invert(1);
-}
-.main{
-  background:#14171D!important;
-  color:#F2F3F5;
-}
-/* Keep the main header and all cards/panels on the same neutral surfaces. */
-.main .topbar{background:#191D24!important;border-color:#303640!important}
-.main .card,
-.main .settings-card,
-.main .integration-card,
-.main .list,
-.main .modal,
-.main .taxonomy-row,
-.main .app-form-dialog,
-.main .app-confirm-dialog{
-  background-color:#191D24;
-  border-color:#303640;
-  color:#F2F3F5;
-}
-.main .catalog-display-controls,
-.main .catalog-controls-panel-inner,
-.main .list th,
-.main .taxonomy-row-fields,
-.main .service-tag-options,
-.main .service-selected-tags{
-  background-color:#202630;
-  border-color:#303640;
-}
-/* Main content controls use amber for selected/focus states and charcoal hover. */
-.main .primary{
-  background:#F0B45A!important;
-  border-color:#F0B45A!important;
-  color:#191C22!important;
-}
-.main .primary:hover{
-  background:#F7C879!important;
-  border-color:#F7C879!important;
-  color:#191C22!important;
-}
-.main .secondary,
-.main .iconbtn,
-.main .chip,
-.main .density button,
-.main .views button,
-.main .reorder-toggle{
-  border-color:#303640;
-  background:#191D24;
-  color:#B0B6C0;
-}
-.main .secondary:hover,
-.main .iconbtn:hover,
-.main .chip:hover,
-.main .density button:hover,
-.main .views button:hover,
-.main .reorder-toggle:hover{
-  background:#272C34!important;
-  border-color:#303640!important;
-  color:#F2F3F5!important;
-}
-.main .chip.active,
-.main .density button.active,
-.main .views button.active,
-.main .reorder-toggle.active{
-  background:#403426!important;
-  border-color:rgba(240,180,90,.35)!important;
-  color:#F0B45A!important;
-}
-.main .catalog-controls-panel-inner>.chips .chip.active .tag-chip-mark{
-  background:rgba(240,180,90,.16)!important;
-  color:#F0B45A!important;
-}
+/* ---------- Buttons & controls ---------- */
+.primary,.secondary,.danger-button,.iconbtn,.chip,.density button,.views button,.catalog-controls-toggle,.reorder-toggle,.tag-picker-chip,.admin-tab{border-radius:var(--radius-control);font-family:var(--font-sans)}
+.primary{background:var(--action);border-color:var(--action);color:#FFFFFF;font-weight:600;box-shadow:none}
+.primary:hover{background:var(--action-hover);border-color:var(--action-hover)}
+.primary:active{background:#064FC4;border-color:#064FC4}
+.primary:disabled,.secondary:disabled{opacity:.5;cursor:not-allowed}
+.secondary{background:var(--panel);border-color:var(--line);color:var(--body);font-weight:500}
+.secondary:hover{background:var(--panel2);border-color:#C3D5E7;color:var(--text)}
+.danger-button{background:var(--status-danger);border-color:var(--status-danger);color:#FFFFFF;font-weight:600}
+.danger-button:hover{background:var(--status-danger-text);border-color:var(--status-danger-text)}
+.chip,.density button,.views button{border-radius:999px;background:var(--panel);border-color:var(--line);color:var(--body)}
+.chip:hover,.density button:hover,.views button:hover{border-color:#C3D5E7;color:var(--text)}
+.chip.active,.density button.active,.views button.active,.admin-tab.active,.reorder-toggle.active,.tag-picker-chip.selected{background:var(--status-info-surface);border-color:rgba(8,104,249,.35);color:var(--green);font-weight:600;box-shadow:none}
+.tag-picker-chip.selected span{color:inherit}
+.density,.views{background:var(--panel2);border-color:var(--line);border-radius:var(--radius-pill)}
+.iconbtn{background:var(--panel);border-color:var(--line);color:var(--text)}
+.iconbtn:hover{background:var(--panel2);border-color:#C3D5E7;color:var(--green)}
 
-/* Override legacy catalog-control declarations that hard-coded green tints. */
-.main .catalog-display-controls .views button.active,
-.main .catalog-display-controls .density button.active,
-.main .catalog-display-controls .reorder-toggle.active{
-  background:#403426!important;
-  color:#F0B45A!important;
-  border-color:rgba(240,180,90,.30)!important;
-  box-shadow:inset 0 0 0 1px rgba(240,180,90,.08)!important;
-}
-.main .catalog-display-controls .reorder-toggle:hover,
-.main .catalog-controls-toggle:hover,
-.main .catalog-controls-toggle.active{
-  border-color:#F0B45A!important;
-}
-.main .catalog-controls-toggle-icon,
-.main .catalog-controls-toggle.active .catalog-controls-chevron{
-  color:#F0B45A!important;
-}
-.main .catalog-display-controls .views button:focus-visible,
-.main .catalog-display-controls .density button:focus-visible,
-.main .catalog-display-controls .reorder-toggle:focus-visible{
-  outline:2px solid #F0B45A!important;
-}
-.main .top-actions .nav.active{
-  background:#403426!important;
-  color:#F0B45A!important;
-  border-color:rgba(240,180,90,.30)!important;
-}
-.main .list tr.drag-over,
-.main .service-card-drag-handle:focus-visible{
-  outline-color:#F0B45A!important;
-}
-.main .taxonomy-danger,
-.main .danger-button{color:#F87171!important}
-
-.main .iconbtn:focus-visible,
-.main button:focus-visible,
-.main input:focus-visible,
-.main select:focus-visible,
-.main textarea:focus-visible,
-.main a:focus-visible{
-  outline:2px solid #F0B45A!important;
-  outline-offset:2px;
-}
-.main input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
-.main select,
-.main textarea{
-  background-color:#14171D;
-  border-color:#303640;
-  color:#F2F3F5;
-  caret-color:#F0B45A;
-}
-#serviceModal input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+/* ---------- Form controls ---------- */
+.main input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]):not([type=file]),
+.main select,.main textarea,
+#serviceModal input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),
 #serviceModal select,
-#taxonomyModalBackdrop input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
-#taxonomyModalBackdrop select,
-#appConfirmModal input,
-#appConfirmModal select,
-#appConfirmModal textarea{
-  background-color:#14171D;
-  border-color:#303640;
-  color:#F2F3F5;
-  caret-color:#F0B45A;
-}
-.main input::placeholder,
-.main textarea::placeholder,
-#serviceModal input::placeholder,
-#taxonomyModalBackdrop input::placeholder{
-  color:#87909C;
-  opacity:1;
-}
-.main option,
-#serviceModal option,
-#taxonomyModalBackdrop option{
-  background:#191D24;
-  color:#F2F3F5;
-}
-.main .search input,
-.main .modal input,
-.main .modal select,
-#serviceModal .modal input,
-#serviceModal .modal select,
-#taxonomyModalBackdrop input,
-#taxonomyModalBackdrop select{
-  border-color:#303640;
-}
-.main .search input:focus,
-.main .modal input:focus,
-.main .modal select:focus,
-#serviceModal .modal input:focus,
-#serviceModal .modal select:focus,
-#taxonomyModalBackdrop input:focus,
-#taxonomyModalBackdrop select:focus{
-  border-color:#F0B45A!important;
-  box-shadow:0 0 0 3px rgba(240,180,90,.16);
-}
-/* Remove the legacy green tint from content-only markers and status accents. */
-.main .list a,
-.main .card-actions a,
-.main .service-card-category-value,
-.main .catalog-controls-chevron,
-.main .catalog-controls-chevron svg,
-.main .settings-check input,
-.main input[type="checkbox"],
-.main input[type="radio"],
-.main input[type="range"],
-.main .list tr.drag-over{
-  accent-color:#F0B45A;
-}
-.main .list a,
-.main .card-actions a,
-.main .service-card-category-value{color:#F0B45A}
-.main .list tr.drag-over{outline-color:#F0B45A}
-.main .logo{
-  background:#403426!important;
-  color:#F0B45A!important;
-}
-#toast{
-  background:#202630!important;
-  border-color:#303640!important;
-  color:#F2F3F5!important;
-}
+#taxonomyModalBackdrop input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),
+#taxonomyModalBackdrop select,#taxonomyModalBackdrop textarea,
+#appConfirmModal input,#appConfirmModal select,#appConfirmModal textarea{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-control);color:var(--text);font-family:var(--font-sans);font-size:13px;caret-color:var(--action)}
+.main input::placeholder,.main textarea::placeholder,#serviceModal input::placeholder,#taxonomyModalBackdrop input::placeholder{color:var(--subtle);opacity:1}
+.main input:focus,.main select:focus,.main textarea:focus,
+#serviceModal input:focus,#serviceModal select:focus,
+#taxonomyModalBackdrop input:focus,#taxonomyModalBackdrop select:focus,#taxonomyModalBackdrop textarea:focus,
+#appConfirmModal input:focus,#appConfirmModal select:focus{outline:none;border-color:var(--action);box-shadow:0 0 0 3px rgba(8,104,249,.18)}
+.main option,#serviceModal option,#taxonomyModalBackdrop option{background:var(--panel);color:var(--text)}
+.settings-field label,.settings-check span,.modal label,.app-form-dialog label{color:var(--body);font-weight:500;font-size:12px}
+.theme-locked{display:inline-flex;align-items:center;gap:9px;padding:9px 12px;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--panel);color:var(--muted);font-size:12px;font-weight:500}
+.theme-locked::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--action);box-shadow:0 0 0 3px rgba(8,104,249,.16)}
 
+/* ---------- Lists & tables ---------- */
+.list{border:1px solid var(--line);border-radius:var(--radius-card);background:var(--panel);box-shadow:var(--shadow-card);overflow:hidden}
+.list th{background:var(--bg);color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--line)}
+.list td{border-color:var(--panel2)}
+.list tbody tr:hover,.list tr:hover{background:#F7FAFD}
+.list a,.card-actions a,.service-card-category-value{color:var(--green)}
 
-/* Restore a genuine light workspace while retaining the same amber brand.
-   These selectors deliberately exclude the sidebar. */
-[data-theme=light] .main,
-[data-theme=light] #serviceModal,
-[data-theme=light] #taxonomyModalBackdrop,
-[data-theme=light] #appConfirmModal,
-[data-theme=light] #toast{
-  color-scheme:light;
-  --bg:#F5F6F8;
-  --panel:#FFFFFF;
-  --panel2:#EEF1F4;
-  --elevated:#FFFFFF;
-  --hover:#F0F2F5;
-  --text:#1B2028;
-  --body:#606B78;
-  --muted:#687381;
-  --subtle:#87909C;
-  --line:#DCE1E7;
-  --green:#F0B45A;
-  --green-hover:#F7C879;
-  --deep-green:#B97822;
-  --dark-green:#403426;
-  --green2:#403426;
-  --tag:#EEF1F4;
-  --pale-green:rgba(240,180,90,.18);
-  --charcoal:#191C22;
-  --github-filter:brightness(0);
-}
-[data-theme=light] .main{
-  background:#F5F6F8!important;
-  color:#1B2028!important;
-}
-[data-theme=light] .main .topbar{
-  background:#FFFFFF!important;
-  border-color:#DCE1E7!important;
-  color:#1B2028!important;
-}
-[data-theme=light] .main .card,
-[data-theme=light] .main .settings-card,
-[data-theme=light] .main .integration-card,
-[data-theme=light] .main .list,
-[data-theme=light] .main .modal,
-[data-theme=light] .main .taxonomy-row,
-[data-theme=light] .main .app-form-dialog,
-[data-theme=light] .main .app-confirm-dialog{
-  background-color:#FFFFFF!important;
-  border-color:#DCE1E7!important;
-  color:#1B2028!important;
-}
-[data-theme=light] .main .catalog-display-controls,
-[data-theme=light] .main .catalog-controls-panel-inner,
-[data-theme=light] .main .list th,
-[data-theme=light] .main .taxonomy-row-fields,
-[data-theme=light] .main .service-tag-options,
-[data-theme=light] .main .service-selected-tags{
-  background-color:#EEF1F4!important;
-  border-color:#DCE1E7!important;
-  color:#1B2028;
-}
-[data-theme=light] .main .secondary,
-[data-theme=light] .main .iconbtn,
-[data-theme=light] .main .chip,
-[data-theme=light] .main .density button,
-[data-theme=light] .main .views button,
-[data-theme=light] .main .reorder-toggle{
-  background:#FFFFFF!important;
-  border-color:#DCE1E7!important;
-  color:#606B78!important;
-}
-[data-theme=light] .main .secondary:hover,
-[data-theme=light] .main .iconbtn:hover,
-[data-theme=light] .main .chip:hover,
-[data-theme=light] .main .density button:hover,
-[data-theme=light] .main .views button:hover,
-[data-theme=light] .main .reorder-toggle:hover{
-  background:#F0F2F5!important;
-  border-color:#DCE1E7!important;
-  color:#1B2028!important;
-}
-[data-theme=light] .main .chip.active,
-[data-theme=light] .main .density button.active,
-[data-theme=light] .main .views button.active,
-[data-theme=light] .main .reorder-toggle.active,
-[data-theme=light] .main .catalog-display-controls .views button.active,
-[data-theme=light] .main .catalog-display-controls .density button.active{
-  background:#403426!important;
-  border-color:rgba(240,180,90,.38)!important;
-  color:#F0B45A!important;
-}
-[data-theme=light] .main input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
-[data-theme=light] .main select,
-[data-theme=light] .main textarea,
-[data-theme=light] #serviceModal input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
-[data-theme=light] #serviceModal select,
-[data-theme=light] #taxonomyModalBackdrop input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
-[data-theme=light] #taxonomyModalBackdrop select,
-[data-theme=light] #taxonomyModalBackdrop textarea,
-[data-theme=light] #appConfirmModal input,
-[data-theme=light] #appConfirmModal select,
-[data-theme=light] #appConfirmModal textarea{
-  background-color:#FFFFFF!important;
-  border-color:#DCE1E7!important;
-  color:#1B2028!important;
-  caret-color:#B97822;
-}
-[data-theme=light] .main input::placeholder,
-[data-theme=light] .main textarea::placeholder,
-[data-theme=light] #serviceModal input::placeholder,
-[data-theme=light] #taxonomyModalBackdrop input::placeholder{
-  color:#87909C!important;
-  opacity:1;
-}
-[data-theme=light] .main option,
-[data-theme=light] #serviceModal option,
-[data-theme=light] #taxonomyModalBackdrop option{
-  background:#FFFFFF;
-  color:#1B2028;
-}
-[data-theme=light] .main .service-card-category-value,
-[data-theme=light] .main .card-actions a,
-[data-theme=light] .main .list a{
-  color:#A96D1C;
-}
-[data-theme=light] .main .card:hover{
-  border-color:#F0B45A!important;
-}
-[data-theme=light] #serviceModal .modal,
-[data-theme=light] #taxonomyModalBackdrop .app-form-dialog,
-[data-theme=light] #appConfirmModal .app-confirm-dialog{
-  background:#FFFFFF!important;
-  border-color:#DCE1E7!important;
-  color:#1B2028!important;
-}
-[data-theme=light] #serviceModal .modal label,
-[data-theme=light] #taxonomyModalBackdrop .app-form-dialog label,
-[data-theme=light] #taxonomyModalBackdrop .settings-help,
-[data-theme=light] #appConfirmModal p{
-  color:#606B78;
-}
-[data-theme=light] #toast{
-  background:#FFFFFF!important;
-  border-color:#DCE1E7!important;
-  color:#1B2028!important;
-}
+/* ---------- Dialogs, toasts ---------- */
+.modal-backdrop,.app-modal-backdrop{background:rgba(11,31,58,.55)}
+.modal,.app-form-dialog,.app-confirm-dialog{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-card);color:var(--text);box-shadow:var(--shadow-pop)}
+.modal h2,.app-form-dialog h2,.app-confirm-dialog h2{font-size:18px;font-weight:700}
+.confirm-symbol{background:var(--status-danger-surface);color:var(--status-danger-text)}
+#toast{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:var(--radius-control);box-shadow:0 12px 32px rgba(11,31,58,.18);font-size:13px}
+
+/* ---------- Accents ---------- */
+.star{color:var(--star)}
+.avatar{background:var(--status-info-surface);color:var(--green);border:1px solid rgba(8,104,249,.18)}
+.icon-action[data-delete],.taxonomy-danger,.taxonomy-message.error{color:var(--status-danger-text)!important}
+.shortcut-ico{background:var(--status-info-surface);color:var(--green)}
+.tag{background:var(--panel2);color:var(--body);border-radius:6px}
+
+/* ---------- Focus, scrollbars, motion, responsive ---------- */
+:focus-visible{outline:2px solid var(--action);outline-offset:2px}
+*{scrollbar-width:thin;scrollbar-color:#C6D5E4 transparent}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+@media (max-width:850px){.sidebar{width:76px}.topbar{padding:0 16px}.content{padding:18px 16px 32px}}
+@media (max-width:550px){.topbar{height:62px;padding:0 12px}.content{padding:14px 12px 28px}.pagehead h1{font-size:20px}}
 
 .service-dot-card.orderable-card{cursor:grab}
 .service-dot-card.orderable-card.dragging{opacity:.4}
@@ -1289,7 +895,7 @@ a:focus-visible{
 .service-dot-drag-handle:active{cursor:grabbing}
 </style></head>
 <body><div class="app">
-<aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 24 24"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Luxorit</span><small id="brandSubtitle">Pro</small></span></div>
+<aside class="sidebar" id="sidebar"><div class="brand"><div class="logo" aria-hidden="true"><img id="brandLogoImage" class="brand-logo-image" alt="" hidden><span id="brandLogoText" class="brand-logo-text" hidden></span><svg id="brandLogoGraphic" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><circle cx="32" cy="19" r="4.5"/><path d="M32 23.5V50M23 31h18M20 39c0 8 5.4 14 12 14s12-6 12-14"/></g><path d="M41 12.5 45 16.5 53 8" fill="none" stroke="#00A6D6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="brand-copy"><span id="brandName">Anchor</span><small id="brandSubtitle">Dashboard</small></span></div>
 <div class="group-label">Workspace</div>
 <button class="nav" data-page="favorites" title="Home"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/></svg></span><span>Home</span><span class="count" id="favoritesCount">0</span></button>
 <button class="nav" data-page="all" title="All services"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14" y="3" width="7" height="7" rx="1.2"/><rect x="3" y="14" width="7" height="7" rx="1.2"/><rect x="14" y="14" width="7" height="7" rx="1.2"/></svg></span><span>All services</span><span class="count" id="allServicesCount">0</span></button>
@@ -1297,7 +903,7 @@ a:focus-visible{
 
 <button type="button" class="group-label sidebar-section-toggle" id="toggleCategoriesSection" aria-expanded="true"><span>Categories</span><span class="sidebar-section-chevron" aria-hidden="true">⌄</span></button><div id="categorySectionContent"><div id="categoryNav"></div><button type="button" class="nav tag-more-toggle" id="showMoreCategories" hidden>Show all categories</button></div><button type="button" class="group-label sidebar-section-toggle tag-nav-heading" id="toggleTagsSection" aria-expanded="true"><span>Tags</span><span class="sidebar-section-chevron" aria-hidden="true">⌄</span></button><div id="tagSectionContent"><div id="tagNav"></div><button type="button" class="nav tag-more-toggle" id="showMoreTags" hidden>Show more tags</button></div><div class="bottom">
 <button class="nav" data-page="admin" title="Administration"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m8.5 12 2.3 2.3 4.8-5"/></svg></span><span>Admin</span></button><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.69</div></div></aside>
-<main class="main"><header class="topbar"><button class="iconbtn" id="collapse" title="Collapse sidebar" aria-label="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="m14 7-5 5 5 5"/></svg></button><div class="search"><span class="search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="search" placeholder="Search all services across this profile..." aria-label="Search all services"></div><div class="top-actions"><button class="iconbtn" id="theme" title="Toggle theme" aria-label="Toggle theme"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg></button><button class="iconbtn help" id="help" title="About" aria-label="About"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button><button class="nav" id="profileToggle" title="Switch profile" style="font-size:11px;padding:4px 10px;border-radius:8px;min-width:auto;">Personal</button></div></header>
+<main class="main"><header class="topbar"><button class="iconbtn" id="collapse" title="Collapse sidebar" aria-label="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="m14 7-5 5 5 5"/></svg></button><div class="search"><span class="search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="search" placeholder="Search all services across this profile..." aria-label="Search all services"></div><div class="top-actions"><button class="iconbtn help" id="help" title="About" aria-label="About"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button><button class="nav" id="profileToggle" title="Switch profile" style="font-size:11px;padding:4px 10px;border-radius:8px;min-width:auto;">Personal</button></div></header>
 <div class="content">
 
 <section id="catalogPage" hidden><div class="pagehead catalog-pagehead"><div class="catalog-heading-copy"><div class="eyebrow" id="catalogEyebrow">SERVICE CATALOG</div><h1 id="heading">Browse by category</h1><p id="catalogDescription">Open a category to browse and manage its services.</p></div><div class="catalog-head-actions">
@@ -1357,17 +963,17 @@ a:focus-visible{
       <article class="settings-card wide">
         <h2>Portal branding</h2><p class="settings-help">Control the portal name, sidebar logo, and browser-tab favicon. The uploaded logo is used as the favicon too. Changes are saved to the shared database when connected; browser-only fallback is used when the database API is unavailable.</p>
         <div class="settings-fields">
-          <div class="settings-field"><label for="brandingName">Portal name</label><input id="brandingName" maxlength="42" required value="Luxorit" placeholder="Luxorit"></div>
-          <div class="settings-field"><label for="brandingSubtitle">Subtitle</label><input id="brandingSubtitle" maxlength="32" value="Pro" placeholder="Pro"></div>
+          <div class="settings-field"><label for="brandingName">Portal name</label><input id="brandingName" maxlength="42" required value="Anchor" placeholder="Anchor"></div>
+          <div class="settings-field"><label for="brandingSubtitle">Subtitle</label><input id="brandingSubtitle" maxlength="32" value="Dashboard" placeholder="Dashboard"></div>
           <div class="settings-field"><label for="brandingLogo">Logo mark (optional)</label><input id="brandingLogo" maxlength="4" value="" placeholder="Letter or emoji"></div>
           <div class="settings-field full"><label for="brandingLogoFile">Upload portal logo</label><div class="settings-actions"><button class="secondary" type="button" id="chooseBrandingLogo">Browse image</button><button class="secondary" type="button" id="removeBrandingLogo" hidden>Remove image</button><input type="file" id="brandingLogoFile" accept="image/png,image/jpeg,image/webp,image/gif" hidden><span id="brandingLogoUploadStatus" class="settings-note">PNG, JPEG, WebP or GIF · up to 5 MB · stored privately in R2</span><span id="brandingFaviconStatus" class="settings-note" role="status" aria-live="polite">Browser tab icon uses the uploaded logo when saved.</span></div></div>
-          <div class="settings-field"><label>Logo preview</label><div class="settings-actions"><div class="logo" id="settingsLogoPreview" style="width:38px;height:38px;border-radius:11px"><img id="settingsLogoImage" class="brand-logo-image" alt="" hidden><span id="settingsLogoText" class="brand-logo-text" hidden></span><svg id="settingsLogoGraphic" viewBox="0 0 24 24" style="width:25px;height:25px"><path d="M12 2.5 21 7.7v8.6l-9 5.2-9-5.2V7.7Z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8.1 8.4 5.8 12l2.3 3.6M15.9 8.4l2.3 3.6-2.3 3.6M10 16l4-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span id="settingsBrandPreview" class="settings-version">Luxorit Pro</span></div></div>
+          <div class="settings-field"><label>Logo preview</label><div class="settings-actions"><div class="logo" id="settingsLogoPreview" style="width:38px;height:38px;border-radius:11px"><img id="settingsLogoImage" class="brand-logo-image" alt="" hidden><span id="settingsLogoText" class="brand-logo-text" hidden></span><svg id="settingsLogoGraphic" viewBox="0 0 64 64" style="width:25px;height:25px" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><circle cx="32" cy="19" r="4.5"/><path d="M32 23.5V50M23 31h18M20 39c0 8 5.4 14 12 14s12-6 12-14"/></g><path d="M41 12.5 45 16.5 53 8" fill="none" stroke="#00A6D6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span id="settingsBrandPreview" class="settings-version">Anchor Dashboard</span></div></div>
         </div>
       </article>
       <article class="settings-card">
-        <h2>Appearance & behavior</h2><p class="settings-help">Set the theme and how the portal opens on your next visit.</p>
+        <h2>Appearance & behavior</h2><p class="settings-help">Anchor is the only appearance for this portal. Choose how it opens on your next visit.</p>
         <div class="settings-fields">
-          <div class="settings-field"><label for="themeSetting">Color theme</label><select id="themeSetting"><option value="dark">Dark · deep green</option><option value="light">Light · deep green</option></select></div>
+          <div class="settings-field"><label>Theme</label><div class="theme-locked" id="themeLocked" title="Anchor is the only appearance for this portal">Anchor · navy, paper, action blue</div></div>
           <div class="settings-field"><label for="landingSetting">Default page</label><select id="landingSetting"><option value="favorites">Home</option><option value="all">All services</option></select></div>
           <div class="settings-field full"><label for="defaultViewSetting">Default service layout</label><select id="defaultViewSetting"><option value="list">Compact list</option><option value="cards">Regular cards</option><option value="slim">Slim cards</option><option value="dots">Dot mode</option></select></div>
           <div class="settings-field full"><label for="serviceImageSizeSetting">Service logo size <span id="serviceImageSizeValue">34 px</span></label><div class="service-image-size-control"><input id="serviceImageSizeSetting" type="range" min="20" max="64" step="2" value="34" aria-label="Service logo size in pixels"><div class="service-logo-preview service-image-size-preview" id="serviceImageSizePreview"><span id="serviceImageSizePreviewFallback">🔧</span><img id="serviceImageSizePreviewImage" alt="" hidden></div></div><p class="settings-help">Adjusts uploaded logos and built-in icons across regular cards, Slim cards, compact rows, and the service editor preview. Original uploaded files remain unchanged.</p></div>
@@ -1459,7 +1065,7 @@ a:focus-visible{
 </div>
 <div class="toast" id="toast"></div>
 <script>
-const APP_VERSION="0.1.69";
+const APP_VERSION="0.2.0";
 const $=id=>document.getElementById(id);
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -1522,7 +1128,7 @@ return svg(key);
 function categoryTone(category){
 const key=categoryIconKey(category);
 const tones={
-box:["#94A3B8","rgba(148,163,184,.14)"],cloudflare:["#F38020","rgba(243,128,32,.15)"],cloud:["#55B8E8","rgba(85,184,232,.15)"],server:["#55A8FF","rgba(85,168,255,.15)"],
+box:["#536981","rgba(83,105,129,.14)"],cloudflare:["#F38020","rgba(243,128,32,.15)"],cloud:["#55B8E8","rgba(85,184,232,.15)"],server:["#55A8FF","rgba(85,168,255,.15)"],
 folder:["#A879FF","rgba(168,121,255,.16)"],database:["#3ED99A","rgba(62,217,154,.15)"],harddrive:["#FF755F","rgba(255,117,95,.15)"],network:["#35C8DF","rgba(53,200,223,.15)"],code:["#59A8FF","rgba(89,168,255,.15)"],chart:["#39D99B","rgba(57,217,155,.15)"],
 "heart-pulse":["#FB687B","rgba(251,104,123,.15)"],landmark:["#A28BFA","rgba(162,139,250,.15)"],"wallet-cards":["#36CFA7","rgba(54,207,167,.15)"],"shield-check":["#A78BFA","rgba(167,139,250,.16)"],house:["#34D399","rgba(52,211,153,.15)"],"shopping-bag":["#F5B942","rgba(245,185,66,.15)"],utensils:["#FB923C","rgba(251,146,60,.15)"],"graduation-cap":["#60A5FA","rgba(96,165,250,.15)"],plane:["#38BDF8","rgba(56,189,248,.15)"],"car-front":["#38BDF8","rgba(56,189,248,.15)"],lightbulb:["#FBBF24","rgba(251,191,36,.15)"],film:["#D879EF","rgba(216,121,239,.15)"],scale:["#A3A3A3","rgba(163,163,163,.15)"],briefcase:["#A78BFA","rgba(167,139,250,.15)"],monitor:["#60A5FA","rgba(96,165,250,.15)"],gauge:["#4ADE80","rgba(74,222,128,.15)"],windows:["#60A5FA","rgba(96,165,250,.15)"]
 };
@@ -1534,7 +1140,7 @@ return palette[hash%palette.length];
 function serviceIconHtml(s){if(s.logoKey)return '<span class="icon-fallback" style="display:none">'+safe(s.icon||"◆")+'</span><img class="uploaded-logo" src="'+safe(assetUrl(s.logoKey))+'" alt="" loading="lazy" onerror="this.style.display=\'none\';this.previousElementSibling.style.display=\'grid\'">';const key=String(s.name||"").toLowerCase();const meta=[
 [/cloudflare/,{url:"https://cdn.simpleicons.org/cloudflare/F38020",fallback:"☁"}],
 [/^pages$/, {svg:'<path d="M13 2 5 13h5l-1 9 10-13h-6l2-7Z" fill="#FFB21A" stroke="#FFB21A" stroke-linejoin="round"/>'}],
-[/workers/, {svg:'<path d="M12 2.6 20.1 7v10L12 21.4 3.9 17V7Z" fill="#F38020" stroke="#F38020"/><path d="m9 8 4 4-4 4m4-8 4 4-4 4" fill="none" stroke="#14211B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'}],
+[/workers/, {svg:'<path d="M12 2.6 20.1 7v10L12 21.4 3.9 17V7Z" fill="#F38020" stroke="#F38020"/><path d="m9 8 4 4-4 4m4-8 4 4-4 4" fill="none" stroke="#0B1F3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'}],
 [/^d1$/, {svg:'<ellipse cx="12" cy="5" rx="8.5" ry="3.2" fill="#24A8FF"/><path d="M3.5 5v13.5c0 1.8 3.8 3.2 8.5 3.2s8.5-1.4 8.5-3.2V5" fill="#1685D1"/><path d="M3.5 10c0 1.8 3.8 3.2 8.5 3.2s8.5-1.4 8.5-3.2M3.5 15c0 1.8 3.8 3.2 8.5 3.2s8.5-1.4 8.5-3.2" fill="none" stroke="#0E5EA8" stroke-width="1.2"/>'}],
 [/microsoft 365/, {svg:'<rect x="2" y="2" width="9" height="9" fill="#F35325"/><rect x="13" y="2" width="9" height="9" fill="#81BC06"/><rect x="2" y="13" width="9" height="9" fill="#05A6F0"/><rect x="13" y="13" width="9" height="9" fill="#FFBA08"/>'}],
 [/azure/, {url:"https://cdn.simpleicons.org/microsoftazure/0089D6",fallback:"A"}],
@@ -1566,8 +1172,8 @@ const seed=[
 let services=structuredClone(seed),favoritesOrder=[],current="All",view="list",density="regular",page="favorites",nextId=13,reorderEnabled=false,catalogControlsExpanded=false;
 let currentProfile=1,sidebarCategoriesExpanded=false,localViewPreference=false,searchReturnPage=null; // 1=Personal, 2=Work
 let profileLoadToken=0,taxonomyLoadToken=0,dataProfileId=1;
-let branding={name:"Luxorit",subtitle:"Pro",logo:""};
-let preferences={theme:"dark",landingPage:"favorites",defaultView:"list",sidebarCollapsed:false,sidebarCategoriesCollapsed:false,sidebarTagsCollapsed:false,showCardDescriptions:false,showSlimDescriptions:false,serviceImageSize:34};
+let branding={name:"Anchor",subtitle:"Dashboard",logo:""};
+let preferences={theme:"anchor",landingPage:"favorites",defaultView:"list",sidebarCollapsed:false,sidebarCategoriesCollapsed:false,sidebarTagsCollapsed:false,showCardDescriptions:false,showSlimDescriptions:false,serviceImageSize:34};
 function normalizeServiceImageSize(value){
  const size=Number(value);
  return value==null||!Number.isFinite(size)?34:Math.min(64,Math.max(20,Math.round(size/2)*2));
@@ -1879,7 +1485,7 @@ async function loadRemoteData(profileId=currentProfile){
   branding={...branding,...(remoteSettings.branding||{})};persistedBrandingLogoKey=branding.logoKey||null;
   const remotePreferences=remoteSettings.preferences||{};preferences={...preferences,...remotePreferences,showCardDescriptions:typeof remotePreferences.showCardDescriptions==="boolean"?remotePreferences.showCardDescriptions:typeof remotePreferences.showSlimDescriptions==="boolean"?remotePreferences.showSlimDescriptions:!!preferences.showCardDescriptions};preferences.landingPage=preferences.landingPage==="all"?"all":"favorites";
    if(!localViewPreference){view=preferences.defaultView==="list"?"list":preferences.defaultView==="dots"?"dots":"cards";density=preferences.defaultView==="slim"?"slim":"regular"}
-  document.documentElement.dataset.theme=preferences.theme||"dark";
+  
   dataProfileId=profileId;apiConnected=true;apiError="";
   setD1Status("connected","Connection verified. Catalog and portal settings are reachable in shared D1.",{serviceCount:services.length,categoryCount:remoteCategories.length,tagCount:countTagsInUse(services)});
   saveProfileCache(profileId);render();void runServiceAssetMigration();return true;
@@ -1894,7 +1500,7 @@ async function loadRemoteData(profileId=currentProfile){
 }
 const categories=()=>["All",...new Set((apiConnected?categoryRecords.slice().sort((a,b)=>(Number(a.sortOrder??a.sort_order)||9999)-(Number(b.sortOrder??b.sort_order)||9999)).map(c=>c.name):services.map(s=>s.category)).filter(Boolean))];
 function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2200)}
-function profileCacheKey(profileId){return "luxorit-profile-cache-v1-"+profileId}
+function profileCacheKey(profileId){return "anchor-profile-cache-v1-"+profileId}
 function saveProfileCache(profileId=currentProfile){
  if(dataProfileId!==profileId)return;
  try{localStorage.setItem(profileCacheKey(profileId),JSON.stringify({profileId,services,favoritesOrder,categoryRecords,taxonomyCategories,tagRecords,nextId}))}catch{}
@@ -1904,7 +1510,7 @@ function clearProfileData(profileId){
 }
 function restoreProfileCache(profileId){
  try{
-  const cached=JSON.parse(localStorage.getItem(profileCacheKey(profileId)));
+  const cached=JSON.parse(localStorage.getItem(profileCacheKey(profileId))||localStorage.getItem("luxorit-profile-cache-v1-"+profileId));
   if(cached&&cached.profileId===profileId&&Array.isArray(cached.services)){
    services=cached.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));favoritesOrder=Array.isArray(cached.favoritesOrder)?cached.favoritesOrder.map(Number).filter(Number.isSafeInteger):[];
    categoryRecords=Array.isArray(cached.categoryRecords)?cached.categoryRecords:[];
@@ -1916,13 +1522,13 @@ function restoreProfileCache(profileId){
  }catch{}
  clearProfileData(profileId);return false;
 }
-function persist(){try{if(dataProfileId===currentProfile)saveProfileCache(currentProfile);localStorage.setItem("luxorit-portal-v1",JSON.stringify({view,density,theme:document.documentElement.dataset.theme,appVersion:APP_VERSION,branding,preferences,currentProfile}))}catch{}}
+function persist(){try{if(dataProfileId===currentProfile)saveProfileCache(currentProfile);localStorage.setItem("anchor-dashboard-v1",JSON.stringify({view,density,appVersion:APP_VERSION,branding,preferences,currentProfile}))}catch{}}
 function safe(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function load(){
- let d=null;try{d=JSON.parse(localStorage.getItem("luxorit-portal-v1"))}catch{}
+ let d=null;try{d=JSON.parse(localStorage.getItem("anchor-dashboard-v1")||localStorage.getItem("luxorit-portal-v1"))}catch{}if(d&&!localStorage.getItem("anchor-dashboard-v1")){try{localStorage.setItem("anchor-dashboard-v1",JSON.stringify(d))}catch{}}
  if(d){
   if(d.currentProfile===1||d.currentProfile===2)currentProfile=d.currentProfile;
-  if(["list","cards","dots"].includes(d.view)){view=d.view;localViewPreference=true}if(d.density)density=d.density;if(d.theme)document.documentElement.dataset.theme=d.theme;
+  if(["list","cards","dots"].includes(d.view)){view=d.view;localViewPreference=true}if(d.density)density=d.density;
   if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences,showCardDescriptions:typeof d.preferences.showCardDescriptions==="boolean"?d.preferences.showCardDescriptions:typeof d.preferences.showSlimDescriptions==="boolean"?d.preferences.showSlimDescriptions:false};preferences.landingPage=preferences.landingPage==="all"?"all":"favorites";
   // The former shared services cache had no reliable profile owner, so never reuse it across profiles.
   restoreProfileCache(currentProfile);
@@ -2143,7 +1749,7 @@ function taxonomyMessageIfAvailable(_id,message){
 const target=$("serviceOrderStatus");
 if(target)target.textContent=message;
 }
-const DEFAULT_PORTAL_FAVICON="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23101614'/%3E%3Cpath d='M32 7 53 19v26L32 57 11 45V19Z' fill='none' stroke='%233ECF8E' stroke-width='5' stroke-linejoin='round'/%3E%3Cpath d='M25 24 18 32l7 8m14-16 7 8-7 8M29 40l6-16' fill='none' stroke='%233ECF8E' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E";
+const DEFAULT_PORTAL_FAVICON="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2064%2064'%3E%3Crect%20width%3D'64'%20height%3D'64'%20rx%3D'15'%20fill%3D'%230B1F3A'%2F%3E%3Cg%20fill%3D'none'%20stroke%3D'%23FFFFFF'%20stroke-width%3D'4'%20stroke-linecap%3D'round'%3E%3Ccircle%20cx%3D'32'%20cy%3D'19'%20r%3D'4.5'%2F%3E%3Cpath%20d%3D'M32%2023.5V50M23%2031h18M20%2039c0%208%205.4%2014%2012%2014s12-6%2012-14'%2F%3E%3C%2Fg%3E%3Cpath%20d%3D'M41%2012.5%2045%2016.5%2053%208'%20fill%3D'none'%20stroke%3D'%2300A6D6'%20stroke-width%3D'4'%20stroke-linecap%3D'round'%20stroke-linejoin%3D'round'%2F%3E%3C%2Fsvg%3E";
 function updatePortalFavicon(source){
 let link=$("portalFavicon");
 if(!link){link=document.createElement("link");link.id="portalFavicon";link.rel="icon";document.head.appendChild(link)}
@@ -2158,8 +1764,8 @@ const status=$("brandingFaviconStatus");
 if(status)status.textContent=source?"Browser tab icon: using the portal logo.":"Browser tab icon: using the default portal mark.";
 }
 function applyBranding(){
-const name=branding.name||"Luxorit",subtitle=branding.subtitle||"",mark=branding.logo||"",logoKey=branding.logoKey||"";
-$("brandName").textContent=name;$("brandSubtitle").textContent=subtitle;$("brandSubtitle").hidden=!subtitle;document.title=name+(subtitle?" "+subtitle:"")+" Portal";
+const name=branding.name||"Anchor",subtitle=branding.subtitle||"",mark=branding.logo||"",logoKey=branding.logoKey||"";
+$("brandName").textContent=name;$("brandSubtitle").textContent=subtitle;$("brandSubtitle").hidden=!subtitle;document.title=name+(subtitle?" "+subtitle:"");
 const source=brandingLogoPreviewUrl||(logoKey&&apiConnected?assetUrl(logoKey):"");
 updatePortalFavicon(source);
 const sidebarImage=$("brandLogoImage");sidebarImage.hidden=!source;if(source)sidebarImage.src=source;else sidebarImage.removeAttribute("src");
@@ -2347,7 +1953,7 @@ document.querySelectorAll("[data-admin-tab]").forEach(button=>{const active=butt
 if(adminTab==="categories")renderCategoryManager();if(adminTab==="tags")renderTagManager();
 }
 function setAdminTab(tab){if(!["categories","tags"].includes(tab))return;adminTab=tab;page="admin";showPage();renderAdminPage();bindRenderedActions();void refreshTaxonomy(false,currentProfile)}
-function renderSettings(){$("brandingName").value=branding.name||"Luxorit";$("brandingSubtitle").value=branding.subtitle||"";$("brandingLogo").value=branding.logo||"";$("themeSetting").value=document.documentElement.dataset.theme||"dark";$("landingSetting").value=preferences.landingPage==="all"?"all":"favorites";$("defaultViewSetting").value=preferences.defaultView||"list";$("serviceImageSizeSetting").value=normalizeServiceImageSize(preferences.serviceImageSize);renderServiceImageSizePreview(preferences.serviceImageSize);$("showCardDescriptionsSetting").checked=!!preferences.showCardDescriptions;$("sidebarCollapsedSetting").checked=!!preferences.sidebarCollapsed;$("settingsVersion").textContent=APP_VERSION;applyBranding();renderD1Status();renderR2Status()}
+function renderSettings(){$("brandingName").value=branding.name||"Anchor";$("brandingSubtitle").value=branding.subtitle||"";$("brandingLogo").value=branding.logo||"";$("landingSetting").value=preferences.landingPage==="all"?"all":"favorites";$("defaultViewSetting").value=preferences.defaultView||"list";$("serviceImageSizeSetting").value=normalizeServiceImageSize(preferences.serviceImageSize);renderServiceImageSizePreview(preferences.serviceImageSize);$("showCardDescriptionsSetting").checked=!!preferences.showCardDescriptions;$("sidebarCollapsedSetting").checked=!!preferences.sidebarCollapsed;$("settingsVersion").textContent=APP_VERSION;applyBranding();renderD1Status();renderR2Status()}
 function render(){applyServiceImageSize(preferences.serviceImageSize);nav();showPage();if(page==="settings")renderSettings();else if(page==="admin")renderAdminPage();else renderCatalog();$("versionLabel").textContent="v"+APP_VERSION;applyBranding();bindRenderedActions();persist()}
 function renderServiceLogoPreview(source,fallback="🔧"){
 const image=$("serviceLogoImage"),text=$("serviceLogoFallback");
@@ -2443,7 +2049,7 @@ function updateCollapseButton(){const collapsed=$("sidebar").classList.contains(
 $("collapse").onclick=()=>{$("sidebar").classList.toggle("collapsed");updateCollapseButton()};updateCollapseButton();
 $("toggleCategoriesSection").onclick=()=>{preferences.sidebarCategoriesCollapsed=!preferences.sidebarCategoriesCollapsed;nav();persist()};
 $("toggleTagsSection").onclick=()=>{preferences.sidebarTagsCollapsed=!preferences.sidebarTagsCollapsed;nav();persist()};
-$("theme").onclick=()=>{document.documentElement.dataset.theme=document.documentElement.dataset.theme==="dark"?"light":"dark";preferences.theme=document.documentElement.dataset.theme;render()};
+
 document.querySelectorAll(".nav[data-page]").forEach(b=>b.onclick=()=>navigatePage(b.dataset.page));
 $("refreshTaxonomy").onclick=()=>refreshTaxonomy(true);
 $("addCategoryButton").onclick=()=>openTaxonomyModal("category");
@@ -2467,11 +2073,11 @@ $("serviceTagSearch").oninput=()=>{serviceTagQuery=$("serviceTagSearch").value;r
 updateProfileUI();
 bindProfileSwitcher();
 loadRemoteData();
-$("export").onclick=async()=>{try{let backup;if(apiConnected){backup=await apiRequest("backup")}else{backup={schemaVersion:1,exportedAt:new Date().toISOString(),source:"browser-local",version:APP_VERSION,services,categories:[...new Map(services.map(s=>[s.category,{name:s.category,icon:"grid"}])).values()],branding,preferences,theme:document.documentElement.dataset.theme}}const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:"application/json"}));a.download="dashboard-manager-portal-backup-"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast(apiConnected?"Shared D1 backup exported":"Browser-only backup exported, D1 is not connected")}catch(error){toast("Backup export failed: "+(error.message||"database error"))}};
-$("import").onclick=()=>$("importFile").click();$("importFile").onchange=async e=>{try{const file=e.target.files&&e.target.files[0];if(!file)return;const d=JSON.parse(await file.text());if(!d||!Array.isArray(d.services))throw Error("Backup must contain a services array");if(d.services.length>200)throw Error("Backups can contain at most 200 services");if(apiConnected){const proceed=await confirmInApp({title:"Restore shared database backup?",message:"This will replace the current services, categories, tags, branding, and preferences in the shared database. Export a backup first if you need to keep the current data.",confirmLabel:"Restore database"});if(!proceed)return;const result=await apiRequest("backup",{method:"POST",body:JSON.stringify(d)});await loadRemoteData();page="favorites";current="All";render();toast("D1 restored: "+result.serviceCount+" services, "+result.categoryCount+" categories")}else{const proceed=await confirmInApp({title:"Import browser-only backup?",message:"The shared database is not connected. This imports the backup into this browser only and will not update D1.",confirmLabel:"Import backup"});if(!proceed)return;services=d.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences,showCardDescriptions:typeof d.preferences.showCardDescriptions==="boolean"?d.preferences.showCardDescriptions:typeof d.preferences.showSlimDescriptions==="boolean"?d.preferences.showSlimDescriptions:false};preferences.landingPage=preferences.landingPage==="all"?"all":"favorites";if(d.theme)document.documentElement.dataset.theme=d.theme;nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;page="favorites";current="All";render();toast("Backup imported into this browser only")}}catch(error){toast("Could not restore backup: "+(error.message||"invalid JSON"))}finally{e.target.value=""}};
-$("help").onclick=()=>toast("Dashboard Manager Portal. Version "+APP_VERSION+". Catalog changes save to shared D1 when connected.");
-$("brandingName").addEventListener("input",()=>{$("settingsBrandPreview").textContent=($("brandingName").value||"Luxorit")+(($("brandingSubtitle").value)?" "+$("brandingSubtitle").value:"")});
-$("brandingSubtitle").addEventListener("input",()=>{$("settingsBrandPreview").textContent=($("brandingName").value||"Luxorit")+(($("brandingSubtitle").value)?" "+$("brandingSubtitle").value:"")});
+$("export").onclick=async()=>{try{let backup;if(apiConnected){backup=await apiRequest("backup")}else{backup={schemaVersion:1,exportedAt:new Date().toISOString(),source:"browser-local",version:APP_VERSION,services,categories:[...new Map(services.map(s=>[s.category,{name:s.category,icon:"grid"}])).values()],branding,preferences,theme:"anchor"}}const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:"application/json"}));a.download="dashboard-manager-portal-backup-"+new Date().toISOString().slice(0,10)+".json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast(apiConnected?"Shared D1 backup exported":"Browser-only backup exported, D1 is not connected")}catch(error){toast("Backup export failed: "+(error.message||"database error"))}};
+$("import").onclick=()=>$("importFile").click();$("importFile").onchange=async e=>{try{const file=e.target.files&&e.target.files[0];if(!file)return;const d=JSON.parse(await file.text());if(!d||!Array.isArray(d.services))throw Error("Backup must contain a services array");if(d.services.length>200)throw Error("Backups can contain at most 200 services");if(apiConnected){const proceed=await confirmInApp({title:"Restore shared database backup?",message:"This will replace the current services, categories, tags, branding, and preferences in the shared database. Export a backup first if you need to keep the current data.",confirmLabel:"Restore database"});if(!proceed)return;const result=await apiRequest("backup",{method:"POST",body:JSON.stringify(d)});await loadRemoteData();page="favorites";current="All";render();toast("D1 restored: "+result.serviceCount+" services, "+result.categoryCount+" categories")}else{const proceed=await confirmInApp({title:"Import browser-only backup?",message:"The shared database is not connected. This imports the backup into this browser only and will not update D1.",confirmLabel:"Import backup"});if(!proceed)return;services=d.services.map((s,i)=>({...s,id:Number(s.id)||i+1,tags:Array.isArray(s.tags)?s.tags:[],favorite:!!s.favorite}));if(d.branding)branding={...branding,...d.branding};if(d.preferences)preferences={...preferences,...d.preferences,showCardDescriptions:typeof d.preferences.showCardDescriptions==="boolean"?d.preferences.showCardDescriptions:typeof d.preferences.showSlimDescriptions==="boolean"?d.preferences.showSlimDescriptions:false};preferences.landingPage=preferences.landingPage==="all"?"all":"favorites";nextId=Math.max(0,...services.map(s=>Number(s.id)||0))+1;page="favorites";current="All";render();toast("Backup imported into this browser only")}}catch(error){toast("Could not restore backup: "+(error.message||"invalid JSON"))}finally{e.target.value=""}};
+$("help").onclick=()=>toast("Anchor Dashboard. Version "+APP_VERSION+". Catalog changes save to shared D1 when connected.");
+$("brandingName").addEventListener("input",()=>{$("settingsBrandPreview").textContent=($("brandingName").value||"Anchor")+(($("brandingSubtitle").value)?" "+$("brandingSubtitle").value:"")});
+$("brandingSubtitle").addEventListener("input",()=>{$("settingsBrandPreview").textContent=($("brandingName").value||"Anchor")+(($("brandingSubtitle").value)?" "+$("brandingSubtitle").value:"")});
 $("brandingLogo").addEventListener("input",()=>{branding.logo=$("brandingLogo").value.trim();applyBranding()});
 $("chooseBrandingLogo").onclick=()=>{if(!apiConnected){toast("The shared database connection is required for R2 uploads.");return}$("brandingLogoFile").click()};
 $("brandingLogoFile").onchange=async e=>{
@@ -2521,11 +2127,11 @@ $("accessSyncShowAll").onchange=e=>{accessSyncShowAll=e.target.checked;if(!acces
 $("refreshPagesDeployment").onclick=()=>checkPagesDeployment(true);
 $("settingsForm").onsubmit=async e=>{
 e.preventDefault();if(brandingLogoUploadBusy){toast("Wait for the portal logo upload to finish.");return}
-const nextBranding={name:$("brandingName").value.trim()||"Luxorit",subtitle:$("brandingSubtitle").value.trim(),logo:$("brandingLogo").value.trim(),logoKey:branding.logoKey||null};
-const nextPreferences={theme:$("themeSetting").value,landingPage:$("landingSetting").value,defaultView:$("defaultViewSetting").value,sidebarCollapsed:$("sidebarCollapsedSetting").checked,showCardDescriptions:$("showCardDescriptionsSetting").checked,serviceImageSize:normalizeServiceImageSize($("serviceImageSizeSetting").value)};
+const nextBranding={name:$("brandingName").value.trim()||"Anchor",subtitle:$("brandingSubtitle").value.trim(),logo:$("brandingLogo").value.trim(),logoKey:branding.logoKey||null};
+const nextPreferences={theme:"anchor",landingPage:$("landingSetting").value,defaultView:$("defaultViewSetting").value,sidebarCollapsed:$("sidebarCollapsedSetting").checked,showCardDescriptions:$("showCardDescriptionsSetting").checked,serviceImageSize:normalizeServiceImageSize($("serviceImageSizeSetting").value)};
 try{
 if(apiConnected)await apiRequest("settings",{method:"PUT",body:JSON.stringify({branding:nextBranding,preferences:nextPreferences})});
-branding=nextBranding;persistedBrandingLogoKey=nextBranding.logoKey;preferences=nextPreferences;document.documentElement.dataset.theme=preferences.theme;
+branding=nextBranding;persistedBrandingLogoKey=nextBranding.logoKey;preferences=nextPreferences;
 for(const key of [...pendingBrandingLogoKeys]){if(key===persistedBrandingLogoKey)pendingBrandingLogoKeys.delete(key);else{await deleteUploadedImage(key);pendingBrandingLogoKeys.delete(key)}}
 if(brandingLogoPreviewUrl){URL.revokeObjectURL(brandingLogoPreviewUrl);brandingLogoPreviewUrl=null}
 applyBranding();
@@ -2534,7 +2140,7 @@ $("brandingLogoUploadStatus").textContent="Logo and settings saved.";
 $("sidebar").classList.toggle("collapsed",preferences.sidebarCollapsed);updateCollapseButton();render();toast(apiConnected?"Settings saved to database":"Settings saved locally only")
 }catch(error){toast("Could not save settings: "+(error.message||"database error"))}
 };
-$("resetBranding").onclick=()=>{branding={name:"Luxorit",subtitle:"Pro",logo:"",logoKey:null};if(brandingLogoPreviewUrl){URL.revokeObjectURL(brandingLogoPreviewUrl);brandingLogoPreviewUrl=null}renderSettings();toast("Branding reset. Save settings to keep it.")};
-$("themeSetting").onchange=()=>{document.documentElement.dataset.theme=$("themeSetting").value};
+$("resetBranding").onclick=()=>{branding={name:"Anchor",subtitle:"Dashboard",logo:"",logoKey:null};if(brandingLogoPreviewUrl){URL.revokeObjectURL(brandingLogoPreviewUrl);brandingLogoPreviewUrl=null}renderSettings();toast("Branding reset. Save settings to keep it.")};
+
 $("serviceImageSizeSetting").oninput=()=>renderServiceImageSizePreview($("serviceImageSizeSetting").value);
-load();preferences.theme=document.documentElement.dataset.theme||preferences.theme;updateProfileUI();preferences.landingPage=preferences.landingPage==="all"?"all":"favorites";page=preferences.landingPage;view=preferences.defaultView==="cards"||preferences.defaultView==="slim"?"cards":"list";density=preferences.defaultView==="slim"?"slim":"regular";$("sidebar").classList.toggle("collapsed",!!preferences.sidebarCollapsed);render();loadRemoteData();refreshTaxonomy(false);checkPagesDeployment(false);checkR2Connection(false);refreshAccessApps(false);</script></body></html>
+load();updateProfileUI();preferences.landingPage=preferences.landingPage==="all"?"all":"favorites";page=preferences.landingPage;view=preferences.defaultView==="cards"||preferences.defaultView==="slim"?"cards":"list";density=preferences.defaultView==="slim"?"slim":"regular";$("sidebar").classList.toggle("collapsed",!!preferences.sidebarCollapsed);render();loadRemoteData();refreshTaxonomy(false);checkPagesDeployment(false);checkR2Connection(false);refreshAccessApps(false);</script></body></html>

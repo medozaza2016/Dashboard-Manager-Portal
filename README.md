@@ -1,10 +1,14 @@
-# Dashboard Manager Portal
+# Anchor Dashboard
 
-A self-hosted dashboard for organizing infrastructure links, applications, Cloudflare tools, and administrative services.
+A self-hosted, favorites-first service dashboard for organizing infrastructure links, applications, Cloudflare tools, and administrative services. Rebranded from Dashboard Manager Portal in 0.2.0.
 
 ## Design
 
-The approved interface uses a near-black navy canvas, subtle blue-gray borders, bright green primary actions, and an optional light theme. Its layout includes a collapsible sidebar, search, category filters, service cards, compact cards, a list view, and an administration panel.
+Anchor Dashboard ships one locked theme and no theme switch. A navy rail (`#0B1F3A`) frames a pale blue canvas (`#F1F6FB`), services sit on white cards with soft blue borders (`#D6E2EE`), and action blue (`#0868F9`) marks primary controls. Typography pairs Manrope for display with DM Sans for body copy.
+
+The layout includes a collapsible sidebar, global search, category and tag filters, service cards, a dot grid, compact list rows, a drag-to-order favorites view, and an administration panel for taxonomy, settings, and Cloudflare status.
+
+The palette lives in `:root` inside `index.html` and is enforced by `npm run check:brand`.
 
 ## Current Status
 
@@ -16,7 +20,7 @@ Some existing service URLs intentionally end in `.example`. Replace them with re
 
 ## Stack
 
-- **Frontend:** Vite-built HTML/CSS/JavaScript prototype, with React/TypeScript/Tailwind migration as a later refactor
+- **Frontend:** Vite-built vanilla HTML/CSS/JavaScript, with no framework or build-time type checking layered on top
 - **Hosting:** Cloudflare Pages
 - **API:** Cloudflare Pages Functions, executed on the Workers platform
 - **Database:** Cloudflare D1 (SQLite)
@@ -73,5 +77,7 @@ The Pages project is named `dashboard-manager-portal` and tracks the `main` bran
 - Build command: `npm run build`
 - Build output directory: `dist`
 - Preview URL: https://dashboard-manager-portal.pages.dev
+
+Deployment runs through the Pages Git integration: pushes to `main` build and deploy production, and every other branch gets a preview deployment. There is no separate GitHub Actions workflow — `npm run check:brand` is the brand regression gate and is expected to run locally (or in `npm run verify`) before pushing.
 
 Cloudflare Pages is the frontend host, Pages Functions run the backend API on the Workers platform, and D1 is connected for authenticated service, settings, and backup operations. The latest backup/restore implementation was merged in `c28f4e9755efe5c6c5c220f08b9442be413fb15f` and the associated production Pages deployment completed successfully.

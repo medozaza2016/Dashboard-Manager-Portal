@@ -2,8 +2,8 @@ import { requireCloudflareAccess, jsonResponse } from "../lib/access.js";
 import { deleteAssetIfUnreferenced, isAllowedAssetKey } from "../lib/assets.js";
 
 const DEFAULTS = {
-  branding: { name: "Luxorit", subtitle: "Pro", logo: "", logoKey: null },
-  preferences: { theme: "dark", landingPage: "home", defaultView: "list", sidebarCollapsed: false, showSlimDescriptions: false, serviceImageSize: 34 },
+  branding: { name: "Anchor", subtitle: "Dashboard", logo: "", logoKey: null },
+  preferences: { theme: "anchor", landingPage: "favorites", defaultView: "list", sidebarCollapsed: false, showSlimDescriptions: false, serviceImageSize: 34 },
 };
 
 async function readSetting(db, key, fallback) {
@@ -33,16 +33,16 @@ export async function onRequest({ request, env }) {
     const preferences = payload.preferences || {};
     if (branding.logoKey != null && branding.logoKey !== "" && !isAllowedAssetKey(branding.logoKey, "branding")) return jsonResponse({ error: "Invalid portal logo reference." }, 400);
     const cleanBranding = {
-      name: typeof branding.name === "string" ? branding.name.trim().slice(0, 42) || "Luxorit" : "Luxorit",
+      name: typeof branding.name === "string" ? branding.name.trim().slice(0, 42) || "Anchor" : "Anchor",
       subtitle: typeof branding.subtitle === "string" ? branding.subtitle.trim().slice(0, 32) : "",
       logo: typeof branding.logo === "string" ? branding.logo.trim().slice(0, 4) : "",
       logoKey: isAllowedAssetKey(branding.logoKey, "branding") ? branding.logoKey : null,
     };
     const requestedImageSize = Number(preferences.serviceImageSize);
     const cleanPreferences = {
-      theme: preferences.theme === "light" ? "light" : "dark",
-      landingPage: ["home", "all"].includes(preferences.landingPage) ? preferences.landingPage : "home",
-      defaultView: ["list", "cards", "slim"].includes(preferences.defaultView) ? preferences.defaultView : "list",
+      theme: "anchor",
+      landingPage: preferences.landingPage === "all" ? "all" : "favorites",
+      defaultView: ["list", "cards", "slim", "dots"].includes(preferences.defaultView) ? preferences.defaultView : "list",
       sidebarCollapsed: Boolean(preferences.sidebarCollapsed),
       showSlimDescriptions: Boolean(preferences.showSlimDescriptions),
       serviceImageSize: preferences.serviceImageSize == null || !Number.isFinite(requestedImageSize) ? 34 : Math.min(64, Math.max(20, Math.round(requestedImageSize / 2) * 2)),

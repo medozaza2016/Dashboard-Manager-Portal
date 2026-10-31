@@ -2,8 +2,8 @@ import { requireCloudflareAccess, jsonResponse } from "../lib/access.js";
 import { deleteAssetIfUnreferenced, isAllowedAssetKey } from "../lib/assets.js";
 
 const DEFAULTS = {
-  branding: { name: "Luxorit", subtitle: "Pro", logo: "", logoKey: null },
-  preferences: { theme: "dark", landingPage: "home", defaultView: "list", sidebarCollapsed: false, showSlimDescriptions: false, serviceImageSize: 34 },
+  branding: { name: "Anchor", subtitle: "Dashboard", logo: "", logoKey: null },
+  preferences: { theme: "anchor", landingPage: "favorites", defaultView: "list", sidebarCollapsed: false, showSlimDescriptions: false, serviceImageSize: 34 },
 };
 const MAX_SERVICES = 200;
 const MAX_TAGS = 300;
@@ -21,19 +21,19 @@ function normalizeService(row) {
 
 function cleanBranding(value = {}) {
   return {
-    name: typeof value.name === "string" ? value.name.trim().slice(0, 42) || "Luxorit" : "Luxorit",
+    name: typeof value.name === "string" ? value.name.trim().slice(0, 42) || "Anchor" : "Anchor",
     subtitle: typeof value.subtitle === "string" ? value.subtitle.trim().slice(0, 32) : "",
     logo: typeof value.logo === "string" ? value.logo.trim().slice(0, 4) : "",
     logoKey: isAllowedAssetKey(value.logoKey, "branding") ? value.logoKey : null,
   };
 }
 
-function cleanPreferences(value = {}, legacyTheme) {
+function cleanPreferences(value = {}) {
   const requestedImageSize = Number(value.serviceImageSize);
   return {
-    theme: value.theme === "light" || (!value.theme && legacyTheme === "light") ? "light" : "dark",
-    landingPage: ["home", "all"].includes(value.landingPage) ? value.landingPage : "home",
-    defaultView: ["list", "cards", "slim"].includes(value.defaultView) ? value.defaultView : "list",
+    theme: "anchor",
+    landingPage: value.landingPage === "all" ? "all" : "favorites",
+    defaultView: ["list", "cards", "slim", "dots"].includes(value.defaultView) ? value.defaultView : "list",
     sidebarCollapsed: Boolean(value.sidebarCollapsed),
     showSlimDescriptions: Boolean(value.showSlimDescriptions),
     serviceImageSize: value.serviceImageSize == null || !Number.isFinite(requestedImageSize) ? 34 : Math.min(64, Math.max(20, Math.round(requestedImageSize / 2) * 2)),
@@ -126,7 +126,7 @@ function validateAndNormalize(payload) {
       categories: categoryRows,
       tags: [...tagNames],
       branding: cleanBranding(payload.branding || {}),
-      preferences: cleanPreferences(payload.preferences || {}, payload.theme),
+      preferences: cleanPreferences(payload.preferences || {}),
     },
   };
 }
