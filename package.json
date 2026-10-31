@@ -7,10 +7,15 @@
     "dev": "npm run build && npx wrangler pages dev dist/ --port 5173 --ip 0.0.0.0",
     "build": "vite build",
     "check:brand": "node scripts/check-brand.mjs",
-    "verify": "npm run check:brand && npm run build",
+    "lint": "eslint src/js",
+    "check:smoke": "node scripts/smoke.mjs",
+    "verify": "npm run check:brand && npm run lint && npm run check:smoke && npm run build",
     "preview": "vite preview --host 0.0.0.0"
   },
   "devDependencies": {
+    "eslint": "^10.14.0",
+    "globals": "^17.13.0",
+    "jsdom": "^29.1.1",
     "vite": "^7.1.7"
   },
   "description": "Anchor Dashboard - a favorites-first self-hosted service catalog with D1 persistence and R2 logo storage"

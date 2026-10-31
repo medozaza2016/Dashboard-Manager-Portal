@@ -8,7 +8,7 @@ Anchor Dashboard ships one locked theme and no theme switch. A navy rail (`#0B1F
 
 The layout includes a collapsible sidebar, global search, category and tag filters, service cards, a dot grid, compact list rows, a drag-to-order favorites view, and an administration panel for taxonomy, settings, and Cloudflare status.
 
-The palette lives in `:root` inside `index.html` and is enforced by `npm run check:brand`.
+The palette lives in `:root` inside `src/styles/00-tokens.css` and is enforced by `npm run check:brand`.
 
 ## Current Status
 
@@ -27,6 +27,41 @@ Some existing service URLs intentionally end in `.example`. Replace them with re
 - **Object storage:** Private Cloudflare R2 bucket for uploaded portal and service logos
 
 Keeping Pages for the static UI while using Pages Functions for server-side API logic avoids a full hosting migration. A separate standalone Worker is not required for this application's current needs.
+
+## Project structure
+
+`index.html` is the Vite build entry and now holds markup only. Styles are linked from `src/styles/index.css` and the frontend boots from `src/js/main.js`.
+
+```
+index.html                  markup plus a single module script tag
+src/styles/index.css        @import entry; layer order is load-bearing
+src/styles/00-tokens.css    :root design tokens and reset
+src/styles/1x-5x-*.css      feature layers, in original document order
+src/styles/90-anchor.css    Anchor design system, must stay last
+src/js/main.js              composition root: event wiring and first boot
+src/js/state.js             the single mutable state object
+src/js/config.js            version, image byte cap, favicon, icon options
+src/js/seed.js              first-run catalog
+src/js/icons.js             inline SVG icon set
+src/js/core/dom.js          $ and safe helpers
+src/js/features/*.js        catalog, taxonomy, admin, editor, branding,
+                            integrations, api, persistence, images, profile
+functions/                  Pages Functions API (D1 and R2)
+migrations/                 D1 SQL migrations
+scripts/check-brand.mjs     brand regression guard
+scripts/smoke.mjs           jsdom boot smoke test
+```
+
+Two rules keep the extraction honest. The CSS `@import` order mirrors the original single-file stylesheet exactly, because the sheet is a stack of override layers. Every mutable value lives on the `state` object instead of a module-level `let`, so features can share data without assigning to an imported binding.
+
+## Local scripts
+
+- `npm run dev` builds and serves `dist/` through `wrangler pages dev`.
+- `npm run build` bundles the frontend into `dist/`.
+- `npm run lint` runs ESLint over `src/js`; `no-undef` catches a module that forgot an import.
+- `npm run check:brand` fails when retired palette colours, theme toggles, or the previous brand name reappear.
+- `npm run check:smoke` boots the app in jsdom with the network disabled and asserts the catalog renders.
+- `npm run verify` runs the brand guard, lint, the smoke test, and the production build.
 
 ## API and Data Model
 
