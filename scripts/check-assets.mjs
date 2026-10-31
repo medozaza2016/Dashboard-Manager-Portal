@@ -102,6 +102,26 @@ const removal = await call(new Request(base + "?key=" + encodeURIComponent(KEY),
 check("referenced image is not deleted", removal.status === 409);
 const unreferencedDelete = await call(new Request(base + "?key=" + encodeURIComponent(BRANDING_KEY), { method: "DELETE" }));
 check("unreferenced image is deleted", unreferencedDelete.status === 200);
+check("delete evicts the edge entry", !stored.has(base + "?key=" + encodeURIComponent(BRANDING_KEY)));
+
+// Replacing or removing a service logo goes through the shared cleanup helper,
+// so it must drop the R2 object *and* the cached copy a client would still hit.
+const { deleteAssetIfUnreferenced, evictAssetFromEdge } = await import(pathToFileURL(process.cwd() + "/functions/lib/assets.js").href);
+const edgeEntryKey = base + "?key=" + encodeURIComponent(BRANDING_KEY);
+const removedObjects = [];
+const cleanupEnv = { DB: db, R2_LOGOS: { async delete(key) { removedObjects.push(key); } } };
+
+await caches.default.put(new Request(edgeEntryKey), new Response(BYTES));
+const replaced = await deleteAssetIfUnreferenced(cleanupEnv, BRANDING_KEY, "https://portal.test");
+check("replacing a logo deletes the object", replaced && removedObjects.includes(BRANDING_KEY));
+check("replacing a logo evicts the edge copy", !stored.has(edgeEntryKey));
+
+const keptInUse = await deleteAssetIfUnreferenced(cleanupEnv, KEY, "https://portal.test");
+check("a logo still in use is never deleted", keptInUse === false && !removedObjects.includes(KEY));
+
+await caches.default.put(new Request(edgeEntryKey), new Response(BYTES));
+check("eviction is skipped without an origin", (await evictAssetFromEdge(BRANDING_KEY, "")) === false && stored.has(edgeEntryKey));
+await evictAssetFromEdge(BRANDING_KEY, "https://portal.test");
 
 let failed = 0;
 for (const [label, ok] of checks) {

@@ -159,7 +159,7 @@ async function exportBackup(db) {
   };
 }
 
-async function restoreBackup(env, backup) {
+async function restoreBackup(env, backup, origin = "") {
   const db = env.DB;
   const [previousServiceLogos, previousBranding] = await Promise.all([
     db.prepare("SELECT logo_key FROM services WHERE logo_key IS NOT NULL").all(),
@@ -203,7 +203,7 @@ async function restoreBackup(env, backup) {
   await db.batch(statements);
   const previousKeys = new Set((previousServiceLogos.results || []).map((row) => row.logo_key).filter(Boolean));
   if (previousBranding?.logoKey) previousKeys.add(previousBranding.logoKey);
-  for (const key of previousKeys) await deleteAssetIfUnreferenced(env, key);
+  for (const key of previousKeys) await deleteAssetIfUnreferenced(env, key, origin);
 }
 
 export async function onRequest({ request, env }) {
@@ -228,7 +228,7 @@ export async function onRequest({ request, env }) {
   if (validated.error) return jsonResponse({ error: validated.error }, 400);
 
   try {
-    await restoreBackup(env, validated.backup);
+    await restoreBackup(env, validated.backup, new URL(request.url).origin);
   } catch {
     return jsonResponse({ error: "Backup restore failed. The database was not changed." }, 500);
   }

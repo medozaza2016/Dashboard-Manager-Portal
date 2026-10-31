@@ -28,14 +28,31 @@ export async function isAssetReferenced(env, key) {
   return false;
 }
 
-export async function deleteAssetIfUnreferenced(env, key) {
+export async function deleteAssetIfUnreferenced(env, key, origin = "") {
   if (!env?.R2_LOGOS || !isAllowedAssetKey(key)) return false;
   try {
     if (await isAssetReferenced(env, key)) return false;
     await env.R2_LOGOS.delete(key);
+    await evictAssetFromEdge(key, origin);
     return true;
   } catch {
     // Cleanup must never turn a successful D1 save into a failed request.
+    return false;
+  }
+}
+
+// The edge copy has to go with the object: a service whose logo was replaced
+// would otherwise keep serving the old bytes from cache for the rest of the
+// cache window. Keys are content-unique, so nothing else can rewrite an entry.
+export async function evictAssetFromEdge(key, origin = "") {
+  if (!origin || !isAllowedAssetKey(key)) return false;
+  if (typeof caches === "undefined" || !caches?.default) return false;
+  try {
+    // Must match assetCacheKey() in functions/api/assets.js exactly.
+    const request = new Request(`${origin}/api/assets?key=${encodeURIComponent(key)}`, { method: "GET" });
+    await caches.default.delete(request);
+    return true;
+  } catch {
     return false;
   }
 }

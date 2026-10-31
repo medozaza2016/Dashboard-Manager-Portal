@@ -125,6 +125,12 @@ await tick();
 checks.push(["settings save state present", ($("settingsSaveState")?.textContent || "").includes("saved")]);
 checks.push(["settings sections present", ["settingsIdentity", "settingsAppearance", "settingsStorage", "settingsData", "settingsAbout", "settingsCache"].every((id) => !!$(id))]);
 checks.push(["settings status pills painted", ["d1StatusPill", "r2StatusPill", "pagesStatusPill"].every((id) => $(id) && /is-(ok|bad|pending)/.test($(id).className))]);
+// The connection test used to throw inside setD1Status (shadowed `state` param),
+// which left the D1 card stuck on "Checking…" and surfaced as an unhandled rejection.
+const failuresBeforeTest = failures.length;
+$("testD1Connection").click();
+await new Promise((resolve) => setTimeout(resolve, 80));
+checks.push(["connection test paints the offline state", /Unavailable|Connection failed/.test($("d1StatusBadge")?.textContent || "") && failures.length === failuresBeforeTest]);
 const dirtyProbe = $("brandingName");
 dirtyProbe.value = "Anchor Probe";
 dirtyProbe.dispatchEvent(new window.Event("input", { bubbles: true }));

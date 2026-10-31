@@ -1,5 +1,5 @@
 import { requireCloudflareAccess, jsonResponse } from "../lib/access.js";
-import { deleteAssetIfUnreferenced, isAllowedAssetKey, isAssetReferenced } from "../lib/assets.js";
+import { deleteAssetIfUnreferenced, evictAssetFromEdge, isAllowedAssetKey, isAssetReferenced } from "../lib/assets.js";
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 const IMAGE_TYPES = {
@@ -186,11 +186,7 @@ export async function onRequest({ request, env, waitUntil }) {
       }
       await env.R2_LOGOS.delete(key);
       // Drop the edge copy too, so a removed logo stops being served from cache.
-      if (edgeCache) {
-        try {
-          await edgeCache.delete(assetCacheKey(request));
-        } catch {}
-      }
+      await evictAssetFromEdge(key, new URL(request.url).origin);
       return jsonResponse({ deleted: true, key });
     } catch {
       return jsonResponse({ error: "Could not remove the uploaded image." }, 500);

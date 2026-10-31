@@ -57,7 +57,7 @@ export async function onRequest({ request, env }) {
         "INSERT INTO portal_settings (setting_key, setting_value, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP) ON CONFLICT(setting_key) DO UPDATE SET setting_value = excluded.setting_value, updated_at = CURRENT_TIMESTAMP"
       ).bind(key, JSON.stringify(value)).run();
     }
-    if (previousBranding?.logoKey && previousBranding.logoKey !== cleanBranding.logoKey) await deleteAssetIfUnreferenced(env, previousBranding.logoKey);
+    if (previousBranding?.logoKey && previousBranding.logoKey !== cleanBranding.logoKey) await deleteAssetIfUnreferenced(env, previousBranding.logoKey, new URL(request.url).origin);
     return jsonResponse({ branding: cleanBranding, preferences: cleanPreferences });
   }
 

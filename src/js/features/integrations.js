@@ -28,8 +28,8 @@ $("d1TagCount").textContent=state.d1Status.tagCount==null?"—":String(state.d1S
 $("d1LastChecked").textContent=state.d1Status.lastChecked?"Last checked "+state.d1Status.lastChecked.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}):"Not checked yet";
 renderSettingsStatusStrip();
 }
-function setD1Status(state,message,counts={}){
-state.d1Status={...state.d1Status,...counts,state,message,lastChecked:new Date()};
+function setD1Status(nextState,message,counts={}){
+state.d1Status={...state.d1Status,...counts,state:nextState,message,lastChecked:new Date()};
 renderD1Status();
 }
 function countTagsInUse(items){return new Set(items.flatMap(s=>Array.isArray(s.tags)?s.tags:[]).map(tag=>String(tag).trim()).filter(Boolean)).size}

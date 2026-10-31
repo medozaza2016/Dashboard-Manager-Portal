@@ -28,7 +28,7 @@ async function readMigrationState(db) {
   return row?.setting_value || null;
 }
 
-async function renameLinkedServiceImages(env) {
+async function renameLinkedServiceImages(env, origin = "") {
   const services = await env.DB.prepare(
     "SELECT id, profile_id, name, logo_key AS logoKey FROM services WHERE logo_key LIKE 'service-logos/%' ORDER BY profile_id, id"
   ).all();
@@ -114,7 +114,7 @@ async function renameLinkedServiceImages(env) {
       }
 
       // The new key is now authoritative. Delete the old key only after reference verification.
-      const removed = await deleteAssetIfUnreferenced(env, oldKey);
+      const removed = await deleteAssetIfUnreferenced(env, oldKey, origin);
       if (!removed) {
         summary.failed.push({ serviceId: Number(service.id), name: service.name, reason: "New image is current, but legacy object cleanup could not be confirmed.", oldKey, newKey });
         summary.migrated++;
@@ -177,7 +177,7 @@ export async function onRequest({ request, env }) {
   }
 
   try {
-    const result = await renameLinkedServiceImages(env);
+    const result = await renameLinkedServiceImages(env, new URL(request.url).origin);
     if (result.failed.length) {
       await env.DB.prepare(
         "UPDATE portal_settings SET setting_value = ?, updated_at = CURRENT_TIMESTAMP WHERE setting_key = ? AND setting_value = ?"

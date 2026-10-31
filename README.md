@@ -24,7 +24,7 @@ Logos are the only asset type that leaves Cloudflare, so they are cached twice:
 1. **Edge cache.** `GET /api/assets?key=…` checks the colo cache before touching D1 or R2, stores successful images for 30 days with an ETag, and normalises the cache key so the favicon cache-buster cannot create duplicate entries. Repeat visits in the same region cost no R2 Class B reads.
 2. **Device cache.** `src/js/features/image-cache.js` keeps image bytes in Cache Storage (`anchor-assets-v1`), de-duplicates concurrent requests, and renders from an object URL. Markup opts in with `data-asset-key` and is hydrated after each render, so re-rendering the catalog never re-downloads a logo.
 
-Uploads use the same 30-day immutable metadata, and deleting an image evicts both the device copy and the device's cached entry. `Settings → Image cache` reports how many images are stored on the device and can clear them.
+Uploads use the same 30-day immutable metadata. Because every asset key embeds a random UUID, a stored object never changes under the same key, so the long window stays honest. Deleting an upload — or saving a service or branding change that swaps a logo — removes the R2 object, its edge entry, and the device copy, so a retired logo cannot be served from cache for the rest of the window. `Settings → Image cache` reports how many images are stored on the device and can clear them.
 
 The palette lives in `:root` inside `src/styles/00-tokens.css` and is enforced by `npm run check:brand`.
 
@@ -32,7 +32,7 @@ The palette lives in `:root` inside `src/styles/00-tokens.css` and is enforced b
 
 **Authenticated D1 catalog operations, JSON backup/restore, deployment metadata, and private R2 image uploads are deployed.** The portal is a Vite-built frontend hosted on Cloudflare Pages. Pages Functions in `functions/api/` provide the API, `luxorit-portal-db` is the D1 database, and `dashboard-manager-portal-assets` stores portal and service logos in a private R2 bucket.
 
-Cloudflare Access login and initial create/read persistence were verified earlier. The Settings page is now grouped into **Identity**, **Experience**, **Storage & connections**, **Data & backups**, and **About**, with a connection-status strip, a sticky save bar that reports unsaved changes, a collapsible deployment-details block, on-device image-cache controls, and a reset for local usage data. The latest R2 deployment builds successfully, but the authenticated upload, display, and replacement flow still needs a browser smoke test. Restore replaces the current catalog, so do not use it for casual testing against production.
+Cloudflare Access login and initial create/read persistence were verified earlier. The Settings page is grouped into **Identity**, **Experience**, **Storage & connections**, **Data & backups**, **Image cache**, and **About**, with a section jump nav, a connection-status strip, a sticky save bar that reports unsaved changes, a collapsible deployment-details block, on-device image-cache controls, and a reset for local usage data. `npm run check:browser` now exercises the logo upload, display, replacement, and cache-eviction flow against a real browser and the local D1/R2 emulation; the same flow still needs one pass against production. Restore replaces the current catalog, so do not use it for casual testing against production.
 
 Some existing service URLs intentionally end in `.example`. Replace them with real addresses only after reviewing the catalog.
 
@@ -84,7 +84,8 @@ Two rules keep the extraction honest. The CSS `@import` order mirrors the origin
 - `npm run lint` runs ESLint over `src/js`; `no-undef` catches a module that forgot an import.
 - `npm run check:brand` fails when retired palette colours, theme toggles, or the previous brand name reappear.
 - `npm run check:smoke` boots the app in jsdom with the network disabled and asserts the catalog renders, global search works, grouping renders, usage is recorded, and the Settings page paints.
-- `npm run check:assets` loads the R2 asset handler with stubbed D1, R2, and Cache API doubles and asserts the caching contract (immutable headers, edge hit, 304, 404, 400).
+- `npm run check:assets` loads the R2 asset handler with stubbed D1, R2, and Cache API doubles and asserts the caching contract (immutable headers, edge hit, 304, 404, 400, and edge eviction when a logo is deleted or replaced).
+- `npm run check:browser` drives a real headless Chrome or Edge against `npm run dev`: it uploads and replaces a service logo, verifies Cache Storage serves the second visit without a network request, checks quick results, grouping, and the Settings layout, and writes screenshots to the temp folder. It runs against the local D1/R2 emulation and is not part of `verify` because it needs a local browser.
 - `npm run verify` runs the brand guard, lint, the smoke test, the asset test, and the production build.
 
 ## API and Data Model
@@ -102,16 +103,16 @@ The Pages Functions endpoints are:
 - `GET /api/deployment`, return current Pages URL, branch, commit metadata, and runtime deployment state.
 - `GET /api/assets`, check the authenticated R2 binding.
 - `POST /api/assets`, upload a validated PNG, JPEG, WebP, or GIF (maximum 5 MB) to private R2.
-- `GET /api/assets?key=<key>` and `DELETE /api/assets?key=<key>`, retrieve referenced images or remove unreferenced uploads. Access is protected by Cloudflare Access and server-side JWT validation. Responses are cached at the edge for 30 days (`public, s-maxage`) and in the browser as `private, immutable`, with ETag revalidation; the edge copy short-circuits both the D1 reference check and the R2 read.
+- `GET /api/assets?key=<key>` and `DELETE /api/assets?key=<key>`, retrieve referenced images or remove unreferenced uploads. Access is protected by Cloudflare Access and server-side JWT validation. Responses are cached at the edge for 30 days (`public, s-maxage`) and in the browser as `private, immutable`, with ETag revalidation; the edge copy short-circuits both the D1 reference check and the R2 read. Deleting an upload, or saving a service or branding change that swaps a logo, evicts the matching edge entry as well as the object.
 
-The D1 schema has `services`, `categories`, `tags`, `service_tags`, and `portal_settings` tables, with indexes and foreign-key relationships. The `services.logo_key` field and branding `logoKey` setting point to private R2 object keys, not public URLs. SQL migrations are stored in `migrations/`.
+The D1 schema has `services`, `categories`, `tags`, `service_tags`, and `portal_settings` tables, with indexes and foreign-key relationships. The `services.logo_key` field and branding `logoKey` setting point to private R2 object keys, not public URLs. SQL migrations live in `migrations/` and apply in filename order; run one with `npx wrangler d1 execute DB --remote --file=migrations/<file>.sql`, or swap in `--local` against the dev database. Every migration is idempotent, so re-running is safe.
 
 ### Remaining verification steps
 1. In the authenticated production portal, export a JSON backup and confirm it contains `source: "cloudflare-d1"` and the expected service list.
 2. Test service edit, favorite, duplicate, delete, and Settings persistence after refresh.
-3. Verify authenticated uploads, rendering of portal/service logos after refresh, replacement cleanup, and failed-upload cleanup.
+3. Repeat the `npm run check:browser` flow once against production: authenticated upload, logo rendering after refresh, replacement cleanup, and failed-upload cleanup.
 4. Verify requests without a valid Access assertion fail closed, and verify the production and preview environment variables and D1/R2 bindings in Cloudflare Pages.
-4. Exercise restore only with a known-good export after confirming there is no unsaved catalog change to preserve.
+5. Exercise restore only with a known-good export after confirming there is no unsaved catalog change to preserve.
 
 The API deliberately returns an error when authentication configuration is missing, rather than allowing unauthenticated database changes.
 

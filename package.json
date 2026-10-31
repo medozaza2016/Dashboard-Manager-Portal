@@ -10,6 +10,7 @@
     "lint": "eslint src/js",
     "check:smoke": "node scripts/smoke.mjs",
     "check:assets": "node scripts/check-assets.mjs",
+    "check:browser": "node scripts/browser-check.mjs",
     "verify": "npm run check:brand && npm run lint && npm run check:smoke && npm run check:assets && npm run build",
     "preview": "vite preview --host 0.0.0.0"
   },

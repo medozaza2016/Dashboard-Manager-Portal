@@ -78,7 +78,7 @@ function serviceIconHtml(s){if(s.logoKey)return '<span class="icon-fallback" sty
 [/workers/, {svg:'<path d="M12 2.6 20.1 7v10L12 21.4 3.9 17V7Z" fill="#F38020" stroke="#F38020"/><path d="m9 8 4 4-4 4m4-8 4 4-4 4" fill="none" stroke="#0B1F3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'}],
 [/^d1$/, {svg:'<ellipse cx="12" cy="5" rx="8.5" ry="3.2" fill="#24A8FF"/><path d="M3.5 5v13.5c0 1.8 3.8 3.2 8.5 3.2s8.5-1.4 8.5-3.2V5" fill="#1685D1"/><path d="M3.5 10c0 1.8 3.8 3.2 8.5 3.2s8.5-1.4 8.5-3.2M3.5 15c0 1.8 3.8 3.2 8.5 3.2s8.5-1.4 8.5-3.2" fill="none" stroke="#0E5EA8" stroke-width="1.2"/>'}],
 [/microsoft 365/, {svg:'<rect x="2" y="2" width="9" height="9" fill="#F35325"/><rect x="13" y="2" width="9" height="9" fill="#81BC06"/><rect x="2" y="13" width="9" height="9" fill="#05A6F0"/><rect x="13" y="13" width="9" height="9" fill="#FFBA08"/>'}],
-[/azure/, {url:"https://cdn.simpleicons.org/microsoftazure/0089D6",fallback:"A"}],
+[/azure/, {svg:'<path d="M13.6 2.8 7.4 14.9H3L9.6 9.4 6.5 2.8h7.1Z" fill="#0078D4"/><path d="M14.6 4.6 20.9 21.2H9.4l7.2-2.3-3.6-4.8 1.6-9.5Z" fill="#40A9E0"/>'}],
 [/grafana/, {url:"https://cdn.simpleicons.org/grafana/F46800",fallback:"◉"}],
 [/uptime kuma/, {url:"https://cdn.simpleicons.org/uptimekuma/5BCBF7",fallback:"◉"}],
 [/github/, {url:"https://cdn.simpleicons.org/github/F8FAFC",fallback:"◉",extra:"github-brand"}],

@@ -165,7 +165,7 @@ export async function onRequest(context) {
       await env.DB.prepare(
         "UPDATE services SET name = ?, url = ?, description = ?, icon = ?, logo_key = ?, category_id = ?, is_favorite = ?, category_sort_order = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND profile_id = ?"
       ).bind(...fields.slice(0, -1), categoryOrder, serviceId, profileId).run();
-      if (existing.logo_key && existing.logo_key !== (payload.logoKey || null)) await deleteAssetIfUnreferenced(env, existing.logo_key);
+      if (existing.logo_key && existing.logo_key !== (payload.logoKey || null)) await deleteAssetIfUnreferenced(env, existing.logo_key, new URL(request.url).origin);
     }
 
     await saveTags(env.DB, serviceId, payload.tags, profileId);
@@ -178,7 +178,7 @@ export async function onRequest(context) {
     if (!existing) return jsonResponse({ error: "Service not found in this profile." }, 404);
     await env.DB.prepare("DELETE FROM service_tags WHERE service_id = ?").bind(id).run();
     await env.DB.prepare("DELETE FROM services WHERE id = ? AND profile_id = ?").bind(id, profileId).run();
-    if (existing.logo_key) await deleteAssetIfUnreferenced(env, existing.logo_key);
+    if (existing.logo_key) await deleteAssetIfUnreferenced(env, existing.logo_key, new URL(request.url).origin);
     return jsonResponse({ deleted: true, id });
   }
 
