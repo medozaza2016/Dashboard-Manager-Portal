@@ -1,7 +1,6 @@
 /* Anchor Dashboard - inline SVG icon set and category/service icon resolution. */
 import { safe } from "./core/dom.js";
 import { state } from "./state.js";
-import { assetUrl } from "./features/images.js";
 
 function svg(name){const p={
 home:'<path d="m3 10.5 9-7.5 9 7.5M5.5 9v11h13V9M9.5 20v-6h5v6"/>',
@@ -73,7 +72,7 @@ let hash=0;for(const char of String(category))hash=(hash*31+char.charCodeAt(0))>
 const palette=[["#8B83FF","rgba(139,131,255,.15)"],["#35C8DF","rgba(53,200,223,.15)"],["#F59E0B","rgba(245,158,11,.15)"],["#34D399","rgba(52,211,153,.15)"],["#F472B6","rgba(244,114,182,.15)"],["#60A5FA","rgba(96,165,250,.15)"]];
 return palette[hash%palette.length];
 }
-function serviceIconHtml(s){if(s.logoKey)return '<span class="icon-fallback" style="display:none">'+safe(s.icon||"◆")+'</span><img class="uploaded-logo" src="'+safe(assetUrl(s.logoKey))+'" alt="" loading="lazy" onerror="this.style.display=\'none\';this.previousElementSibling.style.display=\'grid\'">';const key=String(s.name||"").toLowerCase();const meta=[
+function serviceIconHtml(s){if(s.logoKey)return '<span class="icon-fallback" style="display:none">'+safe(s.icon||"◆")+'</span><img class="uploaded-logo" data-asset-key="'+safe(s.logoKey)+'" alt="" loading="lazy" decoding="async">';const key=String(s.name||"").toLowerCase();const meta=[
 [/cloudflare/,{url:"https://cdn.simpleicons.org/cloudflare/F38020",fallback:"☁"}],
 [/^pages$/, {svg:'<path d="M13 2 5 13h5l-1 9 10-13h-6l2-7Z" fill="#FFB21A" stroke="#FFB21A" stroke-linejoin="round"/>'}],
 [/workers/, {svg:'<path d="M12 2.6 20.1 7v10L12 21.4 3.9 17V7Z" fill="#F38020" stroke="#F38020"/><path d="m9 8 4 4-4 4m4-8 4 4-4 4" fill="none" stroke="#0B1F3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>'}],

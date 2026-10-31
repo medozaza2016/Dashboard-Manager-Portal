@@ -4,6 +4,19 @@ import { state } from "../state.js";
 import { apiRequest, loadRemoteData } from "./api.js";
 import { categories, load, toast } from "./persistence.js";
 
+const PILL_TONES={connected:"is-ok",offline:"is-bad",checking:"is-pending"};
+function paintStatusPill(pillId,shortId,status,labels){
+ const pill=$(pillId),short=$(shortId);
+ if(!pill)return;
+ pill.classList.remove("is-ok","is-bad","is-pending");
+ pill.classList.add(PILL_TONES[status]||"is-pending");
+ if(short)short.textContent=labels[status]||labels.checking;
+}
+function renderSettingsStatusStrip(){
+ paintStatusPill("d1StatusPill","d1StatusShort",state.d1Status.state,{connected:"Connected",offline:"Offline",checking:"Checking…"});
+ paintStatusPill("r2StatusPill","r2StatusShort",state.r2Status.state,{connected:"Connected",offline:"Offline",checking:"Checking…"});
+ paintStatusPill("pagesStatusPill","pagesStatusShort",state.pagesDeployment.state,{connected:"Live",offline:"Unavailable",checking:"Checking…"});
+}
 function renderD1Status(){
 const badge=$("d1StatusBadge");if(!badge)return;
 badge.className="integration-status "+(state.d1Status.state==="connected"?"status-connected":state.d1Status.state==="offline"?"status-offline":"status-checking");
@@ -13,6 +26,7 @@ $("d1ServiceCount").textContent=state.d1Status.serviceCount==null?"—":String(s
 $("d1CategoryCount").textContent=state.d1Status.categoryCount==null?"—":String(state.d1Status.categoryCount);
 $("d1TagCount").textContent=state.d1Status.tagCount==null?"—":String(state.d1Status.tagCount);
 $("d1LastChecked").textContent=state.d1Status.lastChecked?"Last checked "+state.d1Status.lastChecked.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}):"Not checked yet";
+renderSettingsStatusStrip();
 }
 function setD1Status(state,message,counts={}){
 state.d1Status={...state.d1Status,...counts,state,message,lastChecked:new Date()};
@@ -48,6 +62,7 @@ addSafeExternalLink("pagesCommitSha",commit&&commit.url,commit?((commit.shortSha
 $("pagesDeploymentState").textContent=data.deploymentStatus?("Serving this request · "+(data.environment||"environment unknown")):"Not reported by this runtime";
 $("pagesDeploymentNote").textContent=data.note||"Commit time is not deployment time. Open Cloudflare deployment history for exact build and deploy timestamps.";
 $("pagesDeploymentCheckedAt").textContent=state.pagesDeployment.lastChecked?"Last checked "+state.pagesDeployment.lastChecked.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}):"Not checked yet";
+renderSettingsStatusStrip();
 }
 async function checkPagesDeployment(showToast=true){
 const button=$("refreshPagesDeployment");if(button){button.disabled=true;button.textContent="Refreshing…"}
@@ -70,6 +85,7 @@ badge.className="integration-status "+(state.r2Status.state==="connected"?"statu
 badge.textContent=state.r2Status.state==="connected"?"Connected":state.r2Status.state==="offline"?"Unavailable":"Checking…";
 $("r2StatusMessage").textContent=state.r2Status.message;
 $("r2LastChecked").textContent=state.r2Status.lastChecked?"Last checked "+state.r2Status.lastChecked.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}):"Not checked yet";
+renderSettingsStatusStrip();
 }
 async function checkR2Connection(showToast=false){
 const button=$("refreshR2Connection");if(button){button.disabled=true;button.textContent="Testing…"}
@@ -172,4 +188,4 @@ if(showToast)toast("D1 connection failed: "+state.apiError);
 }finally{if(button){button.disabled=false;button.textContent="Test connection"}}
 }
 
-export { renderD1Status, setD1Status, countTagsInUse, addSafeExternalLink, renderPagesDeployment, checkPagesDeployment, renderR2Status, checkR2Connection, renderAccessSync, updateAccessSelection, refreshAccessApps, importSelectedAccessApps, checkD1Connection };
+export { renderD1Status, renderSettingsStatusStrip, setD1Status, countTagsInUse, addSafeExternalLink, renderPagesDeployment, checkPagesDeployment, renderR2Status, checkR2Connection, renderAccessSync, updateAccessSelection, refreshAccessApps, importSelectedAccessApps, checkD1Connection };

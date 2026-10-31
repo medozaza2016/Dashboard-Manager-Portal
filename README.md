@@ -1,6 +1,6 @@
 # Anchor Dashboard
 
-A self-hosted, favorites-first service dashboard for organizing infrastructure links, applications, Cloudflare tools, and administrative services. Rebranded from Dashboard Manager Portal in 0.2.0.
+A self-hosted, favorites-first service dashboard for organizing infrastructure links, applications, Cloudflare tools, and administrative services. Rebranded from Dashboard Manager Portal in 0.2.0. Version 0.3.0 adds ranked global search with quick results, catalog grouping and usage-aware sorting, a "Most used" surface on Home, a grouped Settings page, and browser-side caching for R2 images.
 
 ## Design
 
@@ -8,13 +8,31 @@ Anchor Dashboard ships one locked theme and no theme switch. A navy rail (`#0B1F
 
 The layout includes a collapsible sidebar, global search, category and tag filters, service cards, a dot grid, compact list rows, a drag-to-order favorites view, and an administration panel for taxonomy, settings, and Cloudflare status.
 
+## Search, grouping, and most used
+
+Global search is ranked rather than filtered. Every query term must match the service name, category, tag, description, or URL; each field carries a different weight (name 100, category 40, tag 30, description 14, URL 10) so a name match always outranks a description hit. Matching text is highlighted in the catalog and in the quick-results panel.
+
+- Typing in the search box opens a quick-results panel listing the top five services plus matching categories and tags. `↑`/`↓` move the selection, `Enter` opens the selected result, `Esc` clears the search.
+- `Ctrl`/`Cmd` + `K` focuses the search box from anywhere; `/` does the same when focus is not already inside a form control.
+- The **Filters & display** panel now exposes **Group** (none, category, first tag) and **Sort** (default order, name A–Z, most used, recently opened). Grouping and sorting pause automatically while edit mode is active so drag targets stay stable.
+- Opening a service increments a counter stored in `localStorage` under `anchor-usage-v1`, scoped per profile. Home shows the six most-opened services, and the same counters feed the "Most used" sort plus a small ranking bonus in search. Nothing leaves the browser; **Settings → Storage & connections → Local usage data** resets it.
+
+## Image caching and the R2 free tier
+
+Logos are the only asset type that leaves Cloudflare, so they are cached twice:
+
+1. **Edge cache.** `GET /api/assets?key=…` checks the colo cache before touching D1 or R2, stores successful images for 30 days with an ETag, and normalises the cache key so the favicon cache-buster cannot create duplicate entries. Repeat visits in the same region cost no R2 Class B reads.
+2. **Device cache.** `src/js/features/image-cache.js` keeps image bytes in Cache Storage (`anchor-assets-v1`), de-duplicates concurrent requests, and renders from an object URL. Markup opts in with `data-asset-key` and is hydrated after each render, so re-rendering the catalog never re-downloads a logo.
+
+Uploads use the same 30-day immutable metadata, and deleting an image evicts both the device copy and the device's cached entry. `Settings → Image cache` reports how many images are stored on the device and can clear them.
+
 The palette lives in `:root` inside `src/styles/00-tokens.css` and is enforced by `npm run check:brand`.
 
 ## Current Status
 
 **Authenticated D1 catalog operations, JSON backup/restore, deployment metadata, and private R2 image uploads are deployed.** The portal is a Vite-built frontend hosted on Cloudflare Pages. Pages Functions in `functions/api/` provide the API, `luxorit-portal-db` is the D1 database, and `dashboard-manager-portal-assets` stores portal and service logos in a private R2 bucket.
 
-Cloudflare Access login and initial create/read persistence were verified earlier. The Settings page now combines hosting and API information under one **Cloudflare Pages** card, exposes D1 and R2 connection checks, and includes portal and per-service logo browsing. The latest R2 deployment builds successfully, but the authenticated upload, display, and replacement flow still needs a browser smoke test. Restore replaces the current catalog, so do not use it for casual testing against production.
+Cloudflare Access login and initial create/read persistence were verified earlier. The Settings page is now grouped into **Identity**, **Experience**, **Storage & connections**, **Data & backups**, and **About**, with a connection-status strip, a sticky save bar that reports unsaved changes, a collapsible deployment-details block, on-device image-cache controls, and a reset for local usage data. The latest R2 deployment builds successfully, but the authenticated upload, display, and replacement flow still needs a browser smoke test. Restore replaces the current catalog, so do not use it for casual testing against production.
 
 Some existing service URLs intentionally end in `.example`. Replace them with real addresses only after reviewing the catalog.
 
@@ -44,12 +62,17 @@ src/js/config.js            version, image byte cap, favicon, icon options
 src/js/seed.js              first-run catalog
 src/js/icons.js             inline SVG icon set
 src/js/core/dom.js          $ and safe helpers
+src/js/core/asset-url.js    /api/assets URL builder shared by the cache layers
 src/js/features/*.js        catalog, taxonomy, admin, editor, branding,
                             integrations, api, persistence, images, profile
+src/js/features/search.js   ranked search, category/tag matching, highlighting
+src/js/features/usage.js    local most-used counters (per profile)
+src/js/features/image-cache.js  Cache Storage + object URLs for R2 logos
 functions/                  Pages Functions API (D1 and R2)
 migrations/                 D1 SQL migrations
 scripts/check-brand.mjs     brand regression guard
-scripts/smoke.mjs           jsdom boot smoke test
+scripts/smoke.mjs           jsdom boot + feature smoke test
+scripts/check-assets.mjs    R2 asset caching contract test
 ```
 
 Two rules keep the extraction honest. The CSS `@import` order mirrors the original single-file stylesheet exactly, because the sheet is a stack of override layers. Every mutable value lives on the `state` object instead of a module-level `let`, so features can share data without assigning to an imported binding.
@@ -60,8 +83,9 @@ Two rules keep the extraction honest. The CSS `@import` order mirrors the origin
 - `npm run build` bundles the frontend into `dist/`.
 - `npm run lint` runs ESLint over `src/js`; `no-undef` catches a module that forgot an import.
 - `npm run check:brand` fails when retired palette colours, theme toggles, or the previous brand name reappear.
-- `npm run check:smoke` boots the app in jsdom with the network disabled and asserts the catalog renders.
-- `npm run verify` runs the brand guard, lint, the smoke test, and the production build.
+- `npm run check:smoke` boots the app in jsdom with the network disabled and asserts the catalog renders, global search works, grouping renders, usage is recorded, and the Settings page paints.
+- `npm run check:assets` loads the R2 asset handler with stubbed D1, R2, and Cache API doubles and asserts the caching contract (immutable headers, edge hit, 304, 404, 400).
+- `npm run verify` runs the brand guard, lint, the smoke test, the asset test, and the production build.
 
 ## API and Data Model
 
@@ -78,7 +102,7 @@ The Pages Functions endpoints are:
 - `GET /api/deployment`, return current Pages URL, branch, commit metadata, and runtime deployment state.
 - `GET /api/assets`, check the authenticated R2 binding.
 - `POST /api/assets`, upload a validated PNG, JPEG, WebP, or GIF (maximum 5 MB) to private R2.
-- `GET /api/assets?key=<key>` and `DELETE /api/assets?key=<key>`, retrieve referenced images or remove unreferenced uploads. Access is protected by Cloudflare Access and server-side JWT validation.
+- `GET /api/assets?key=<key>` and `DELETE /api/assets?key=<key>`, retrieve referenced images or remove unreferenced uploads. Access is protected by Cloudflare Access and server-side JWT validation. Responses are cached at the edge for 30 days (`public, s-maxage`) and in the browser as `private, immutable`, with ETag revalidation; the edge copy short-circuits both the D1 reference check and the R2 read.
 
 The D1 schema has `services`, `categories`, `tags`, `service_tags`, and `portal_settings` tables, with indexes and foreign-key relationships. The `services.logo_key` field and branding `logoKey` setting point to private R2 object keys, not public URLs. SQL migrations are stored in `migrations/`.
 

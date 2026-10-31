@@ -19,7 +19,7 @@
 
 <button type="button" class="group-label sidebar-section-toggle" id="toggleCategoriesSection" aria-expanded="true"><span>Categories</span><span class="sidebar-section-chevron" aria-hidden="true">⌄</span></button><div id="categorySectionContent"><div id="categoryNav"></div><button type="button" class="nav tag-more-toggle" id="showMoreCategories" hidden>Show all categories</button></div><button type="button" class="group-label sidebar-section-toggle tag-nav-heading" id="toggleTagsSection" aria-expanded="true"><span>Tags</span><span class="sidebar-section-chevron" aria-hidden="true">⌄</span></button><div id="tagSectionContent"><div id="tagNav"></div><button type="button" class="nav tag-more-toggle" id="showMoreTags" hidden>Show more tags</button></div><div class="bottom">
 <button class="nav" data-page="admin" title="Administration"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z"/><path d="m8.5 12 2.3 2.3 4.8-5"/></svg></span><span>Admin</span></button><button class="nav" id="settingsNav" data-page="settings" title="Settings"><span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/><path d="m19.4 13.5 1.1 1.8-1.8 3.1-2.2-.1-1.2 1.7h-3.6l-1.2-1.7-2.2.1-1.8-3.1 1.1-1.8-.8-1.5.8-1.5-1.1-1.8 1.8-3.1 2.2.1 1.2-1.7h3.6l1.2 1.7 2.2-.1 1.8 3.1-1.1 1.8.8 1.5Z"/></svg></span><span>Settings</span></button><div class="version" id="versionLabel">v0.1.69</div></div></aside>
-<main class="main"><header class="topbar"><button class="iconbtn" id="collapse" title="Collapse sidebar" aria-label="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="m14 7-5 5 5 5"/></svg></button><div class="search"><span class="search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="search" placeholder="Search all services across this profile..." aria-label="Search all services"></div><div class="top-actions"><button class="iconbtn help" id="help" title="About" aria-label="About"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button><button class="nav" id="profileToggle" title="Switch profile" style="font-size:11px;padding:4px 10px;border-radius:8px;min-width:auto;">Personal</button></div></header>
+<main class="main"><header class="topbar"><button class="iconbtn" id="collapse" title="Collapse sidebar" aria-label="Collapse sidebar"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="m14 7-5 5 5 5"/></svg></button><div class="search"><span class="search-ico" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="10.8" cy="10.8" r="6.5"/><path d="m16 16 4.5 4.5"/></svg></span><input id="search" placeholder="Search all services across this profile..." aria-label="Search all services" autocomplete="off" spellcheck="false" aria-controls="quickResults" aria-expanded="false"><div id="quickResults" class="quick-results" hidden></div></div><div class="top-actions"><button class="iconbtn help" id="help" title="About" aria-label="About"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></button><button class="nav" id="profileToggle" title="Switch profile" style="font-size:11px;padding:4px 10px;border-radius:8px;min-width:auto;">Personal</button></div></header>
 <div class="content">
 
 <section id="catalogPage" hidden><div class="pagehead catalog-pagehead"><div class="catalog-heading-copy"><div class="eyebrow" id="catalogEyebrow">SERVICE CATALOG</div><h1 id="heading">Browse by category</h1><p id="catalogDescription">Open a category to browse and manage its services.</p></div><div class="catalog-head-actions">
@@ -45,11 +45,15 @@
             <button id="slimBtn" type="button" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><rect x="2" y="3" width="16" height="3" rx="1"/><rect x="2" y="8.5" width="16" height="3" rx="1"/><rect x="2" y="14" width="16" height="3" rx="1"/></svg><span>Slim</span></button>
           </div>
           <div class="reorder-control" id="reorderControl" hidden><button type="button" id="reorderToggle" class="reorder-toggle" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M12.8 3.2 16.8 7.2M3 17l4-.9 9.8-9.8a2.1 2.1 0 0 0-3-3L4 13.1 3 17Z"/><path d="M10.5 4.5 14.5 8.5"/></svg><span>Edit mode</span></button></div>
+          <div class="catalog-list-controls">
+            <label class="catalog-select"><span>Group</span><select id="groupBySetting"><option value="none">No grouping</option><option value="category">Category</option><option value="tag">First tag</option></select></label>
+            <label class="catalog-select"><span>Sort</span><select id="sortSetting"><option value="default">Default order</option><option value="name">Name A–Z</option><option value="used">Most used</option><option value="recent">Recently opened</option></select></label>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div><div id="cardArea"></div><div id="listArea" class="list"></div><div id="dotArea"></div></section>
+</div><div id="mostUsedArea" class="most-used" hidden></div><div id="cardArea"></div><div id="listArea" class="list"></div><div id="dotArea"></div></section>
 <section id="adminPage" hidden>
   <div class="pagehead"><div><div class="eyebrow">WORKSPACE / ADMINISTRATION</div><h1>Administration</h1><p>Manage categories and reusable tags. Service editing, CRUD, and ordering are handled inside each category.</p></div></div>
   <div class="admin-tabs" role="tablist" aria-label="Administration sections">
@@ -73,11 +77,25 @@
   </section>
 </section>
 <section id="settingsPage" hidden>
-  <div class="pagehead"><div><div class="eyebrow">PREFERENCES / CONFIGURATION</div><h1>Settings</h1><p>Manage your portal identity, display preferences, backups, and future integrations.</p></div></div>
-  <form id="settingsForm">
+  <div class="pagehead settings-pagehead"><div><div class="eyebrow">PREFERENCES / CONFIGURATION</div><h1>Settings</h1><p>Portal identity, default behavior, storage connections, and backups. Everyday options come first; infrastructure details stay available without dominating the page.</p></div>
+    <div class="settings-status-strip" aria-label="Connection summary">
+      <button type="button" class="settings-status-pill" id="d1StatusPill" data-settings-jump="storage"><span class="settings-status-dot" id="d1StatusDot" aria-hidden="true"></span><span class="settings-status-name">D1</span><span id="d1StatusShort">Checking…</span></button>
+      <button type="button" class="settings-status-pill" id="r2StatusPill" data-settings-jump="storage"><span class="settings-status-dot" id="r2StatusDot" aria-hidden="true"></span><span class="settings-status-name">R2</span><span id="r2StatusShort">Checking…</span></button>
+      <button type="button" class="settings-status-pill" id="pagesStatusPill" data-settings-jump="storage"><span class="settings-status-dot" id="pagesStatusDot" aria-hidden="true"></span><span class="settings-status-name">Pages</span><span id="pagesStatusShort">Checking…</span></button>
+    </div>
+  </div>
+  <nav class="settings-jump" aria-label="Settings sections">
+    <button type="button" class="settings-jump-link" data-settings-jump="identity">Identity</button>
+    <button type="button" class="settings-jump-link" data-settings-jump="appearance">Experience</button>
+    <button type="button" class="settings-jump-link" data-settings-jump="storage">Storage &amp; connections</button>
+    <button type="button" class="settings-jump-link" data-settings-jump="data">Data &amp; backups</button>
+    <button type="button" class="settings-jump-link" data-settings-jump="about">About</button>
+  </nav>
+  <form id="settingsForm" class="settings-form">
     <div class="settings-grid">
-      <article class="settings-card wide">
-        <h2>Portal branding</h2><p class="settings-help">Control the portal name, sidebar logo, and browser-tab favicon. The uploaded logo is used as the favicon too. Changes are saved to the shared database when connected; browser-only fallback is used when the database API is unavailable.</p>
+
+      <article class="settings-card wide" id="settingsIdentity" data-settings-section="identity">
+        <header class="settings-card-head"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3 3.5 7v5.5c0 4.6 3.4 7.4 8.5 8.5 5.1-1.1 8.5-3.9 8.5-8.5V7L12 3Z"/><path d="M9 12.4l2.2 2.2 4-4.4"/></svg></span><div><h2>Portal identity</h2><p class="settings-help">Name, sidebar mark, and browser-tab icon. The uploaded logo is used as the favicon too. Changes save to the shared database when connected; the browser-only fallback is used while the database API is unavailable.</p></div></header>
         <div class="settings-fields">
           <div class="settings-field"><label for="brandingName">Portal name</label><input id="brandingName" maxlength="42" required value="Anchor" placeholder="Anchor"></div>
           <div class="settings-field"><label for="brandingSubtitle">Subtitle</label><input id="brandingSubtitle" maxlength="32" value="Dashboard" placeholder="Dashboard"></div>
@@ -86,43 +104,45 @@
           <div class="settings-field"><label>Logo preview</label><div class="settings-actions"><div class="logo" id="settingsLogoPreview" style="width:38px;height:38px;border-radius:11px"><img id="settingsLogoImage" class="brand-logo-image" alt="" hidden><span id="settingsLogoText" class="brand-logo-text" hidden></span><svg id="settingsLogoGraphic" viewBox="0 0 64 64" style="width:25px;height:25px" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><circle cx="32" cy="19" r="4.5"/><path d="M32 23.5V50M23 31h18M20 39c0 8 5.4 14 12 14s12-6 12-14"/></g><path d="M41 12.5 45 16.5 53 8" fill="none" stroke="#00A6D6" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span id="settingsBrandPreview" class="settings-version">Anchor Dashboard</span></div></div>
         </div>
       </article>
-      <article class="settings-card">
-        <h2>Appearance & behavior</h2><p class="settings-help">Anchor is the only appearance for this portal. Choose how it opens on your next visit.</p>
-        <div class="settings-fields">
+
+      <article class="settings-card wide" id="settingsAppearance" data-settings-section="appearance">
+        <header class="settings-card-head"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M4 6h16M4 12h10M4 18h13"/><circle cx="18" cy="12" r="2"/><circle cx="15" cy="18" r="2"/></svg></span><div><h2>Default experience</h2><p class="settings-help">Anchor is the only appearance for this portal. These choices decide how the catalog opens and how dense it feels on your next visit.</p></div></header>
+        <div class="settings-fields settings-fields-3">
           <div class="settings-field"><label>Theme</label><div class="theme-locked" id="themeLocked" title="Anchor is the only appearance for this portal">Anchor · navy, paper, action blue</div></div>
           <div class="settings-field"><label for="landingSetting">Default page</label><select id="landingSetting"><option value="favorites">Home</option><option value="all">All services</option></select></div>
-          <div class="settings-field full"><label for="defaultViewSetting">Default service layout</label><select id="defaultViewSetting"><option value="list">Compact list</option><option value="cards">Regular cards</option><option value="slim">Slim cards</option><option value="dots">Dot mode</option></select></div>
+          <div class="settings-field"><label for="defaultViewSetting">Default service layout</label><select id="defaultViewSetting"><option value="list">Compact list</option><option value="cards">Regular cards</option><option value="slim">Slim cards</option><option value="dots">Dot mode</option></select></div>
           <div class="settings-field full"><label for="serviceImageSizeSetting">Service logo size <span id="serviceImageSizeValue">34 px</span></label><div class="service-image-size-control"><input id="serviceImageSizeSetting" type="range" min="20" max="64" step="2" value="34" aria-label="Service logo size in pixels"><div class="service-logo-preview service-image-size-preview" id="serviceImageSizePreview"><span id="serviceImageSizePreviewFallback">🔧</span><img id="serviceImageSizePreviewImage" alt="" hidden></div></div><p class="settings-help">Adjusts uploaded logos and built-in icons across regular cards, Slim cards, compact rows, and the service editor preview. Original uploaded files remain unchanged.</p></div>
         </div>
-        <label class="settings-check"><input id="showCardDescriptionsSetting" type="checkbox"><span>Show descriptions in all card layouts</span></label>
-        <p class="settings-help" style="margin-top:6px">Controls service descriptions in Regular, Slim, and Dot layouts across Home, Favorites, All Services, categories, tags, and search results. When off, descriptions are hidden in all card layouts. List view is unchanged.</p>
-        <label class="settings-check"><input id="sidebarCollapsedSetting" type="checkbox"><span>Start with the sidebar collapsed</span></label>
+        <div class="settings-toggle-row">
+          <label class="settings-check"><input id="showCardDescriptionsSetting" type="checkbox"><span>Show descriptions in all card layouts</span></label>
+          <label class="settings-check"><input id="sidebarCollapsedSetting" type="checkbox"><span>Start with the sidebar collapsed</span></label>
+        </div>
+        <p class="settings-help" style="margin-top:6px">Descriptions apply to Regular, Slim, and Dot layouts across Home, All services, categories, tags, and search results. Compact list view is unchanged.</p>
       </article>
-      <article class="settings-card">
-        <h2>Catalog backup</h2><p class="settings-help">Export services and preferences to a JSON file, or restore them from a previous backup.</p>
-        <div class="settings-actions"><button class="secondary" type="button" id="export">Export JSON</button><button class="secondary" type="button" id="import">Import JSON</button><input type="file" id="importFile" accept="application/json" hidden></div>
-        <div class="settings-divider"></div><p class="settings-help" style="margin-bottom:0">When connected, export downloads the current shared D1 catalog. Import validates the backup and restores services, categories, tags, and portal settings to D1. If the database is unavailable, the portal clearly identifies browser-only backups.</p>
-      </article>
-      <article class="settings-card wide">
-        <h2>Integrations & connections</h2><p class="settings-help">Connection status for the services this portal actually uses. Cloudflare D1 is accessed through authenticated Pages Functions. Its database binding is managed in Cloudflare, not by exposing connection credentials in this page.</p>
+
+      <article class="settings-card wide" id="settingsStorage" data-settings-section="storage">
+        <header class="settings-card-head"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><ellipse cx="12" cy="6" rx="7.5" ry="3"/><path d="M4.5 6v12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3V6"/><path d="M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/></svg></span><div><h2>Storage &amp; connections</h2><p class="settings-help">Live status for the Cloudflare services this portal actually uses. D1 and R2 are reached only through authenticated Pages Functions — no credentials are exposed on this page.</p></div></header>
         <div class="integration-grid">
-          
+
           <div class="integration-card deployment-card">
             <div class="integration-name">Cloudflare Pages</div>
             <div class="integration-desc">Portal hosting, protected backend endpoints, and production deployment details.</div>
             <span id="pagesApiStatusBadge" class="integration-status status-checking" role="status">Checking…</span>
             <p id="pagesApiStatusMessage" class="d1-status-message" aria-live="polite">Loading current Pages deployment information.</p>
-            <div class="deployment-info">
-              <div class="deployment-item"><span class="deployment-item-label">Current deployment URL (.pages.dev)</span><div id="pagesDeploymentUrl" class="deployment-item-value">Loading…</div></div>
-              <div class="deployment-item"><span class="deployment-item-label">Stable project URL</span><div id="pagesProjectUrl" class="deployment-item-value">Loading…</div></div>
-              <div class="deployment-item"><span class="deployment-item-label">Environment / branch</span><div id="pagesBranch" class="deployment-item-value">Loading…</div></div>
-              <div class="deployment-item"><span class="deployment-item-label">Latest commit</span><div id="pagesCommitMessage" class="deployment-item-value">Loading commit details…</div><div id="pagesCommitMeta" class="deployment-item-value"></div></div>
-              <div class="deployment-item"><span class="deployment-item-label">Commit SHA</span><div id="pagesCommitSha" class="deployment-item-value">Loading…</div></div>
-              <div class="deployment-item"><span class="deployment-item-label">Runtime deployment state</span><div id="pagesDeploymentState" class="deployment-item-value">Loading…</div></div>
-            </div>
-            <p id="pagesDeploymentNote" class="deployment-note">Commit time is not the same as deployment time. Cloudflare’s deployment history provides the exact build and deploy timestamps.</p>
             <div class="deployment-actions"><span class="deployment-stamp" id="pagesDeploymentCheckedAt">Not checked yet</span><div class="settings-actions"><button class="secondary" type="button" id="refreshPagesDeployment">Refresh details</button><a href="https://dash.cloudflare.com/4ed0b7cda99d43ce679d2aace4d3f525/workers-and-pages?type=pages" target="_blank" rel="noopener">Deployment history ↗</a></div></div>
+            <details class="settings-disclosure"><summary>Deployment details</summary>
+              <div class="deployment-info">
+                <div class="deployment-item"><span class="deployment-item-label">Current deployment URL (.pages.dev)</span><div id="pagesDeploymentUrl" class="deployment-item-value">Loading…</div></div>
+                <div class="deployment-item"><span class="deployment-item-label">Stable project URL</span><div id="pagesProjectUrl" class="deployment-item-value">Loading…</div></div>
+                <div class="deployment-item"><span class="deployment-item-label">Environment / branch</span><div id="pagesBranch" class="deployment-item-value">Loading…</div></div>
+                <div class="deployment-item"><span class="deployment-item-label">Latest commit</span><div id="pagesCommitMessage" class="deployment-item-value">Loading commit details…</div><div id="pagesCommitMeta" class="deployment-item-value"></div></div>
+                <div class="deployment-item"><span class="deployment-item-label">Commit SHA</span><div id="pagesCommitSha" class="deployment-item-value">Loading…</div></div>
+                <div class="deployment-item"><span class="deployment-item-label">Runtime deployment state</span><div id="pagesDeploymentState" class="deployment-item-value">Loading…</div></div>
+              </div>
+              <p id="pagesDeploymentNote" class="deployment-note">Commit time is not the same as deployment time. Cloudflare's deployment history provides the exact build and deploy timestamps.</p>
+            </details>
           </div>
+
           <div class="integration-card">
             <div class="integration-name">Cloudflare D1</div>
             <div class="integration-desc">Production database: <strong>luxorit-portal-db</strong>. Shared services, categories, tags, favorites, branding, and preferences.</div>
@@ -135,7 +155,22 @@
             </div>
             <div class="d1-check-row"><span class="d1-last-checked" id="d1LastChecked">Not checked yet</span><div class="settings-actions"><button class="secondary" type="button" id="testD1Connection">Test connection</button><a href="https://dash.cloudflare.com/4ed0b7cda99d43ce679d2aace4d3f525/workers/d1" target="_blank" rel="noopener">Open D1 dashboard ↗</a></div></div>
           </div>
-          <div class="integration-card"><div class="integration-name">Cloudflare R2</div><div class="integration-desc">Private bucket <strong>dashboard-manager-portal-assets</strong> for portal and service logos. Images are served through the authenticated app, not a public bucket URL.</div><span id="r2StatusBadge" class="integration-status status-checking" role="status">Checking…</span><p id="r2StatusMessage" class="d1-status-message" aria-live="polite">Checking R2 binding.</p><div class="d1-check-row"><span class="d1-last-checked" id="r2LastChecked">Not checked yet</span><div class="settings-actions"><button class="secondary" type="button" id="refreshR2Connection">Test connection</button><a href="https://dash.cloudflare.com/?to=/:account/r2/overview" target="_blank" rel="noopener">Open R2 dashboard ↗</a></div></div></div>
+
+          <div class="integration-card">
+            <div class="integration-name">Cloudflare R2</div>
+            <div class="integration-desc">Private bucket <strong>dashboard-manager-portal-assets</strong> for portal and service logos. Images are served through the authenticated app, then cached on the edge and on this device.</div>
+            <span id="r2StatusBadge" class="integration-status status-checking" role="status">Checking…</span>
+            <p id="r2StatusMessage" class="d1-status-message" aria-live="polite">Checking R2 binding.</p>
+            <div class="d1-check-row"><span class="d1-last-checked" id="r2LastChecked">Not checked yet</span><div class="settings-actions"><button class="secondary" type="button" id="refreshR2Connection">Test connection</button><a href="https://dash.cloudflare.com/?to=/:account/r2/overview" target="_blank" rel="noopener">Open R2 dashboard ↗</a></div></div>
+          </div>
+
+          <div class="integration-card">
+            <div class="integration-name">Local usage data</div>
+            <div class="integration-desc">Most-used ranking is counted on this device only. Nothing is sent anywhere; clearing it resets the Home “Most used” strip.</div>
+            <div class="d1-metrics"><div class="d1-metric"><span>Services used</span><strong id="usageServiceCount">0</strong></div><div class="d1-metric"><span>Opens</span><strong id="usageOpenCount">0</strong></div><div class="d1-metric"><span>This week</span><strong id="usageWeekCount">0</strong></div></div>
+            <div class="d1-check-row"><span class="d1-last-checked">Stored in this browser</span><div class="settings-actions"><button class="secondary" type="button" id="clearUsageData">Reset usage data</button></div></div>
+          </div>
+
           <div class="integration-card access-sync-card">
             <div class="integration-name">Cloudflare Access Launcher</div>
             <div class="integration-desc">Preview launcher-visible browser applications and import them into the shared service catalog. Re-sync updates linked items instead of creating duplicates.</div>
@@ -152,14 +187,33 @@
             </div>
             <p class="deployment-note">Only Access apps marked visible in the launcher and supported as browser links are included. Hidden apps, wildcard hosts, SSH, WARP, and the portal itself are excluded.</p>
           </div>
-          
+
         </div>
       </article>
-      <article class="settings-card wide">
-        <h2>About this portal</h2><div class="settings-version">Version <span id="settingsVersion">0.1.21</span></div><div class="settings-note">Cloudflare Pages · Authenticated Pages Functions · Shared Cloudflare D1 storage · Cloudflare Access</div>
+
+      <article class="settings-card" id="settingsData" data-settings-section="data">
+        <header class="settings-card-head"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3v12"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M4 17v3h16v-3"/></svg></span><div><h2>Data &amp; backups</h2><p class="settings-help">Export services and preferences to JSON, or restore them from a previous backup.</p></div></header>
+        <div class="settings-actions"><button class="secondary" type="button" id="export">Export JSON</button><button class="secondary" type="button" id="import">Import JSON</button><input type="file" id="importFile" accept="application/json" hidden></div>
+        <div class="settings-divider"></div>
+        <p class="settings-help" style="margin-bottom:0">When connected, export downloads the current shared D1 catalog. Import validates the backup and restores services, categories, tags, and portal settings to D1. If the database is unavailable, the portal clearly identifies browser-only backups.</p>
       </article>
+
+      <article class="settings-card" id="settingsCache" data-settings-section="data">
+        <header class="settings-card-head"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><rect x="3.5" y="4" width="17" height="6" rx="2"/><rect x="3.5" y="14" width="17" height="6" rx="2"/><path d="M7 7h.01M7 17h.01"/></svg></span><div><h2>Image cache</h2><p class="settings-help">Logos are cached on the edge for 30 days and on this device until you clear them, so the free R2 tier is not charged for repeat reads.</p></div></header>
+        <div class="d1-metrics"><div class="d1-metric"><span>Images on device</span><strong id="assetCacheCount">—</strong></div><div class="d1-metric"><span>Device storage</span><strong id="assetCacheSize">—</strong></div><div class="d1-metric"><span>Edge cache</span><strong>30 d</strong></div></div>
+        <div class="d1-check-row"><span class="d1-last-checked" id="assetCacheStatus" role="status" aria-live="polite">Reading the local cache…</span><div class="settings-actions"><button class="secondary" type="button" id="clearAssetCache">Clear image cache</button></div></div>
+      </article>
+
+      <article class="settings-card wide" id="settingsAbout" data-settings-section="about">
+        <header class="settings-card-head"><span class="settings-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span><div><h2>About this portal</h2><p class="settings-help">Cloudflare Pages · Authenticated Pages Functions · Shared Cloudflare D1 storage · Cloudflare Access.</p></div></header>
+        <div class="settings-about-row"><div class="settings-version">Version <span id="settingsVersion">0.3.0</span></div><div class="settings-note">Anchor Dashboard keeps the catalog, favorites ordering, and branding in D1; logos live in private R2 and are served through authenticated Pages Functions.</div></div>
+      </article>
+
     </div>
-    <div class="settings-actions" style="justify-content:flex-end;margin-top:16px"><button class="secondary" type="button" id="resetBranding">Reset branding</button><button class="primary" type="submit">Save settings</button></div>
+    <div class="settings-savebar" id="settingsSavebar">
+      <div class="settings-savebar-copy"><strong id="settingsSaveState">All changes saved</strong><span id="settingsSaveHint">Settings save to the shared database when connected.</span></div>
+      <div class="settings-actions"><button class="secondary" type="button" id="resetBranding">Reset branding</button><button class="primary" type="submit" id="saveSettings">Save settings</button></div>
+    </div>
   </form>
 </section>
 </div></main></div>

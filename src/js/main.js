@@ -8,10 +8,12 @@ import { checkD1Connection, checkPagesDeployment, checkR2Connection, importSelec
 import { bindProfileSwitcher, updateProfileUI } from "./features/profile.js";
 import { apiRequest, loadRemoteData } from "./features/api.js";
 import { categories, load, persist, toast } from "./features/persistence.js";
-import { nav, navigatePage } from "./features/catalog.js";
+import { closeQuickResults, handleSearchKeydown, nav, navigatePage } from "./features/catalog.js";
 import { applyBranding } from "./features/branding.js";
 import { closeAppConfirm, closeTaxonomyModal, confirmInApp, openTaxonomyModal, refreshTaxonomy, renderCategoryManager, renderTagManager, saveTaxonomyModal } from "./features/taxonomy.js";
-import { render, renderSettings, setAdminTab } from "./features/admin.js";
+import { render, renderSettings, setAdminTab, setSettingsDirty } from "./features/admin.js";
+import { clearAssetCache } from "./features/image-cache.js";
+import { clearUsage } from "./features/usage.js";
 import { releaseServiceLogoPreview, renderServiceLogoPreview, renderServiceTagPicker } from "./features/editor.js";
 
 function updateCollapseButton(){const collapsed=$("sidebar").classList.contains("collapsed");$("collapse").title=collapsed?"Expand sidebar":"Collapse sidebar";$("collapse").setAttribute("aria-label",collapsed?"Expand sidebar":"Collapse sidebar");$("collapse").innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 4v16"/><path d="'+(collapsed?"m10 7 5 5-5 5":"m14 7-5 5 5 5")+'"/></svg>'}
@@ -38,6 +40,17 @@ $("categoryFilter").oninput=()=>renderCategoryManager();
 $("tagFilter").oninput=()=>renderTagManager();
 $("serviceTagSearch").oninput=()=>{state.serviceTagQuery=$("serviceTagSearch").value;renderServiceTagPicker()};
 
+// Global search: keyboard-first quick results plus the group/sort controls.
+$("search").addEventListener("keydown",handleSearchKeydown);
+$("search").addEventListener("blur",()=>{setTimeout(()=>{if(!document.activeElement||!document.activeElement.closest(".quick-results"))closeQuickResults()},120)});
+document.addEventListener("click",event=>{if(!event.target.closest||!event.target.closest(".search"))closeQuickResults()});
+document.addEventListener("keydown",event=>{
+ if((event.ctrlKey||event.metaKey)&&String(event.key).toLowerCase()==="k"){event.preventDefault();$("search").focus();$("search").select();return}
+ const tag=document.activeElement&&document.activeElement.tagName;
+ if(event.key==="/"&&!event.ctrlKey&&!event.metaKey&&!event.altKey&&!["INPUT","TEXTAREA","SELECT"].includes(tag)){event.preventDefault();$("search").focus()}
+});
+$("groupBySetting").onchange=()=>{state.groupBy=$("groupBySetting").value;render()};
+$("sortSetting").onchange=()=>{state.sortMode=$("sortSetting").value;render()};
 
 updateProfileUI();
 bindProfileSwitcher();
@@ -94,10 +107,23 @@ $("importAccessApps").onclick=()=>importSelectedAccessApps();
 $("accessSyncSelectAll").onchange=e=>{const missing=state.accessSyncState.apps.filter(app=>app.existingServiceId==null);for(const app of missing){if(e.target.checked)state.accessSyncSelectedIds.add(app.accessId);else state.accessSyncSelectedIds.delete(app.accessId)}renderAccessSync()};
 $("accessSyncShowAll").onchange=e=>{state.accessSyncShowAll=e.target.checked;if(!state.accessSyncShowAll){state.accessSyncSelectedIds=new Set(state.accessSyncState.apps.filter(app=>app.existingServiceId==null&&state.accessSyncSelectedIds.has(app.accessId)).map(app=>app.accessId))}renderAccessSync()};
 $("refreshPagesDeployment").onclick=()=>checkPagesDeployment(true);
+const SETTINGS_SECTIONS={identity:"settingsIdentity",appearance:"settingsAppearance",storage:"settingsStorage",data:"settingsData",about:"settingsAbout"};
+function jumpToSettingsSection(key){
+ const target=document.getElementById(SETTINGS_SECTIONS[key]||"");
+ if(!target)return;
+ target.scrollIntoView({behavior:"smooth",block:"start"});
+ target.classList.add("settings-flash");
+ setTimeout(()=>target.classList.remove("settings-flash"),1220);
+ document.querySelectorAll("[data-settings-jump]").forEach(button=>button.classList.toggle("active",button.dataset.settingsJump===key));
+}
+document.querySelectorAll("[data-settings-jump]").forEach(button=>button.onclick=()=>jumpToSettingsSection(button.dataset.settingsJump));
+["input","change"].forEach(type=>$("settingsForm").addEventListener(type,()=>setSettingsDirty(true)));
+$("clearAssetCache").onclick=async()=>{await clearAssetCache();render();toast("Device image cache cleared; logos cache again as they are shown")};
+$("clearUsageData").onclick=async()=>{const proceed=await confirmInApp({title:"Reset usage data?",message:"Most-used counts for this browser profile will be cleared. Catalog data is not affected.",confirmLabel:"Reset usage"});if(!proceed)return;clearUsage();render();toast("Usage data reset for this profile")};
 $("settingsForm").onsubmit=async e=>{
 e.preventDefault();if(state.brandingLogoUploadBusy){toast("Wait for the portal logo upload to finish.");return}
 const nextBranding={name:$("brandingName").value.trim()||"Anchor",subtitle:$("brandingSubtitle").value.trim(),logo:$("brandingLogo").value.trim(),logoKey:state.branding.logoKey||null};
-const nextPreferences={theme:"anchor",landingPage:$("landingSetting").value,defaultView:$("defaultViewSetting").value,sidebarCollapsed:$("sidebarCollapsedSetting").checked,showCardDescriptions:$("showCardDescriptionsSetting").checked,serviceImageSize:normalizeServiceImageSize($("serviceImageSizeSetting").value)};
+const nextPreferences={theme:"anchor",landingPage:$("landingSetting").value,defaultView:$("defaultViewSetting").value,sidebarCollapsed:$("sidebarCollapsedSetting").checked,showCardDescriptions:$("showCardDescriptionsSetting").checked,sidebarCategoriesCollapsed:!!state.preferences.sidebarCategoriesCollapsed,sidebarTagsCollapsed:!!state.preferences.sidebarTagsCollapsed,serviceImageSize:normalizeServiceImageSize($("serviceImageSizeSetting").value)};
 try{
 if(state.apiConnected)await apiRequest("settings",{method:"PUT",body:JSON.stringify({branding:nextBranding,preferences:nextPreferences})});
 state.branding=nextBranding;state.persistedBrandingLogoKey=nextBranding.logoKey;state.preferences=nextPreferences;

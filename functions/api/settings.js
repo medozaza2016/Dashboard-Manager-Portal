@@ -3,7 +3,7 @@ import { deleteAssetIfUnreferenced, isAllowedAssetKey } from "../lib/assets.js";
 
 const DEFAULTS = {
   branding: { name: "Anchor", subtitle: "Dashboard", logo: "", logoKey: null },
-  preferences: { theme: "anchor", landingPage: "favorites", defaultView: "list", sidebarCollapsed: false, showSlimDescriptions: false, serviceImageSize: 34 },
+  preferences: { theme: "anchor", landingPage: "favorites", defaultView: "list", sidebarCollapsed: false, sidebarCategoriesCollapsed: false, sidebarTagsCollapsed: false, showCardDescriptions: false, showSlimDescriptions: false, serviceImageSize: 34 },
 };
 
 async function readSetting(db, key, fallback) {
@@ -44,6 +44,9 @@ export async function onRequest({ request, env }) {
       landingPage: preferences.landingPage === "all" ? "all" : "favorites",
       defaultView: ["list", "cards", "slim", "dots"].includes(preferences.defaultView) ? preferences.defaultView : "list",
       sidebarCollapsed: Boolean(preferences.sidebarCollapsed),
+      sidebarCategoriesCollapsed: Boolean(preferences.sidebarCategoriesCollapsed),
+      sidebarTagsCollapsed: Boolean(preferences.sidebarTagsCollapsed),
+      showCardDescriptions: Boolean(preferences.showCardDescriptions),
       showSlimDescriptions: Boolean(preferences.showSlimDescriptions),
       serviceImageSize: preferences.serviceImageSize == null || !Number.isFinite(requestedImageSize) ? 34 : Math.min(64, Math.max(20, Math.round(requestedImageSize / 2) * 2)),
     };

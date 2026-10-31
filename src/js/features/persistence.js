@@ -27,12 +27,14 @@ function restoreProfileCache(profileId){
  }catch{}
  clearProfileData(profileId);return false;
 }
-function persist(){try{if(state.dataProfileId===state.currentProfile)saveProfileCache(state.currentProfile);localStorage.setItem("anchor-dashboard-v1",JSON.stringify({view:state.view,density:state.density,appVersion:APP_VERSION,branding:state.branding,preferences:state.preferences,currentProfile:state.currentProfile}))}catch{}}
+function persist(){try{if(state.dataProfileId===state.currentProfile)saveProfileCache(state.currentProfile);localStorage.setItem("anchor-dashboard-v1",JSON.stringify({view:state.view,density:state.density,appVersion:APP_VERSION,groupBy:state.groupBy,sortMode:state.sortMode,branding:state.branding,preferences:state.preferences,currentProfile:state.currentProfile}))}catch{}}
 function load(){
  let d=null;try{d=JSON.parse(localStorage.getItem("anchor-dashboard-v1")||localStorage.getItem("luxorit-portal-v1"))}catch{}if(d&&!localStorage.getItem("anchor-dashboard-v1")){try{localStorage.setItem("anchor-dashboard-v1",JSON.stringify(d))}catch{}}
  if(d){
   if(d.currentProfile===1||d.currentProfile===2)state.currentProfile=d.currentProfile;
   if(["list","cards","dots"].includes(d.view)){state.view=d.view;state.localViewPreference=true}if(d.density)state.density=d.density;
+  if(["none","category","tag"].includes(d.groupBy))state.groupBy=d.groupBy;
+  if(["default","name","used","recent"].includes(d.sortMode))state.sortMode=d.sortMode;
   if(d.branding)state.branding={...state.branding,...d.branding};if(d.preferences)state.preferences={...state.preferences,...d.preferences,showCardDescriptions:typeof d.preferences.showCardDescriptions==="boolean"?d.preferences.showCardDescriptions:typeof d.preferences.showSlimDescriptions==="boolean"?d.preferences.showSlimDescriptions:false};state.preferences.landingPage=state.preferences.landingPage==="all"?"all":"favorites";
   // The former shared services cache had no reliable profile owner, so never reuse it across profiles.
   restoreProfileCache(state.currentProfile);

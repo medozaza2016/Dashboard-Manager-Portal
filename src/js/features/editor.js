@@ -1,16 +1,23 @@
 /* Anchor Dashboard - add/edit service dialog, tag picker, and logo preview. */
 import { $, safe } from "../core/dom.js";
 import { state } from "../state.js";
-import { assetUrl, cleanupPendingServiceLogos, deleteUploadedImage, uploadImage } from "./images.js";
+import { setImageSource } from "./image-cache.js";
+import { cleanupPendingServiceLogos, deleteUploadedImage, uploadImage } from "./images.js";
 import { remoteSaveService } from "./api.js";
 import { categories, toast } from "./persistence.js";
 import { refreshTaxonomy } from "./taxonomy.js";
 import { render } from "./admin.js";
 
-function renderServiceLogoPreview(source,fallback="🔧"){
+function renderServiceLogoPreview(source,fallback="🔧",key=null){
 const image=$("serviceLogoImage"),text=$("serviceLogoFallback");
-if(source){image.src=source;image.hidden=false;text.hidden=true;image.onerror=()=>{image.hidden=true;text.hidden=false}}
-else{image.removeAttribute("src");image.hidden=true;text.textContent=fallback||"🔧";text.hidden=false}
+if(key){
+ if(image.dataset.assetFallback!=="serviceLogoFallback")image.dataset.assetFallback="serviceLogoFallback";
+ setImageSource(image,null,key);text.hidden=true;
+}else if(source){
+ setImageSource(image,source);text.hidden=true;
+}else{
+ setImageSource(image,"");text.textContent=fallback||"🔧";text.hidden=false;
+}
 $("removeServiceLogo").hidden=!($("serviceLogoKey").value||state.pendingServiceLogoFile);
 }
 function releaseServiceLogoPreview(){if(state.serviceLogoPreviewUrl){URL.revokeObjectURL(state.serviceLogoPreviewUrl);state.serviceLogoPreviewUrl=null}}
@@ -37,7 +44,7 @@ const availableCategories=categories().filter(c=>c!=="All");
 $("category").innerHTML=availableCategories.map(c=>'<option value="'+safe(c)+'">'+safe(c)+'</option>').join("");
 $("category").value=s?.category||presetCategory||(availableCategories.includes("Infrastructure")?"Infrastructure":availableCategories[0]||"");
 renderServiceTagPicker();if(state.apiConnected&&!state.taxonomyLoaded&&!state.taxonomyBusy)void refreshTaxonomy(false);
-renderServiceLogoPreview(s?.logoKey&&state.apiConnected?assetUrl(s.logoKey):"",s?.icon||"🔧");
+renderServiceLogoPreview("",s?.icon||"🔧",s?.logoKey&&state.apiConnected?s.logoKey:null);
 $("serviceLogoUploadStatus").textContent="Optional · PNG, JPEG, WebP or GIF · up to 5 MB · saved with the service";$("serviceModal").classList.add("open");
 }
 
@@ -86,7 +93,7 @@ render();toast(state.apiConnected?(selectedFile?"Service and image saved to data
  toast((id?"Service details saved, but image update failed: ":"Could not save service: ")+(error.message||"database error"));
 }
 };
-$("cancel").onclick=()=>closeServiceModal();$("add").onclick=()=>{if(state.page==="category"&&state.reorderEnabled)openModal(null,state.current)};$("search").oninput=()=>{if(state.reorderEnabled&&$("search").value.trim())state.reorderEnabled=false;render()};
+$("cancel").onclick=()=>closeServiceModal();$("add").onclick=()=>{if(state.page==="category"&&state.reorderEnabled)openModal(null,state.current)};$("search").oninput=()=>{if(state.reorderEnabled&&$("search").value.trim())state.reorderEnabled=false;state.quickIndex=-1;render()};
 $("reorderToggle").onclick=()=>{if(state.page!=="category"&&state.page!=="tag"&&state.page!=="favorites")return;if(!state.reorderEnabled&&$("search").value.trim()){toast("Clear the global search before reordering.");return}state.reorderEnabled=!state.reorderEnabled;render();toast(state.reorderEnabled?(state.page==="favorites"?"Drag favorite services to change their order":state.page==="tag"?"Edit mode enabled for tag: "+state.activeTag:"Edit mode enabled for "+state.current):(state.page==="favorites"?"Favorites reordering finished":"Edit mode finished"))};
 $("catalogControlsToggle").onclick=()=>{
  state.catalogControlsExpanded=!state.catalogControlsExpanded;

@@ -1,6 +1,8 @@
 /* Anchor Dashboard - asset URLs, logo uploads, and image sizing. */
+import { assetUrl } from "../core/asset-url.js";
 import { $ } from "../core/dom.js";
 import { state } from "../state.js";
+import { forgetAsset, setImageSource } from "./image-cache.js";
 
 function normalizeServiceImageSize(value){
  const size=Number(value);
@@ -18,15 +20,15 @@ function renderServiceImageSizePreview(value=state.preferences.serviceImageSize)
  if(preview)preview.style.setProperty("--service-image-size",size+"px");
  const service=state.apiConnected?state.services.find(item=>item.logoKey):null;
  if(image&&fallback&&service){
-   const source=assetUrl(service.logoKey);
-   if(image.dataset.source!==source){image.dataset.source=source;image.src=source}
-   image.hidden=false;fallback.hidden=true;
-   image.onerror=()=>{image.hidden=true;fallback.hidden=false};
+   // The preview reads from the same device cache as the catalog, so opening
+   // Settings does not download a logo that is already on this device.
+   if(image.dataset.assetFallback!==fallback.id)image.dataset.assetFallback=fallback.id;
+   setImageSource(image,null,service.logoKey);
  }else if(image&&fallback){
-   image.hidden=true;image.removeAttribute("src");delete image.dataset.source;fallback.hidden=false;
+   setImageSource(image,"");
+   fallback.hidden=false;
  }
 }
-function assetUrl(key){return "/api/assets?key="+encodeURIComponent(key)}
 async function uploadImage(file,scope,options={}){
 if(!state.apiConnected)throw new Error("Connect to the shared database before uploading a logo.");
 const form=new FormData();form.append("scope",scope);form.append("file",file,file.name||"logo");
@@ -38,7 +40,7 @@ return body;
 }
 async function deleteUploadedImage(key){
 if(!key||!state.apiConnected)return false;
-try{const response=await fetch("/api/assets?key="+encodeURIComponent(key),{method:"DELETE",credentials:"same-origin"});const body=await response.json().catch(()=>({}));return response.ok&&!!body.deleted}catch{return false}
+try{const response=await fetch("/api/assets?key="+encodeURIComponent(key),{method:"DELETE",credentials:"same-origin"});const body=await response.json().catch(()=>({}));const deleted=response.ok&&!!body.deleted;if(deleted)await forgetAsset(key);return deleted}catch{return false}
 }
 async function cleanupPendingServiceLogos(keepKey=null){
 for(const key of [...state.pendingServiceLogoKeys]){if(key===keepKey){state.pendingServiceLogoKeys.delete(key);continue}await deleteUploadedImage(key);state.pendingServiceLogoKeys.delete(key)}

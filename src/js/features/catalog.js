@@ -3,14 +3,39 @@ import { $, safe } from "../core/dom.js";
 import { categorySvg, categoryTone, serviceIconHtml, svg } from "../icons.js";
 import { state } from "../state.js";
 import { discardUncommittedBrandingLogo } from "./images.js";
+import { hydrateAssetImages } from "./image-cache.js";
 import { apiRequest, remoteSaveService } from "./api.js";
 import { categories, saveProfileCache, toast } from "./persistence.js";
 import { confirmInApp } from "./taxonomy.js";
 import { render } from "./admin.js";
 import { openModal } from "./editor.js";
+import { highlight, scoreService, searchCategories, searchServices, searchTags, tokenize } from "./search.js";
+import { clearUsage, mostUsedServices, recentlyUsedServices, recordServiceUse, usageSummary } from "./usage.js";
 
-function matchesSearch(s){const q=$("search").value.trim().toLowerCase();return !q||[s.name,s.description,s.category,...(s.tags||[])].join(" ").toLowerCase().includes(q)}
-function orderedFavoriteItems(items=state.services.filter(s=>s.favorite)){const rank=new Map((state.favoritesOrder||[]).map((id,index)=>[Number(id),index]));return items.slice().sort((a,b)=>{const ai=rank.has(Number(a.id))?rank.get(Number(a.id)):Number.MAX_SAFE_INTEGER,bi=rank.has(Number(b.id))?rank.get(Number(b.id)):Number.MAX_SAFE_INTEGER;return ai-bi||Number(a.sort_order??a.id)-Number(b.sort_order??b.id)||Number(a.id)-Number(b.id)})}function filtered(){const globalSearch=!!$("search").value.trim();const items=state.services.filter(s=>(globalSearch?true:state.page==="favorites"?s.favorite:state.page==="category"?s.category===state.current:state.page==="tag"?(s.tags||[]).includes(state.activeTag):true)&&matchesSearch(s));if(state.page==="all")return items.sort((a,b)=>String(a.name||"").localeCompare(String(b.name||""),undefined,{sensitivity:"base",numeric:true}));if(state.page==="favorites")return orderedFavoriteItems(items);return !globalSearch&&state.page==="category"?items.sort((a,b)=>(Number(a.categorySortOrder)||9999)-(Number(b.categorySortOrder)||9999)||Number(a.id)-Number(b.id)):items}
+function currentQuery(){return $("search").value.trim()}
+function matchesSearch(s){const query=currentQuery();return !query||!!scoreService(s,tokenize(query))}
+function orderedFavoriteItems(items=state.services.filter(s=>s.favorite)){const rank=new Map((state.favoritesOrder||[]).map((id,index)=>[Number(id),index]));return items.slice().sort((a,b)=>{const ai=rank.has(Number(a.id))?rank.get(Number(a.id)):Number.MAX_SAFE_INTEGER,bi=rank.has(Number(b.id))?rank.get(Number(b.id)):Number.MAX_SAFE_INTEGER;return ai-bi||Number(a.sort_order??a.id)-Number(b.sort_order??b.id)||Number(a.id)-Number(b.id)})}function byName(a,b){return String(a.name||"").localeCompare(String(b.name||""),undefined,{sensitivity:"base",numeric:true})}
+function byCategoryOrder(a,b){return (Number(a.categorySortOrder)||9999)-(Number(b.categorySortOrder)||9999)||Number(a.id)-Number(b.id)}
+function usageRankMap(entries){return new Map(entries.map((entry,index)=>[String(entry.service.id),index]))}
+// Sorting pauses while edit/reorder mode is on: a moving comparator would fight
+// drag-and-drop targets between renders.
+function sortServices(items){
+ if(state.reorderEnabled||state.sortMode==="default")return items;
+ if(state.sortMode==="name")return items.slice().sort(byName);
+ if(state.sortMode==="used"){const rank=usageRankMap(mostUsedServices(Number.MAX_SAFE_INTEGER));return items.slice().sort((a,b)=>{const ai=rank.has(String(a.id))?rank.get(String(a.id)):Number.MAX_SAFE_INTEGER,bi=rank.has(String(b.id))?rank.get(String(b.id)):Number.MAX_SAFE_INTEGER;return ai-bi||byName(a,b)})}
+ if(state.sortMode==="recent"){const rank=usageRankMap(recentlyUsedServices(Number.MAX_SAFE_INTEGER));return items.slice().sort((a,b)=>{const ai=rank.has(String(a.id))?rank.get(String(a.id)):Number.MAX_SAFE_INTEGER,bi=rank.has(String(b.id))?rank.get(String(b.id)):Number.MAX_SAFE_INTEGER;return ai-bi||byName(a,b)})}
+ return items;
+}
+function filtered(){
+ const query=currentQuery(),globalSearch=!!query;
+ const scoped=state.services.filter(s=>(globalSearch?true:state.page==="favorites"?s.favorite:state.page==="category"?s.category===state.current:state.page==="tag"?(s.tags||[]).includes(state.activeTag):true)&&matchesSearch(s));
+ // Global search is always ranked by relevance; every other page keeps its own order.
+ if(globalSearch)return searchServices(scoped,query).map(entry=>entry.service);
+ if(state.page==="all")return sortServices(scoped.slice().sort(byName));
+ if(state.page==="favorites")return sortServices(orderedFavoriteItems(scoped));
+ if(state.page==="category")return sortServices(scoped.slice().sort(byCategoryOrder));
+ return sortServices(scoped);
+}
 function tagHtml(t){return '<span class="tag">'+safe(t)+'</span>'}
 function updateActiveNavigation(){document.querySelectorAll(".nav[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===state.page));document.querySelectorAll(".nav[data-cat]").forEach(b=>b.classList.toggle("active",state.page==="category"&&b.dataset.cat===state.current));document.querySelectorAll(".nav[data-tag-nav]").forEach(b=>b.classList.toggle("active",state.page==="tag"&&b.dataset.tagNav===state.activeTag))}
 function nav(){
@@ -67,7 +92,7 @@ const details=description+(slim?"":'<div class="tags">'+(s.tags||[]).map(tagHtml
 const actions=manage?'<span class="manage-actions">'+serviceActionIcon("edit",s.id,s.name)+serviceActionIcon("duplicate",s.id,s.name)+serviceActionIcon("delete",s.id,s.name)+'</span>':"";
 const actionRow=manage?'<div class="card-actions '+(slim?"slim-card-actions":"")+'">'+actions+'</div>':"";
 const dragHandle=orderable?'<button type="button" class="service-card-drag-handle" data-order-drag="'+safe(s.id)+'" draggable="true" title="Drag to reorder" aria-label="Drag to reorder '+safe(s.name)+'">⠿</button>':"";
-return '<article class="card '+(slim?"slim-card ":"")+(orderable?"orderable-card":"")+'" data-order-id="'+safe(s.id)+'" data-open="'+safe(s.id)+'"><div class="card-top">'+dragHandle+'<div class="service-icon">'+serviceIconHtml(s)+'</div><div class="slim-card-identity" style="min-width:0"><div class="service-title">'+safe(s.name)+'</div>'+category+'</div><button class="star" data-fav="'+safe(s.id)+'" title="Toggle favorite" aria-label="Toggle favorite for '+safe(s.name)+'">'+(s.favorite?"★":"☆")+'</button></div>'+details+actionRow+'</article>';
+return '<article class="card '+(slim?"slim-card ":"")+(orderable?"orderable-card":"")+'" data-order-id="'+safe(s.id)+'" data-open="'+safe(s.id)+'"><div class="card-top">'+dragHandle+'<div class="service-icon">'+serviceIconHtml(s)+'</div><div class="slim-card-identity" style="min-width:0"><div class="service-title">'+highlight(s.name,queryActive?currentQuery():"")+'</div>'+category+'</div><button class="star" data-fav="'+safe(s.id)+'" title="Toggle favorite" aria-label="Toggle favorite for '+safe(s.name)+'">'+(s.favorite?"★":"☆")+'</button></div>'+details+actionRow+'</article>';
 }).join("")+'</div>';
 }
 function renderServiceDots(items,manage=false,allowReorder=false){
@@ -78,7 +103,7 @@ const actions=manage?'<div class="service-dot-actions">'+serviceActionIcon("edit
 const category=queryActive?'<span class="service-dot-category"><span>Category</span> '+safe(s.category)+'</span>':"";
 const description=state.preferences.showCardDescriptions&&s.description?'<span class="service-dot-description">'+safe(s.description)+'</span>':"";
 const dragHandle=orderable?'<button type="button" class="service-card-drag-handle service-dot-drag-handle" data-order-drag="'+safe(s.id)+'" draggable="true" title="Drag to reorder favorites" aria-label="Drag to reorder '+safe(s.name)+'">⠿</button>':"";
-return '<article class="service-dot-card '+(orderable?"orderable-card":"")+'" data-order-id="'+safe(s.id)+'" data-open="'+safe(s.id)+'" tabindex="0" aria-label="Open service '+safe(s.name)+'" title="Open '+safe(s.name)+'">'+dragHandle+'<button type="button" class="service-dot-favorite" data-fav="'+safe(s.id)+'" title="'+(s.favorite?"Remove from":"Add to")+' favorites" aria-label="'+(s.favorite?"Remove from":"Add to")+' favorites: '+safe(s.name)+'">'+(s.favorite?"★":"☆")+'</button><div class="service-dot-icon">'+serviceIconHtml(s)+'</div><span class="service-dot-label">'+safe(s.name)+'</span>'+category+description+actions+'</article>';
+return '<article class="service-dot-card '+(orderable?"orderable-card":"")+'" data-order-id="'+safe(s.id)+'" data-open="'+safe(s.id)+'" tabindex="0" aria-label="Open service '+safe(s.name)+'" title="Open '+safe(s.name)+'">'+dragHandle+'<button type="button" class="service-dot-favorite" data-fav="'+safe(s.id)+'" title="'+(s.favorite?"Remove from":"Add to")+' favorites" aria-label="'+(s.favorite?"Remove from":"Add to")+' favorites: '+safe(s.name)+'">'+(s.favorite?"★":"☆")+'</button><div class="service-dot-icon">'+serviceIconHtml(s)+'</div><span class="service-dot-label">'+highlight(s.name,queryActive?currentQuery():"")+'</span>'+category+description+actions+'</article>';
 }).join("")+'</div>';
 }
 function renderServiceTable(items,manage,orderable=false){
@@ -87,15 +112,107 @@ const canDrag=!!orderable&&!$("search").value.trim()&&((state.page==="category"&
 return '<table><thead><tr><th>Service</th><th>Category</th><th>Tags</th><th>URL</th><th>Actions</th></tr></thead><tbody>'+items.map(s=>{
 const handle=canDrag?'<button type="button" class="service-card-drag-handle table-drag-handle" data-order-drag="'+safe(s.id)+'" draggable="true" title="Drag to reorder '+(state.page==="favorites"?"favorites":"within "+safe(state.current))+'" aria-label="Drag to reorder '+safe(s.name)+'">⠿</button>':"";
 const action=manage?serviceActionIcon("edit",s.id,s.name)+serviceActionIcon("duplicate",s.id,s.name)+serviceActionIcon("delete",s.id,s.name):'<button class="secondary" data-fav="'+safe(s.id)+'" title="'+(s.favorite?"Remove from favorites":"Add to favorites")+'" aria-label="'+(s.favorite?"Remove from favorites: ":"Add to favorites: ")+safe(s.name)+'">'+(s.favorite?"★":"☆")+"</button>";
-return '<tr '+(canDrag?'data-order-id="'+safe(s.id)+'" class="orderable-card"':'')+'><td><span class="table-service-icon">'+serviceIconHtml(s)+'</span>'+handle+safe(s.name)+'</td><td>'+safe(s.category)+'</td><td>'+(s.tags||[]).map(tagHtml).join("")+'</td><td><a href="'+safe(s.url)+'" target="_blank" rel="noopener">Open ↗</a></td><td class="action-cell"><div class="action-group">'+action+'</div></td></tr>';
+return '<tr '+(canDrag?'data-order-id="'+safe(s.id)+'" class="orderable-card"':'')+'><td><span class="table-service-icon">'+serviceIconHtml(s)+'</span>'+handle+highlight(s.name,$("search").value.trim())+'</td><td>'+highlight(s.category,$("search").value.trim())+'</td><td>'+(s.tags||[]).map(tagHtml).join("")+'</td><td><a href="'+safe(s.url)+'" data-open-link="'+safe(s.id)+'" target="_blank" rel="noopener">Open ↗</a></td><td class="action-cell"><div class="action-group">'+action+'</div></td></tr>';
 }).join("")+'</tbody></table>';
+}
+let quickRows=[];
+function openServiceById(id){
+ const service=state.services.find(item=>String(item.id)===String(id));
+ if(!service)return;
+ recordServiceUse(service);
+ window.open(service.url,"_blank","noopener");
+ // Home shows the Most used strip, so refresh it as soon as a service is opened.
+ if(state.page==="favorites")renderMostUsed(true);
+}
+function groupKeyOf(service){return state.groupBy==="tag"?((service.tags||[])[0]||"Untagged"):(service.category||"Uncategorized")}
+function renderGrouped(items,renderer){
+ const groups=new Map();
+ for(const item of items){const key=groupKeyOf(item);if(!groups.has(key))groups.set(key,[]);groups.get(key).push(item)}
+ return [...groups.entries()].sort((a,b)=>String(a[0]).localeCompare(String(b[0]),undefined,{sensitivity:"base",numeric:true})).map(([key,list])=>'<section class="catalog-group"><header class="catalog-group-head"><h2>'+safe(key)+'</h2><span class="catalog-group-count">'+list.length+'</span></header>'+renderer(list)+'</section>').join("");
+}
+function renderMostUsed(visible){
+ const host=$("mostUsedArea");if(!host)return;
+ const entries=visible?mostUsedServices(6):[];
+ if(!entries.length){host.hidden=true;host.replaceChildren();return}
+ const summary=usageSummary();
+ host.innerHTML='<div class="most-used-head"><h2>Most used</h2><span class="most-used-note">'+summary.opens+' opens tracked on this device</span><button type="button" class="most-used-clear" id="clearMostUsed">Reset</button></div><div class="most-used-row">'+entries.map(({service,count})=>'<button type="button" class="most-used-card" data-used-open="'+safe(service.id)+'" title="Open '+safe(service.name)+'"><span class="most-used-icon">'+serviceIconHtml(service)+'</span><span class="most-used-copy"><span class="most-used-name">'+safe(service.name)+'</span><span class="most-used-meta">'+safe(service.category||"")+'</span></span><span class="most-used-count" title="Opens on this device">'+count+'</span></button>').join("")+'</div>';
+ host.hidden=false;
+ const clear=$("clearMostUsed");
+ if(clear)clear.onclick=()=>{clearUsage();render();toast("Most used tracking reset for this profile")};
+ host.querySelectorAll("[data-used-open]").forEach(button=>button.onclick=()=>openServiceById(button.dataset.usedOpen));
+ hydrateAssetImages(host);
+}
+function quickRowData(query){
+ const ranked=searchServices(state.services,query);
+ const rows=ranked.slice(0,5).map(entry=>({type:"service",id:entry.service.id,label:entry.service.name,meta:entry.service.category||"",field:entry.field,service:entry.service}));
+ for(const hit of searchCategories(query).slice(0,3))rows.push({type:"category",value:hit.name,label:hit.name,meta:hit.count+" services",field:"category"});
+ for(const hit of searchTags(query).slice(0,3))rows.push({type:"tag",value:hit.name,label:"#"+hit.name,meta:hit.count+" tagged",field:"tag"});
+ return {rows,total:ranked.length};
+}
+function renderQuickResults(){
+ const host=$("quickResults");if(!host)return;
+ const query=currentQuery();
+ if(!query){quickRows=[];state.quickIndex=-1;state.quickOpen=false;host.hidden=true;host.replaceChildren();$("search").setAttribute("aria-expanded","false");return}
+ const {rows,total}=quickRowData(query);
+ quickRows=rows;
+ if(!rows.length){state.quickIndex=-1;host.innerHTML='<div class="quick-empty">No services, categories, or tags match "'+safe(query)+'".</div>';host.hidden=false;state.quickOpen=true;$("search").setAttribute("aria-expanded","true");return}
+ if(state.quickIndex>=rows.length)state.quickIndex=-1;
+ const labels={name:"name",category:"category",tag:"tag",description:"description",url:"URL"};
+ let markup='<div class="quick-results-head"><span>Search results</span><span>'+total+' service'+(total===1?"":"s")+'</span></div><div class="quick-results-list" role="listbox" aria-label="Quick results">';
+ let previousType="";
+ rows.forEach((row,index)=>{
+  if(row.type!==previousType){previousType=row.type;markup+='<div class="quick-group-label">'+(row.type==="service"?"Services":row.type==="category"?"Categories":"Tags")+'</div>'}
+  const selected=index===state.quickIndex;
+  const icon=row.type==="service"?serviceIconHtml(row.service):'<span class="quick-glyph">'+(row.type==="tag"?"#":categorySvg(row.value))+'</span>';
+  markup+='<button type="button" class="quick-result'+(selected?" selected":"")+'" role="option" aria-selected="'+(selected?"true":"false")+'" data-quick-index="'+index+'"><span class="quick-result-icon">'+icon+'</span><span class="quick-result-copy"><span class="quick-result-label">'+highlight(row.label,query)+'</span><span class="quick-result-meta">'+safe(row.meta)+(row.type==="service"&&labels[row.field]?" · matched in "+labels[row.field]:"")+'</span></span>'+(row.type==="service"?'<span class="quick-result-enter">↵</span>':"")+'</button>';
+ });
+ markup+='</div><div class="quick-results-foot"><span>↑↓ move · Enter open · Esc close</span><span>Ctrl K</span></div>';
+ host.innerHTML=markup;
+ host.hidden=false;state.quickOpen=true;$("search").setAttribute("aria-expanded","true");
+ host.querySelectorAll("[data-quick-index]").forEach(button=>{
+  button.onmouseenter=()=>{state.quickIndex=Number(button.dataset.quickIndex);highlightQuickRow()};
+  button.onclick=()=>activateQuickRow(Number(button.dataset.quickIndex));
+ });
+}
+function highlightQuickRow(){
+ const host=$("quickResults");if(!host||host.hidden)return;
+ host.querySelectorAll("[data-quick-index]").forEach(button=>{const selected=Number(button.dataset.quickIndex)===state.quickIndex;button.classList.toggle("selected",selected);button.setAttribute("aria-selected",selected?"true":"false")});
+ const active=host.querySelector("[data-quick-index].selected");
+ if(active&&active.scrollIntoView)active.scrollIntoView({block:"nearest"});
+}
+function activateQuickRow(index){
+ const row=quickRows[index];
+ if(!row)return;
+ closeQuickResults();
+ if(row.type==="service")openServiceById(row.id);
+ else if(row.type==="category")navigateCategory(row.value);
+ else navigateTag(row.value);
+}
+function moveQuickSelection(step){
+ if(!quickRows.length)return;
+ const size=quickRows.length;
+ state.quickIndex=(state.quickIndex+step+size)%size;
+ $("search").setAttribute("aria-activedescendant","quick-result-"+state.quickIndex);
+ highlightQuickRow();
+}
+function handleSearchKeydown(event){
+ if(event.key==="ArrowDown"){event.preventDefault();moveQuickSelection(1);return}
+ if(event.key==="ArrowUp"){event.preventDefault();moveQuickSelection(-1);return}
+ if(event.key==="Enter"){if(state.quickIndex>=0){event.preventDefault();activateQuickRow(state.quickIndex)}else if(quickRows.length){event.preventDefault();activateQuickRow(0)}return}
+ if(event.key==="Escape"){event.preventDefault();closeQuickResults();$("search").value="";render();$("search").focus();}
+}
+function closeQuickResults(){
+ const host=$("quickResults");
+ state.quickOpen=false;state.quickIndex=-1;quickRows=[];
+ if(host){host.hidden=true;host.replaceChildren()}
+ if($("search"))$("search").setAttribute("aria-expanded","false");
 }
 function renderCatalog(){
 const queryActive=!!$("search").value.trim();
 const items=filtered(),isCategory=state.page==="category",isFavorites=state.page==="favorites",isTag=state.page==="tag",isAll=state.page==="all";
 $("catalogEyebrow").textContent=queryActive?"SEARCH RESULTS":isFavorites?"WORKSPACE / HOME":isAll?"WORKSPACE / ALL SERVICES":isTag?"TAG FILTER / CATALOG":"SERVICE CATEGORY / MANAGEMENT";
 $("heading").textContent=queryActive?"Search Results":isFavorites?"Welcome back":isAll?"All services":isTag?"Tag: "+state.activeTag:state.current+" Services";
-$("catalogDescription").textContent=queryActive?"Search results across this profile.":isFavorites?"Your favorite services, all in one place.":isAll?"Browse every service in this profile.":isTag?'Services tagged "'+state.activeTag+'". Use Edit mode to edit, duplicate, or delete matching services.':"Browse services in "+state.current+". Use Edit mode to add, edit, duplicate, delete, or reorder services in this category.";
+$("catalogDescription").textContent=queryActive?(items.length?("Ranked matches for \""+currentQuery()+"\": "+items.length+" service"+(items.length===1?"":"s")+" across this profile."):("No service, category, or tag matches \""+currentQuery()+"\" in this profile.")):isFavorites?"Your favorite services, all in one place.":isAll?"Browse every service in this profile.":isTag?'Services tagged "'+state.activeTag+'". Use Edit mode to edit, duplicate, or delete matching services.':"Browse services in "+state.current+". Use Edit mode to add, edit, duplicate, delete, or reorder services in this category.";
 $("add").hidden=!(isCategory&&state.reorderEnabled&&!queryActive);
 $("add").textContent="＋ Add service";
 const tagFilters=state.tagRecords.filter(tag=>Number(tag.serviceCount??tag.service_count??0)>0).slice().sort((a,b)=>(Number(b.serviceCount??b.service_count)||0)-(Number(a.serviceCount??a.service_count)||0)||a.name.localeCompare(b.name));
@@ -104,9 +221,12 @@ $("chips").innerHTML=filterOptions.map(option=>{
 const active=!queryActive&&(option.type==="favorites"?isFavorites:(isTag&&state.activeTag===option.label));
 return '<button class="chip '+(active?"active":"")+'" data-chip="'+safe(option.value)+'"'+(option.type==="tag"?' aria-label="Filter by tag '+safe(option.label)+'"':"")+'>'+(option.type==="tag"?'<span class="tag-chip-mark" aria-hidden="true">#</span>':"")+safe(option.label)+'</button>';
 }).join("");
+const groupSummary=state.groupBy==="none"||queryActive||state.reorderEnabled?"":" · Grouped by "+state.groupBy;
+const sortSummary=state.sortMode==="default"?"":" · "+({name:"A–Z",used:"Most used",recent:"Recently opened"}[state.sortMode]||"");
+const countSummary=queryActive?" · "+items.length+" match"+(items.length===1?"":"es"):" · "+items.length+" service"+(items.length===1?"":"s");
 const filterSummary=queryActive?"Global search":isFavorites?"Home":isTag?"# "+state.activeTag:"All tags";
 const layoutSummary=state.view==="list"?"Compact list":state.view==="dots"?"Dot mode":state.density==="slim"?"Slim cards":"Regular cards";
-$("catalogControlsSummary").textContent=filterSummary+" · "+layoutSummary;
+$("catalogControlsSummary").textContent=filterSummary+countSummary+groupSummary+sortSummary+" · "+layoutSummary;
 const controlsPanel=$("catalogControlsPanel"),controlsToggle=$("catalogControlsToggle");
 controlsPanel.classList.toggle("expanded",state.catalogControlsExpanded);
 controlsPanel.setAttribute("aria-hidden",state.catalogControlsExpanded?"false":"true");
@@ -135,8 +255,14 @@ $("reorderToggle").setAttribute("aria-pressed",state.reorderEnabled?"true":"fals
 $("reorderToggle").innerHTML='<svg viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M12.8 3.2 16.8 7.2M3 17l4-.9 9.8-9.8a2.1 2.1 0 0 0-3-3L4 13.1 3 17Z"/><path d="M10.5 4.5 14.5 8.5"/></svg><span>'+(state.reorderEnabled?(isFavorites?"Done reordering":"Done editing"):(isFavorites?"Reorder favorites":"Edit mode"))+'</span>';
 $("reorderToggle").title=isFavorites?"Drag favorites to set your preferred order":isTag?"Edit, duplicate, or delete services tagged "+state.activeTag:"Edit services in "+state.current+"; add, edit, duplicate, delete, or drag to reorder";
 const canManageServices=(isCategory||isTag)&&state.reorderEnabled&&!queryActive,canReorderFavorites=isFavorites&&state.reorderEnabled&&!queryActive;
-$("cardArea").innerHTML=state.view==="cards"?renderServiceCards(items,canManageServices,canReorderFavorites):"";
-$("listArea").innerHTML=state.view==="list"?renderServiceTable(items,canManageServices,(isCategory&&state.reorderEnabled)||canReorderFavorites):"";$("dotArea").innerHTML=state.view==="dots"?renderServiceDots(items,canManageServices,canReorderFavorites):"";
+const groupable=state.groupBy!=="none"&&!queryActive&&!state.reorderEnabled;
+const cardsFor=list=>renderServiceCards(list,canManageServices,canReorderFavorites);
+const listFor=list=>renderServiceTable(list,canManageServices,(isCategory&&state.reorderEnabled)||canReorderFavorites);
+const dotsFor=list=>renderServiceDots(list,canManageServices,canReorderFavorites);
+$("cardArea").innerHTML=state.view==="cards"?(groupable?renderGrouped(items,cardsFor):cardsFor(items)):"";
+$("listArea").innerHTML=state.view==="list"?(groupable?renderGrouped(items,listFor):listFor(items)):"";
+$("dotArea").innerHTML=state.view==="dots"?(groupable?renderGrouped(items,dotsFor):dotsFor(items)):"";
+renderMostUsed(isFavorites&&!queryActive);
 $("listArea").classList.toggle("service-order-host",(isCategory||isFavorites)&&state.reorderEnabled&&state.view==="list");
 }
 function bindRenderedActions(){
@@ -144,7 +270,8 @@ document.querySelectorAll("[data-fav]").forEach(b=>b.onclick=async e=>{e.stopPro
 document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=e=>{e.stopPropagation();openModal(b.dataset.edit)});
 document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=async e=>{e.stopPropagation();const id=b.dataset.delete;const item=state.services.find(record=>String(record.id)===String(id));if(!item)return;const confirmed=await confirmInApp({title:"Delete service?",message:'Delete "'+item.name+'"? This cannot be undone.',confirmLabel:"Delete service"});if(!confirmed)return;try{if(state.apiConnected)await apiRequest("services?id="+encodeURIComponent(id),{method:"DELETE"});state.services=state.services.filter(record=>String(record.id)!==String(id));render();toast(state.apiConnected?"Service deleted":"Service deleted locally only")}catch(error){toast("Could not delete service: "+(error.message||"database error"))}});
 document.querySelectorAll("[data-duplicate]").forEach(b=>b.onclick=async e=>{e.stopPropagation();const s=state.services.find(item=>String(item.id)===String(b.dataset.duplicate));if(!s)return;const copy={...s,id:state.nextId++,name:s.name+" copy",tags:[...(s.tags||[])],favorite:false};try{if(state.apiConnected){const saved=await remoteSaveService(copy,true);state.services.unshift(saved)}else state.services.unshift(copy);render();toast(state.apiConnected?"Service duplicated":"Duplicate exists locally only")}catch(error){toast("Could not duplicate service: "+(error.message||"database error"))}});
-document.querySelectorAll("[data-open]").forEach(el=>{const openService=()=>{const s=state.services.find(item=>String(item.id)===String(el.dataset.open));if(s)window.open(s.url,"_blank","noopener")};el.onclick=e=>{if(e.target.closest("a,button"))return;openService()};if(el.classList.contains("service-dot-card"))el.onkeydown=e=>{if(e.target.closest("button"))return;if(e.key==="Enter"||e.key===" "){e.preventDefault();openService()}}});
+document.querySelectorAll("[data-open-link]").forEach(link=>{link.addEventListener("click",()=>{const s=state.services.find(item=>String(item.id)===String(link.dataset.openLink));if(!s)return;recordServiceUse(s);if(state.page==="favorites")renderMostUsed(true)})});
+document.querySelectorAll("[data-open]").forEach(el=>{const openService=()=>openServiceById(el.dataset.open);el.onclick=e=>{if(e.target.closest("a,button"))return;openService()};if(el.classList.contains("service-dot-card"))el.onkeydown=e=>{if(e.target.closest("button"))return;if(e.key==="Enter"||e.key===" "){e.preventDefault();openService()}}});
 document.querySelectorAll("[data-category-open]").forEach(b=>b.onclick=()=>navigateCategory(b.dataset.categoryOpen))
 bindServiceOrdering();
 }
@@ -221,4 +348,4 @@ cards.forEach(card=>{
 });
 }
 
-export { matchesSearch, orderedFavoriteItems, tagHtml, updateActiveNavigation, nav, showPage, navigatePage, navigateCategory, navigateTag, statCard, serviceActionIcon, renderServiceCards, renderServiceDots, renderServiceTable, renderCatalog, bindRenderedActions, bindServiceOrdering };
+export { matchesSearch, orderedFavoriteItems, tagHtml, updateActiveNavigation, nav, showPage, navigatePage, navigateCategory, navigateTag, statCard, serviceActionIcon, renderServiceCards, renderServiceDots, renderServiceTable, renderCatalog, renderQuickResults, handleSearchKeydown, closeQuickResults, bindRenderedActions, bindServiceOrdering };

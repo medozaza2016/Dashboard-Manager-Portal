@@ -21,40 +21,92 @@ function slugSegment(value, maxLength, fallback) {
   return slug || fallback;
 }
 
-function imageResponse(object) {
+// Asset keys embed a random UUID, so a stored object never changes under the same
+// key. That makes every logo permanently cacheable, which keeps R2 Class B reads
+// (and authenticated Function invocations) near zero on the free tier.
+const CACHE_SECONDS = 60 * 60 * 24 * 30;
+const BROWSER_CACHE = `private, max-age=${CACHE_SECONDS}, immutable`;
+const EDGE_CACHE = `public, max-age=${CACHE_SECONDS}, s-maxage=${CACHE_SECONDS}, immutable`;
+
+// Extra query parameters (the favicon cache-buster) must not create new cache
+// entries, otherwise every portal-logo change would cost another R2 read.
+function assetCacheKey(request) {
+  const url = new URL(request.url);
+  return new Request(`${url.origin}${url.pathname}?key=${encodeURIComponent(url.searchParams.get("key") || "")}`, { method: "GET" });
+}
+
+function imageHeaders(object) {
+  const headers = {
+    "content-type": object.httpMetadata.contentType,
+    "x-content-type-options": "nosniff",
+    "content-security-policy": "default-src 'none'; sandbox",
+    "content-length": String(object.size),
+  };
+  if (object.httpEtag) headers.etag = object.httpEtag;
+  return headers;
+}
+
+function imageResponse(object, cacheControl) {
   const type = object.httpMetadata?.contentType;
   if (!Object.prototype.hasOwnProperty.call(IMAGE_TYPES, type)) {
     return new Response("Unsupported stored asset type.", { status: 415 });
   }
-  return new Response(object.body, {
+  return new Response(object.body, { headers: { ...imageHeaders(object), "cache-control": cacheControl } });
+}
+
+function notModifiedResponse(object) {
+  return new Response(null, {
+    status: 304,
     headers: {
-      "content-type": type,
-      "cache-control": "private, max-age=300, must-revalidate",
-      "x-content-type-options": "nosniff",
-      "content-security-policy": "default-src 'none'; sandbox",
-      "content-length": String(object.size),
+      "cache-control": BROWSER_CACHE,
+      ...(object?.httpEtag ? { etag: object.httpEtag } : {}),
     },
   });
 }
 
-export async function onRequest({ request, env }) {
+export async function onRequest({ request, env, waitUntil }) {
   const access = await requireCloudflareAccess(request, env);
   if (access.response) return access.response;
   if (!env.DB) return jsonResponse({ error: "D1 binding DB is missing." }, 503);
   if (!env.R2_LOGOS) return jsonResponse({ error: "R2 binding R2_LOGOS is missing. Bind the dashboard-manager-portal-assets bucket and redeploy." }, 503);
 
   const { searchParams } = new URL(request.url);
+  const edgeCache = typeof caches !== "undefined" ? caches.default : null;
   if (request.method === "GET") {
     const key = searchParams.get("key");
     if (key == null) {
-      return jsonResponse({ connected: true, bucket: "dashboard-manager-portal-assets", access: "private", publicAccessEnabled: false, maxImageBytes: MAX_IMAGE_BYTES, acceptedTypes: Object.keys(IMAGE_TYPES) });
+      return jsonResponse({ connected: true, bucket: "dashboard-manager-portal-assets", access: "private", publicAccessEnabled: false, maxImageBytes: MAX_IMAGE_BYTES, acceptedTypes: Object.keys(IMAGE_TYPES), cacheSeconds: CACHE_SECONDS });
     }
     if (!isAllowedAssetKey(key)) return jsonResponse({ error: "Invalid asset key." }, 400);
+
+    // 1. Edge cache: served from the colo cache, so neither the D1 reference
+    //    check nor the R2 read runs twice for the same logo.
+    const cacheKey = assetCacheKey(request);
+    if (edgeCache) {
+      try {
+        const hit = await edgeCache.match(new Request(cacheKey, { headers: request.headers }));
+        if (hit) return hit;
+      } catch {}
+    }
+
     try {
-      if (!(await isAssetReferenced(env, key))) return jsonResponse({ error: "Asset not found." }, 404);
-      const object = await env.R2_LOGOS.get(key);
+      // Conditional request: R2 answers with an empty body when If-None-Match
+      // already matches, so a revalidating browser costs one metadata read.
+      const object = await env.R2_LOGOS.get(key, { onlyIf: request.headers });
       if (!object) return jsonResponse({ error: "Asset not found." }, 404);
-      return imageResponse(object);
+      if (!object.body) return notModifiedResponse(object);
+      if (!(await isAssetReferenced(env, key))) return jsonResponse({ error: "Asset not found." }, 404);
+
+      const response = imageResponse(object, BROWSER_CACHE);
+      if (edgeCache && response.status === 200) {
+        const stored = new Response(response.clone().body, {
+          headers: { ...imageHeaders(object), "cache-control": EDGE_CACHE, "cache-tag": "anchor-asset" },
+        });
+        const store = edgeCache.put(cacheKey, stored).catch(() => {});
+        if (typeof waitUntil === "function") waitUntil(store);
+        else await store;
+      }
+      return response;
     } catch {
       return jsonResponse({ error: "Could not retrieve asset." }, 500);
     }
@@ -116,7 +168,7 @@ export async function onRequest({ request, env }) {
         customMetadata = { purpose: "branding", uploadedAt };
       }
       await env.R2_LOGOS.put(key, bytes, {
-        httpMetadata: { contentType: type, cacheControl: "private, max-age=300, must-revalidate" },
+        httpMetadata: { contentType: type, cacheControl: BROWSER_CACHE },
         customMetadata,
       });
       return jsonResponse({ uploaded: true, key, contentType: type, size: bytes.byteLength, originalName }, 201);
@@ -133,6 +185,12 @@ export async function onRequest({ request, env }) {
         return jsonResponse({ error: "This image is still attached to a saved service or portal branding." }, 409);
       }
       await env.R2_LOGOS.delete(key);
+      // Drop the edge copy too, so a removed logo stops being served from cache.
+      if (edgeCache) {
+        try {
+          await edgeCache.delete(assetCacheKey(request));
+        } catch {}
+      }
       return jsonResponse({ deleted: true, key });
     } catch {
       return jsonResponse({ error: "Could not remove the uploaded image." }, 500);

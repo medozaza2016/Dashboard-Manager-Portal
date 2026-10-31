@@ -39,6 +39,8 @@ window.ResizeObserver = class { observe() {} unobserve() {} disconnect() {} };
 window.matchMedia = window.matchMedia || (() => ({ matches: false, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} }));
 window.structuredClone = globalThis.structuredClone;
 window.scrollTo = () => {};
+window.open = () => null;
+window.Element.prototype.scrollIntoView = function scrollIntoView() {};
 window.confirm = () => true;
 window.document.fonts = { ready: Promise.resolve(), addEventListener() {}, forEach() {} };
 window.localStorage.clear();
@@ -66,6 +68,67 @@ const checks = [
   ["sidebar category nav filled", ($("categoryNav")?.innerHTML || "").length > 0],
   ["settings API attempted", requests.some((request) => request.includes("/api/settings"))],
 ];
+
+if (bootError) console.error(bootError.stack || String(bootError));
+const markupIds = new Set([...markup.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]));
+function collectIdRefs(dir, found = new Map()) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = dir + "/" + entry.name;
+    if (entry.isDirectory()) { collectIdRefs(full, found); continue; }
+    if (!full.endsWith(".js")) continue;
+    const source = fs.readFileSync(full, "utf8");
+    for (const match of source.matchAll(/\$\("([^"]+)"\)/g)) if (!found.has(match[1])) found.set(match[1], full);
+  }
+  return found;
+}
+// IDs created by the app at runtime (dialogs, injected rows) are not in index.html.
+const RUNTIME_IDS = new Set(["serviceOrderStatus", "clearMostUsed", "taxonomyName", "taxonomyIcon"]);
+const missingIds = [...collectIdRefs("src/js").keys()].filter((id) => !markupIds.has(id) && !RUNTIME_IDS.has(id));
+checks.push(["every $(id) has an element", missingIds.length === 0]);
+if (missingIds.length) console.error("  missing ids: " + missingIds.join(", "));
+
+const tick = (ms = 25) => new Promise((resolve) => setTimeout(resolve, ms));
+const searchInput = $("search");
+const typeSearch = async (value) => {
+  searchInput.value = value;
+  searchInput.dispatchEvent(new window.Event("input", { bubbles: true }));
+  await tick();
+};
+
+await typeSearch("cloud");
+checks.push(["quick results render", !$("quickResults").hidden && $("quickResults").querySelectorAll("[data-quick-index]").length > 0]);
+checks.push(["search matches highlighted", ["cardArea", "listArea", "dotArea"].some((id) => ($(id)?.innerHTML || "").includes("search-hit"))]);
+searchInput.dispatchEvent(new window.KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }));
+checks.push(["quick result selectable", !!$("quickResults").querySelector(".quick-result.selected")]);
+await typeSearch("");
+
+window.document.querySelector('[data-page="all"]').click();
+await tick();
+$("groupBySetting").value = "category";
+$("groupBySetting").dispatchEvent(new window.Event("change", { bubbles: true }));
+await tick();
+checks.push(["category grouping renders", window.document.querySelectorAll(".catalog-group").length > 1]);
+$("groupBySetting").value = "none";
+$("groupBySetting").dispatchEvent(new window.Event("change", { bubbles: true }));
+await tick();
+
+window.document.querySelector('[data-page="favorites"]').click();
+await tick();
+const openLink = window.document.querySelector("[data-open-link]");
+if (openLink) openLink.click();
+await tick();
+checks.push(["usage recorded on open", !!window.localStorage.getItem("anchor-usage-v1")]);
+checks.push(["most used strip renders", !$("mostUsedArea").hidden && $("mostUsedArea").querySelectorAll(".most-used-card").length > 0]);
+
+window.document.querySelector('[data-page="settings"]').click();
+await tick();
+checks.push(["settings save state present", ($("settingsSaveState")?.textContent || "").includes("saved")]);
+checks.push(["settings sections present", ["settingsIdentity", "settingsAppearance", "settingsStorage", "settingsData", "settingsAbout", "settingsCache"].every((id) => !!$(id))]);
+checks.push(["settings status pills painted", ["d1StatusPill", "r2StatusPill", "pagesStatusPill"].every((id) => $(id) && /is-(ok|bad|pending)/.test($(id).className))]);
+const dirtyProbe = $("brandingName");
+dirtyProbe.value = "Anchor Probe";
+dirtyProbe.dispatchEvent(new window.Event("input", { bubbles: true }));
+checks.push(["unsaved changes indicator", $("settingsSavebar").classList.contains("is-dirty")]);
 
 if (bootError) console.error(bootError.stack || String(bootError));
 for (const message of failures) console.error(message);
