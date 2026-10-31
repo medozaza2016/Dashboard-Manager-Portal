@@ -1,0 +1,83 @@
+/* Anchor Dashboard - settings page.
+   Extracted from the single-file stylesheet; layer order is load-bearing,
+   see the @import order in index.css. */
+/* Version 0.1.4 Settings page */
+.settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+.settings-card{min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:19px}
+.settings-card.wide{grid-column:1/-1}
+.settings-card h2{font-size:15px;margin:0 0 5px;letter-spacing:-.2px}
+.settings-card .settings-help{font-size:12px;line-height:1.5;color:var(--muted);margin:0 0 16px}
+.settings-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.settings-field{min-width:0}
+.settings-field.full{grid-column:1/-1}
+.settings-field label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px}
+.settings-field input,.settings-field select{width:100%;min-width:0;padding:10px 11px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text);outline:none}
+.settings-field input:focus,.settings-field select:focus{border-color:var(--green)}
+.settings-check{display:flex;gap:9px;align-items:flex-start;margin:11px 0;color:var(--body);font-size:12px}
+.settings-check input{accent-color:var(--green);margin-top:3px}
+.settings-divider{height:1px;background:var(--line);margin:17px 0}
+.settings-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.integration-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.integration-card{padding:13px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);min-width:0}
+.integration-name{font-size:12px;font-weight:750;margin:0 0 5px}
+.integration-desc{font-size:11px;line-height:1.5;color:var(--muted);min-height:33px}
+.integration-status{display:inline-flex;margin-top:10px;border:1px solid var(--line);border-radius:6px;padding:3px 7px;font-size:10px;color:var(--muted);background:var(--panel)}
+.integration-card.deployment-card{grid-column:span 2}.integration-card.access-sync-card{grid-column:1/-1}
+.access-sync-controls{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px}
+.access-sync-controls .settings-field{min-width:190px;flex:1}
+.access-sync-setup{border:1px solid var(--line);border-radius:8px;background:var(--panel);padding:10px 12px;font-size:11px;line-height:1.55;color:var(--muted);margin-top:10px}
+.access-sync-setup a{color:var(--green);text-decoration:underline;text-underline-offset:2px}
+.access-sync-preview{border-top:1px solid var(--line);margin-top:13px;padding-top:12px}
+.access-sync-selectall{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin-bottom:9px}
+.access-sync-selectall label{display:flex;align-items:center;gap:7px}
+.access-sync-app-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:7px;max-height:390px;overflow:auto}
+.access-sync-app{display:flex;align-items:flex-start;gap:9px;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--panel);min-width:0}
+.access-sync-app input{margin-top:3px;flex:0 0 auto}
+.access-sync-app-main{min-width:0;flex:1;display:grid;gap:3px}
+.access-sync-app-title{font-size:12px;font-weight:650;overflow-wrap:anywhere}
+.access-sync-app-url{font-size:11px;overflow-wrap:anywhere;color:var(--muted)}
+.access-sync-app-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:10px;color:var(--muted)}
+.access-sync-app-state{border:1px solid var(--line);border-radius:5px;padding:2px 5px}
+.access-sync-app-state.matched{color:var(--green);border-color:var(--green)}
+.access-sync-preview-empty{grid-column:1/-1;font-size:11px;color:var(--muted);padding:12px;border:1px dashed var(--line);border-radius:8px}
+@media(max-width:550px){.integration-grid{grid-template-columns:1fr}.integration-card.deployment-card,.integration-card.access-sync-card{grid-column:auto}}
+.deployment-info{display:grid;gap:7px;margin-top:11px}
+.deployment-item{display:grid;gap:2px;padding-top:7px;border-top:1px solid var(--line);min-width:0}
+.deployment-item-label{font-size:10px;color:var(--muted)}
+.deployment-item-value{font-size:11px;overflow-wrap:anywhere;line-height:1.45}
+.deployment-item-value a{color:var(--green);text-decoration:underline;text-underline-offset:2px}
+.deployment-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:11px}
+.deployment-actions .secondary{font-size:11px;padding:7px 9px}
+.deployment-stamp{font-size:10px;color:var(--muted)}
+.deployment-actions button:disabled{opacity:.6;cursor:wait}
+.deployment-note{font-size:10px;line-height:1.45;color:var(--muted);margin:10px 0 0}
+.integration-status.status-connected{color:var(--green);border-color:var(--green);background:var(--green2)}
+.integration-status.status-offline{color:var(--status-danger-text);border-color:var(--status-danger);background:color-mix(in srgb,var(--status-danger) 12%,var(--panel))}
+.integration-status.status-checking{color:var(--muted)}
+.d1-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:12px}
+.d1-metric{padding:9px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel);min-width:0}
+.d1-metric span{display:block;font-size:10px;color:var(--muted)}
+.d1-metric strong{display:block;font-size:17px;margin-top:4px}
+.d1-status-message{font-size:11px;line-height:1.5;color:var(--muted);margin:8px 0 0}
+.d1-check-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:12px}
+.d1-check-row .secondary{padding:7px 9px;font-size:11px}
+.d1-check-row a{font-size:11px;color:var(--green)}
+.d1-last-checked{font-size:10px;color:var(--muted)}
+.d1-check-row button:disabled{opacity:.6;cursor:wait}
+.settings-version{font-size:12px;font-weight:700;color:var(--text)}
+.settings-note{color:var(--muted);font-size:11px;margin-top:6px}
+.brand .brand-copy{display:flex;flex-direction:column;gap:0;min-width:0;line-height:1.2}
+.brand .brand-copy small{font-weight:450;color:var(--muted);margin-top:3px}
+.brand-logo-text{font-size:18px;font-weight:800;line-height:1}
+.logo .brand-logo-image{width:100%;height:100%;padding:3px;object-fit:contain;border-radius:inherit}
+.service-icon .uploaded-logo{width:34px;height:34px;object-fit:contain;border-radius:8px;background:var(--panel2)}
+.table-service-icon .uploaded-logo{width:24px;height:24px;object-fit:contain;border-radius:5px;background:var(--panel2)}
+.logo-upload-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.service-logo-preview{width:48px;height:48px;display:grid;place-items:center;flex:0 0 48px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--muted);font-size:22px;overflow:hidden}
+.service-logo-preview img{width:100%;height:100%;padding:4px;object-fit:contain}
+.logo-upload-row .settings-actions{min-width:180px;flex:1}
+.settings-note{line-height:1.5}
+@media(max-width:950px){.integration-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.settings-grid{grid-template-columns:1fr}.settings-card.wide{grid-column:auto}.settings-fields{grid-template-columns:1fr}.settings-field.full{grid-column:auto}.access-sync-app-list{grid-template-columns:1fr}}
+@media(max-width:550px){.integration-grid{grid-template-columns:1fr}.integration-card.deployment-card{grid-column:auto}}
+

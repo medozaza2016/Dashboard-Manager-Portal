@@ -1,0 +1,36 @@
+/* Anchor Dashboard - tag administration.
+   Extracted from the single-file stylesheet; layer order is load-bearing,
+   see the @import order in index.css. */
+/* v0.1.57 fix tag administration name column and tag-view editing */
+.taxonomy-list.tag-manager-grid .taxonomy-tag-overview{
+  grid-template-columns:minmax(0,1fr) auto auto;
+  grid-template-rows:auto;
+  align-items:center;
+  min-height:64px;
+  gap:10px;
+}
+.taxonomy-list.tag-manager-grid .taxonomy-tag-overview .taxonomy-overview-main{grid-column:1;min-width:0;width:100%}
+.taxonomy-list.tag-manager-grid .taxonomy-tag-overview .taxonomy-overview-copy{flex:1 1 auto;min-width:0;overflow:hidden}
+.taxonomy-list.tag-manager-grid .taxonomy-tag-overview .taxonomy-overview-copy strong,
+.taxonomy-list.tag-manager-grid .taxonomy-tag-overview .taxonomy-overview-copy small{color:var(--text);display:block}
+.taxonomy-list.tag-manager-grid .taxonomy-tag-overview .taxonomy-overview-copy strong{font-size:12px;line-height:1.35;white-space:normal;overflow-wrap:anywhere}
+.taxonomy-list.tag-manager-grid .taxonomy-tag-overview .taxonomy-overview-copy small{font-size:10px;color:var(--muted)}
+.taxonomy-list.tag-manager-grid .taxonomy-tag-overview .taxonomy-usage{grid-column:2}
+.taxonomy-list.tag-manager-grid .taxonomy-tag-overview .taxonomy-overview-actions{grid-column:3}
+@media(max-width:520px){
+ .taxonomy-list.tag-manager-grid .taxonomy-tag-overview{grid-template-columns:minmax(0,1fr) auto;gap:7px}
+ .taxonomy-list.tag-manager-grid .taxonomy-tag-overview .taxonomy-overview-main{grid-column:1}
+ .taxonomy-list.tag-manager-grid .taxonomy-tag-overview .taxonomy-usage{grid-column:2}
+ .taxonomy-list.tag-manager-grid .taxonomy-tag-overview .taxonomy-overview-actions{grid-column:1/3;justify-content:flex-end}
+}
+.sidebar{background:var(--sidebar-surface);border-right-color:var(--sidebar-edge);color:var(--sidebar-copy);scrollbar-width:none;-ms-overflow-style:none}
+.sidebar .brand{background:var(--sidebar-surface);color:var(--sidebar-copy)}
+.sidebar .brand small{color:var(--sidebar-muted)}
+.sidebar .group-label{color:var(--sidebar-muted)}
+.sidebar .nav{color:var(--sidebar-copy)}
+.sidebar .nav:hover{background:var(--sidebar-hover);border-color:var(--sidebar-edge);color:#FFFFFF}
+.sidebar .nav.active{background:var(--sidebar-active);border-color:transparent;box-shadow:none;color:#FFFFFF}
+.sidebar .nav .count{background:var(--nav-wash);color:var(--nav-tone)}
+.sidebar .bottom{border-top-color:var(--sidebar-edge)}
+.sidebar .version{color:var(--sidebar-muted)}
+

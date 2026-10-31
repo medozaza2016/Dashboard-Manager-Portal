@@ -1,0 +1,137 @@
+/* Anchor Dashboard - Anchor design system (highest layer, stays last).
+   Extracted from the single-file stylesheet; layer order is load-bearing,
+   see the @import order in index.css. */
+/* =========================================================================
+   Anchor design system — the portal's single, locked appearance.
+   Tokens mirror Anchor src/theme.css (anchor theme) and src/styles.css:
+   navy #0B1F3A rail, #F1F6FB canvas, white 12px cards, #0868F9 actions.
+   There is no light/dark variant and no runtime theme switching.
+   ========================================================================= */
+
+/* ---------- Typography ---------- */
+body{font:14px/1.5 var(--font-sans);-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,.pagehead h1,.settings-card h2,.admin-panel h2,.taxonomy-panel-head h3,.modal h2,.app-form-dialog h2,.app-confirm-dialog h2{font-family:var(--font-display);letter-spacing:-.015em}
+#brandName{font-family:var(--font-display);font-weight:700;letter-spacing:-.01em}
+.stat-number,.nav .count,.settings-version{font-variant-numeric:tabular-nums}
+::selection{background:rgba(8,104,249,.18);color:var(--text)}
+
+/* ---------- Sidebar rail ---------- */
+.sidebar{width:246px;padding:16px 14px 20px;background:var(--sidebar-surface);border-right:1px solid var(--sidebar-edge)}
+.sidebar.collapsed{width:76px}
+.sidebar .brand{padding:2px 6px 14px;gap:10px}
+.sidebar .logo{background:var(--navy);color:#FFFFFF;border-radius:10px;box-shadow:none}
+.sidebar .brand small{color:var(--sidebar-muted);font-size:11px;font-weight:500}
+.sidebar .group-label,.sidebar .sidebar-section-toggle{color:var(--sidebar-muted);font-family:var(--font-sans);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.sidebar .nav,.sidebar .nav.tag-more-toggle{height:42px;min-height:40px;padding:0 12px;gap:11px;border:0;border-radius:var(--radius-pill);background:transparent;color:var(--sidebar-copy);font-size:13.5px;font-weight:500;box-shadow:none;transform:none}
+.sidebar .nav .ico{width:22px;height:22px;flex:0 0 22px;background:transparent;box-shadow:none;color:inherit}
+.sidebar .nav .ico svg{width:18px;height:18px;stroke-width:1.8}
+.sidebar .nav:hover{background:var(--sidebar-hover);color:#FFFFFF}
+.sidebar .nav:hover .ico{transform:none}
+.sidebar .nav.active,.sidebar .nav.active:hover{background:var(--sidebar-active);color:#FFFFFF;font-weight:600;border-color:transparent;box-shadow:none}
+.sidebar .nav.active .ico{background:transparent;color:#FFFFFF;box-shadow:none}
+.sidebar .nav .count{min-width:24px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.14);color:#FFFFFF;font-size:10.5px;font-weight:600}
+.sidebar .nav.active .count{background:rgba(255,255,255,.22);color:#FFFFFF}
+.sidebar .nav:focus-visible{outline:2px solid #FFFFFF;outline-offset:2px}
+.sidebar .bottom{margin-top:14px;padding-top:10px;border-top:1px solid var(--sidebar-edge)}
+.sidebar .version{color:var(--sidebar-muted);font-size:10px;letter-spacing:.02em}
+.sidebar .sidebar-section-chevron{color:var(--sidebar-muted)}
+
+/* ---------- Top bar ---------- */
+.main{background:var(--bg)}
+.topbar{height:70px;padding:0 32px;gap:14px;background:var(--bg);border-bottom:1px solid var(--line)}
+.topbar .iconbtn{height:42px;min-width:42px;border-radius:var(--radius-control);background:var(--panel);border:1px solid var(--line);color:var(--text);box-shadow:var(--shadow-card)}
+.topbar .iconbtn:hover{background:var(--panel);border-color:#C3D5E7;color:var(--green)}
+.search{flex:1;max-width:none}
+.search input{height:42px;padding:0 14px 0 40px;border-radius:var(--radius-control);background:var(--panel);border:1px solid var(--line);color:var(--text);font-size:13px;box-shadow:var(--shadow-card)}
+.search input::placeholder{color:var(--subtle)}
+.search input:focus{outline:none;border-color:var(--action);box-shadow:0 0 0 3px rgba(8,104,249,.18)}
+.search .search-ico{left:14px;top:50%;transform:translateY(-50%);color:var(--subtle)}
+.top-actions{gap:8px}
+.top-actions .nav{border-radius:999px;padding:7px 12px;font-weight:500;color:var(--body)}
+.top-actions .nav.active{background:var(--status-info-surface);color:var(--green);font-weight:600}
+#profileToggle.active{background:var(--action);color:#FFFFFF;font-weight:600}
+
+/* ---------- Content & headings ---------- */
+.content{max-width:1500px;padding:26px 32px 40px}
+.pagehead h1{font-size:clamp(21px,2vw,28px);font-weight:800;letter-spacing:-.6px;line-height:1.15;color:var(--text)}
+.pagehead p{color:var(--muted);font-size:13px}
+.eyebrow{color:var(--action);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+
+/* ---------- Surfaces ---------- */
+.card,.stat-card,.settings-card,.admin-panel,.category-shortcut,.admin-service-list,.taxonomy-row{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-card);box-shadow:var(--shadow-card)}
+.card{transition:border-color .15s ease,box-shadow .15s ease}
+.card:hover{border-color:#C3D5E7;box-shadow:0 8px 20px rgba(11,31,58,.08);transform:none}
+.stat-card:hover{transform:none}
+.settings-card h2{font-size:16px;font-weight:700}
+.settings-help,.stat-note,.stat-label,.shortcut-meta small,.admin-panel p{color:var(--muted)}
+.admin-tabs{background:var(--panel2);border:1px solid var(--line);border-radius:var(--radius-control)}
+
+/* ---------- Buttons & controls ---------- */
+.primary,.secondary,.danger-button,.iconbtn,.chip,.density button,.views button,.catalog-controls-toggle,.reorder-toggle,.tag-picker-chip,.admin-tab{border-radius:var(--radius-control);font-family:var(--font-sans)}
+.primary{background:var(--action);border-color:var(--action);color:#FFFFFF;font-weight:600;box-shadow:none}
+.primary:hover{background:var(--action-hover);border-color:var(--action-hover)}
+.primary:active{background:#064FC4;border-color:#064FC4}
+.primary:disabled,.secondary:disabled{opacity:.5;cursor:not-allowed}
+.secondary{background:var(--panel);border-color:var(--line);color:var(--body);font-weight:500}
+.secondary:hover{background:var(--panel2);border-color:#C3D5E7;color:var(--text)}
+.danger-button{background:var(--status-danger);border-color:var(--status-danger);color:#FFFFFF;font-weight:600}
+.danger-button:hover{background:var(--status-danger-text);border-color:var(--status-danger-text)}
+.chip,.density button,.views button{border-radius:999px;background:var(--panel);border-color:var(--line);color:var(--body)}
+.chip:hover,.density button:hover,.views button:hover{border-color:#C3D5E7;color:var(--text)}
+.chip.active,.density button.active,.views button.active,.admin-tab.active,.reorder-toggle.active,.tag-picker-chip.selected{background:var(--status-info-surface);border-color:rgba(8,104,249,.35);color:var(--green);font-weight:600;box-shadow:none}
+.tag-picker-chip.selected span{color:inherit}
+.density,.views{background:var(--panel2);border-color:var(--line);border-radius:var(--radius-pill)}
+.iconbtn{background:var(--panel);border-color:var(--line);color:var(--text)}
+.iconbtn:hover{background:var(--panel2);border-color:#C3D5E7;color:var(--green)}
+
+/* ---------- Form controls ---------- */
+.main input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]):not([type=file]),
+.main select,.main textarea,
+#serviceModal input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),
+#serviceModal select,
+#taxonomyModalBackdrop input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),
+#taxonomyModalBackdrop select,#taxonomyModalBackdrop textarea,
+#appConfirmModal input,#appConfirmModal select,#appConfirmModal textarea{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-control);color:var(--text);font-family:var(--font-sans);font-size:13px;caret-color:var(--action)}
+.main input::placeholder,.main textarea::placeholder,#serviceModal input::placeholder,#taxonomyModalBackdrop input::placeholder{color:var(--subtle);opacity:1}
+.main input:focus,.main select:focus,.main textarea:focus,
+#serviceModal input:focus,#serviceModal select:focus,
+#taxonomyModalBackdrop input:focus,#taxonomyModalBackdrop select:focus,#taxonomyModalBackdrop textarea:focus,
+#appConfirmModal input:focus,#appConfirmModal select:focus{outline:none;border-color:var(--action);box-shadow:0 0 0 3px rgba(8,104,249,.18)}
+.main option,#serviceModal option,#taxonomyModalBackdrop option{background:var(--panel);color:var(--text)}
+.settings-field label,.settings-check span,.modal label,.app-form-dialog label{color:var(--body);font-weight:500;font-size:12px}
+.theme-locked{display:inline-flex;align-items:center;gap:9px;padding:9px 12px;border:1px solid var(--line);border-radius:var(--radius-control);background:var(--panel);color:var(--muted);font-size:12px;font-weight:500}
+.theme-locked::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--action);box-shadow:0 0 0 3px rgba(8,104,249,.16)}
+
+/* ---------- Lists & tables ---------- */
+.list{border:1px solid var(--line);border-radius:var(--radius-card);background:var(--panel);box-shadow:var(--shadow-card);overflow:hidden}
+.list th{background:var(--bg);color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--line)}
+.list td{border-color:var(--panel2)}
+.list tbody tr:hover,.list tr:hover{background:#F7FAFD}
+.list a,.card-actions a,.service-card-category-value{color:var(--green)}
+
+/* ---------- Dialogs, toasts ---------- */
+.modal-backdrop,.app-modal-backdrop{background:rgba(11,31,58,.55)}
+.modal,.app-form-dialog,.app-confirm-dialog{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius-card);color:var(--text);box-shadow:var(--shadow-pop)}
+.modal h2,.app-form-dialog h2,.app-confirm-dialog h2{font-size:18px;font-weight:700}
+.confirm-symbol{background:var(--status-danger-surface);color:var(--status-danger-text)}
+#toast{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:var(--radius-control);box-shadow:0 12px 32px rgba(11,31,58,.18);font-size:13px}
+
+/* ---------- Accents ---------- */
+.star{color:var(--star)}
+.avatar{background:var(--status-info-surface);color:var(--green);border:1px solid rgba(8,104,249,.18)}
+.icon-action[data-delete],.taxonomy-danger,.taxonomy-message.error{color:var(--status-danger-text)!important}
+.shortcut-ico{background:var(--status-info-surface);color:var(--green)}
+.tag{background:var(--panel2);color:var(--body);border-radius:6px}
+
+/* ---------- Focus, scrollbars, motion, responsive ---------- */
+:focus-visible{outline:2px solid var(--action);outline-offset:2px}
+*{scrollbar-width:thin;scrollbar-color:#C6D5E4 transparent}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+@media (max-width:850px){.sidebar{width:76px}.topbar{padding:0 16px}.content{padding:18px 16px 32px}}
+@media (max-width:550px){.topbar{height:62px;padding:0 12px}.content{padding:14px 12px 28px}.pagehead h1{font-size:20px}}
+
+.service-dot-card.orderable-card{cursor:grab}
+.service-dot-card.orderable-card.dragging{opacity:.4}
+.service-dot-card.orderable-card.drag-over{outline:2px solid var(--green);outline-offset:-2px}
+.service-dot-drag-handle{position:absolute;top:5px;left:5px;z-index:2;width:22px;height:22px;min-width:22px;flex:0 0 22px;border-radius:6px;font-size:14px;opacity:.9}
+.service-dot-drag-handle:active{cursor:grabbing}

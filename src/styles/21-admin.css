@@ -1,0 +1,40 @@
+/* Anchor Dashboard - admin layout refinements and viewport fit.
+   Extracted from the single-file stylesheet; layer order is load-bearing,
+   see the @import order in index.css. */
+/* v0.1.21 admin layout refinements */
+.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-height:62vh;overflow:auto;padding:2px 3px 2px 0;align-content:start;overscroll-behavior:contain}
+#adminCategoriesPanel .taxonomy-create-row{grid-template-columns:minmax(0,1fr) minmax(175px,220px) auto;align-items:end}
+.category-create-name,.category-create-icon{display:block;min-width:0}.category-create-name>span,.category-create-icon>span,.category-field>span{display:block;font-size:10px;color:var(--muted);margin:0 0 5px 2px}
+.category-create-name input,.category-create-icon select,.category-field input,.category-field select{width:100%;min-width:0;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:11px}
+.category-card-fields{display:grid;grid-template-columns:minmax(0,1fr);gap:9px;min-width:0}
+.category-field{display:block;min-width:0}
+.category-card-head .taxonomy-usage{font-size:10px;color:var(--muted);white-space:nowrap}
+
+.taxonomy-list.category-manager-grid .taxonomy-row,.taxonomy-list.tag-manager-grid .taxonomy-row{min-width:0;align-content:start}
+.taxonomy-list.category-manager-grid .category-manager-item{min-height:154px;display:grid;grid-template-rows:auto 1fr auto;gap:9px;padding:10px;cursor:grab}
+.category-card-head{display:flex;align-items:center;justify-content:space-between;gap:6px;color:var(--muted);font-size:10px}
+.category-card-fields{display:grid;align-content:start;gap:7px;min-width:0}
+.category-card-fields input,.category-card-fields select{min-width:0;width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:11px}
+.category-drag-handle{display:inline-grid;place-items:center;width:26px;height:26px;border:1px solid var(--line);border-radius:7px;background:var(--panel);color:var(--muted);cursor:grab;font-size:17px;line-height:1;user-select:none}
+.category-drag-handle:active{cursor:grabbing}
+.category-manager-item.dragging{opacity:.4}.category-manager-item.drag-over{border-color:var(--green);box-shadow:0 0 0 1px var(--green) inset}
+.taxonomy-list.tag-manager-grid .taxonomy-row{min-height:100px;grid-template-rows:1fr auto;gap:8px;padding:10px}
+.taxonomy-list.tag-manager-grid .taxonomy-tag-row .taxonomy-row-fields{display:flex;flex-wrap:wrap;align-items:center;gap:7px}
+.taxonomy-list.tag-manager-grid .taxonomy-tag-row [data-tag-name]{min-width:0;flex:1}
+.taxonomy-list.tag-manager-grid .taxonomy-tag-row .taxonomy-row-actions{justify-content:flex-start}
+.taxonomy-list.tag-manager-grid .taxonomy-tag-row .taxonomy-row-actions button{padding:5px 8px}
+.taxonomy-order-help{font-size:11px;color:var(--muted);margin:4px 0 10px}
+@media(max-width:1150px){.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#adminCategoriesPanel .taxonomy-create-row{grid-template-columns:minmax(0,1fr) 200px auto}}
+@media(max-width:700px){.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{grid-template-columns:minmax(0,1fr)}#adminCategoriesPanel .taxonomy-create-row{grid-template-columns:minmax(0,1fr) 140px auto}}
+
+/* Branding/settings layouts should fit the usable viewport beside the sidebar. */
+.settings-grid,.settings-card,.settings-fields,.settings-field,.settings-actions{min-width:0}
+.settings-card .settings-help{overflow-wrap:anywhere}
+#brandingLogoUploadStatus,#brandingFaviconStatus{overflow-wrap:anywhere}
+@media(max-width:900px){
+  .settings-grid{grid-template-columns:minmax(0,1fr)}
+  .settings-grid>.settings-card,.settings-card.wide{grid-column:1/-1}
+  .settings-fields{grid-template-columns:minmax(0,1fr)}
+  .settings-field.full{grid-column:auto}
+}
+

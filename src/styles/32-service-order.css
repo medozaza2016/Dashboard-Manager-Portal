@@ -1,0 +1,33 @@
+/* Anchor Dashboard - reorder toggle, drag handles, favorites layout.
+   Extracted from the single-file stylesheet; layer order is load-bearing,
+   see the @import order in index.css. */
+/* Per-page reorder toggle and drag handles for regular and Slim card views. */
+.reorder-control{display:flex;align-items:center;flex-shrink:0}
+.reorder-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:var(--panel);color:var(--text);font-size:11px;font-weight:700;white-space:nowrap}
+.reorder-toggle:hover{border-color:var(--green)}
+.reorder-toggle.active{border-color:var(--green);background:var(--green2);color:var(--deep-green)}
+.service-card-drag-handle{display:inline-grid;place-items:center;flex:0 0 25px;width:25px;height:29px;padding:0;border:1px solid var(--line);border-radius:7px;background:var(--panel2);color:var(--muted);font-size:17px;line-height:1;cursor:grab;touch-action:none;user-select:none}
+.service-card-drag-handle:active{cursor:grabbing}
+.service-card-drag-handle:disabled{display:none}
+.card.orderable-card{cursor:grab}
+.card.orderable-card.dragging,.service-order-card.dragging{opacity:.4}
+.card.orderable-card.drag-over,.service-order-card.drag-over{outline:2px solid var(--green);outline-offset:-2px}
+.grid.slim .card.orderable-card .card-top{gap:6px}
+.grid.slim .card.orderable-card .service-title{white-space:normal;overflow-wrap:anywhere}
+@media(max-width:700px){.reorder-control{width:100%}.reorder-toggle{width:100%}}
+
+/* Category edit-mode table sorting affordances. */
+.table-drag-handle{vertical-align:middle;margin-right:7px}
+.list tr.orderable-card{cursor:grab}
+.list tr.dragging{opacity:.4}
+.list tr.drag-over{outline:2px solid var(--green);outline-offset:-2px}
+
+/* Home favorites follows the global default service layout. */
+.home-favorites-list{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.home-favorites-list table{border-collapse:collapse;width:100%;text-align:left}
+.home-favorites-list th{background:var(--panel2);color:var(--muted);text-transform:uppercase;font-size:10px;letter-spacing:.6px}
+.home-favorites-list td,.home-favorites-list th{padding:12px 14px;border-bottom:1px solid var(--line)}
+.home-favorites-list td{font-size:12px}
+.home-favorites-list tr:hover{background:var(--panel2)}
+.home-favorites-list a{color:var(--green)}
+

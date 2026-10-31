@@ -1,0 +1,19 @@
+/* Anchor Dashboard stylesheet entry point.
+   The import order mirrors the original inline stylesheet exactly: later files
+   override earlier ones, and 90-anchor.css must stay last. */
+@import "./00-tokens.css";
+@import "./10-sidebar.css";
+@import "./20-settings.css";
+@import "./21-admin.css";
+@import "./30-catalog.css";
+@import "./31-slim-cards.css";
+@import "./32-service-order.css";
+@import "./33-sidebar-nav.css";
+@import "./34-dialogs.css";
+@import "./35-sidebar-controls.css";
+@import "./36-logos.css";
+@import "./37-catalog-controls.css";
+@import "./40-card-refinement.css";
+@import "./50-service-editor.css";
+@import "./51-tag-admin.css";
+@import "./90-anchor.css";

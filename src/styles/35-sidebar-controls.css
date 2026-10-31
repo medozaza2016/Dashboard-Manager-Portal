@@ -1,0 +1,19 @@
+/* Anchor Dashboard - sidebar section controls and inline create.
+   Extracted from the single-file stylesheet; layer order is load-bearing,
+   see the @import order in index.css. */
+/* Sidebar category/tag section controls and compact behavior */
+.sidebar-section-toggle{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;border:0;background:transparent;color:var(--muted);cursor:pointer;text-align:left;font:inherit;font-size:10px;letter-spacing:1.2px;padding:12px 12px 7px;margin:0}
+.sidebar-section-toggle:hover{color:var(--text)}
+.sidebar-section-chevron{font-size:13px;letter-spacing:0;transition:transform .15s}
+.sidebar.collapsed .sidebar-section-chevron{display:none}
+.sidebar.collapsed .tag-more-toggle{display:none}
+#categorySectionContent[hidden],#tagSectionContent[hidden]{display:none}
+
+/* Inline create controls in the Add/Edit Service form */
+.service-inline-create{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}
+.service-inline-create select{min-width:0}
+.service-create-inline-button{white-space:nowrap;font-size:11px;padding:9px 10px;border-radius:9px}
+.service-tag-create-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:9px}
+.service-tag-create-row .settings-note{margin:0}
+@media(max-width:480px){.service-inline-create{grid-template-columns:minmax(0,1fr)}.service-inline-create .service-create-inline-button{justify-self:start}.service-tag-create-row{align-items:flex-start;flex-wrap:wrap}}
+

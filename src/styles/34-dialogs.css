@@ -1,0 +1,49 @@
+/* Anchor Dashboard - app-native confirm and taxonomy dialogs.
+   Extracted from the single-file stylesheet; layer order is load-bearing,
+   see the @import order in index.css. */
+/* App-native confirmation and taxonomy editing dialogs */
+.tag-nav-heading{margin-top:6px}
+.tag-filter-nav{padding:8px 10px;gap:9px;font-size:11px}
+.tag-nav-mark{display:inline-grid;place-items:center;width:18px;flex:0 0 18px;height:18px;border-radius:6px;background:var(--panel2);color:var(--green);font-weight:800}
+.tag-sidebar-name{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.tag-more-toggle{font-size:10px;padding:7px 12px;margin:0;color:var(--muted);border:1px dashed var(--line)}
+.sidebar.collapsed .tag-sidebar-name,.sidebar.collapsed .tag-nav-heading{display:none}
+.app-modal-backdrop{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.58);display:flex;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(3px)}
+.app-modal-backdrop[hidden]{display:none}
+.app-form-dialog,.app-confirm-dialog{width:min(460px,100%);max-height:min(82vh,720px);overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.38);padding:23px}
+.app-form-dialog h2,.app-confirm-dialog h2{margin:0 0 8px;font-size:18px}
+.app-dialog-kicker{font-size:10px;letter-spacing:1.2px;color:var(--muted);margin-bottom:9px}
+.app-form-dialog label{display:block;font-size:11px;color:var(--muted);margin:15px 0 6px}
+.app-form-dialog input,.app-form-dialog select{width:100%;min-width:0;padding:10px 11px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text);font-size:12px}
+.app-modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px}
+.app-modal-actions button{min-width:90px}
+.app-confirm-dialog p{font-size:13px;line-height:1.6;color:var(--muted);margin:10px 0 0;overflow-wrap:anywhere}
+.confirm-symbol{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);font-weight:800;color:var(--green);margin-bottom:15px}
+.danger-button{border:1px solid var(--status-danger);background:var(--status-danger);color:white;border-radius:8px;padding:9px 13px;font-size:12px;font-weight:700}
+.danger-button:hover{background:var(--status-danger)}
+.taxonomy-overview-row{display:grid;grid-template-columns:22px minmax(0,1fr) auto auto;align-items:center;gap:9px;padding:9px 11px;min-height:52px;cursor:grab}
+.taxonomy-overview-main{display:flex;align-items:center;gap:9px;min-width:0}
+.taxonomy-overview-icon{width:30px;height:30px;flex:0 0 30px;display:grid;place-items:center;border-radius:8px;background:var(--green2);color:var(--green)}
+.taxonomy-overview-icon svg{width:17px;height:17px}
+.taxonomy-overview-copy{min-width:0}
+.taxonomy-overview-copy strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.taxonomy-overview-copy small{display:block;font-size:10px;color:var(--muted);margin-top:3px}
+.taxonomy-overview-actions{display:flex;align-items:center;gap:4px}
+.taxonomy-overview-actions .icon-action{width:28px;height:28px;min-width:28px;padding:5px}
+.taxonomy-overview-actions .action-icon{width:14px;height:14px}
+.taxonomy-overview-actions button:disabled{opacity:.35;cursor:not-allowed}
+.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-height:62vh;gap:8px}
+.taxonomy-panel-head{align-items:center}
+.taxonomy-panel-head>div:first-child{min-width:0}
+.taxonomy-panel-head .settings-help{margin:4px 0 0}
+.tag-overview-mark{font-size:18px;font-weight:800}
+@media(max-width:950px){.taxonomy-list.category-manager-grid,.taxonomy-list.tag-manager-grid{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:700px){.taxonomy-overview-row{grid-template-columns:22px minmax(0,1fr) auto}.taxonomy-overview-actions{grid-column:2/4;justify-content:flex-end}.taxonomy-panel-head{align-items:flex-start;flex-wrap:wrap}}
+
+/* Override the former tall inline category cards; taxonomy is now a compact overview. */
+.taxonomy-list.category-manager-grid .category-manager-item,
+.taxonomy-list.tag-manager-grid .taxonomy-overview-row{min-height:52px;grid-template-rows:auto;align-content:center;gap:9px;padding:9px 11px;cursor:default}
+.taxonomy-list.category-manager-grid .category-manager-item{cursor:grab}
+.taxonomy-list.category-manager-grid .taxonomy-overview-row .category-drag-handle{cursor:grab}
+.taxonomy-overview-copy small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+

@@ -1,0 +1,97 @@
+/* Anchor Dashboard - service editor viewport and tag picker.
+   Extracted from the single-file stylesheet; layer order is load-bearing,
+   see the @import order in index.css. */
+/* v0.1.52 service editor viewport and tag picker layout */
+#serviceModal.modal-backdrop{
+  align-items:flex-start;
+  justify-content:center;
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+#serviceModal .modal{
+  width:min(560px,100%);
+  max-height:calc(100vh - 32px);
+  max-height:calc(100dvh - 32px);
+  min-height:0;
+  margin:0 auto;
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+  box-sizing:border-box;
+}
+#serviceModal .service-tag-picker{min-width:0;gap:8px;margin:4px 0 12px}
+#serviceModal .service-selected-tags{
+  max-height:76px;
+  min-height:28px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  align-content:flex-start;
+  padding:2px;
+  border-radius:8px;
+  overscroll-behavior:contain;
+}
+#serviceModal .service-tag-options{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  align-items:start;
+  gap:6px;
+  max-height:220px;
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding:8px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--bg);
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+}
+#serviceModal .service-tag-options .tag-picker-chip{
+  display:flex;
+  align-items:flex-start;
+  justify-content:flex-start;
+  width:100%;
+  min-width:0;
+  min-height:31px;
+  padding:7px 8px;
+  border-radius:8px;
+  font-size:11px;
+  line-height:1.3;
+  text-align:left;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  box-sizing:border-box;
+}
+#serviceModal .service-tag-options .tag-picker-chip>span{
+  flex:0 0 12px;
+  width:12px;
+  text-align:center;
+}
+#serviceModal .service-tag-search{box-sizing:border-box;min-width:0}
+#serviceModal .modal-actions{
+  position:sticky;
+  bottom:-1px;
+  z-index:2;
+  margin-top:16px;
+  padding:12px 0 2px;
+  background:var(--panel);
+}
+@media(max-width:600px){
+  #serviceModal.modal-backdrop{padding:8px}
+  #serviceModal .modal{
+    width:100%;
+    max-height:calc(100vh - 16px);
+    max-height:calc(100dvh - 16px);
+    padding:16px;
+    border-radius:13px;
+  }
+  #serviceModal .service-tag-options{max-height:200px;gap:5px;padding:6px}
+  #serviceModal .service-tag-options .tag-picker-chip{font-size:10px;padding:7px 6px}
+}
+@media(prefers-reduced-motion:reduce){
+  #serviceModal .modal{scroll-behavior:auto}
+}
+
